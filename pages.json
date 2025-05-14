@@ -14,15 +14,32 @@
 			}
 		},
 		{
-			"path" : "pages/messagePage/messagePage",
-			"style" : 
-			{
-				"navigationBarTitleText" : "消息",
+			"path": "pages/messagePage/messagePage",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/shoppingMall/shoppingMall",
+			"style": {
+				"navigationBarTitleText": "商场",
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		}
 
 	],
+	"tabBar": {
+		"custom": true,
+		"list": [{
+			"text": "首页",
+			"pagePath": "pages/homePage/homePage"
+
+		}, {
+			"text": "商场",
+			"pagePath": "pages/shoppingMall/shoppingMall"
+		}]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

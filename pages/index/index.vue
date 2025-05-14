@@ -4,13 +4,15 @@
 		<view class="text-area">
 			<text class="title">{{ title }}</text>
 		</view>
+		<avatarStack :avatars="avatarList" :size="40" :overlap="20"></avatarStack>
 	</view>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-
+import avatarStack from '../../components/AvatarStack.vue'
 const title = ref('测试');
+const avatarList = ref(['/static/images/蜂箱logo.png','/static/images/蜂箱logo.png'])
 </script>
 
 <style>

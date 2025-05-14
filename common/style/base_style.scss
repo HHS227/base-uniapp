@@ -9,6 +9,9 @@ image {
 .safe-view {
 	height: env(safe-area-inset-bottom);
 }
+.tabbar-bottom{
+	height: 197rpx;
+}
 button::after {
 	border: none;
 }
