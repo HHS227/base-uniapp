@@ -1,0 +1,14 @@
+view,
+swiper,
+swiper-item {
+	box-sizing: border-box;
+}
+image {
+	display: block;
+}
+.safe-view {
+	height: env(safe-area-inset-bottom);
+}
+button::after {
+	border: none;
+}
