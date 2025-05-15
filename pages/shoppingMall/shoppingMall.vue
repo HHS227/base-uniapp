@@ -1,7 +1,7 @@
 <template>
 	<BeeTabbarVue active-tab="shoppingMall"></BeeTabbarVue>
 	<view class="container">
-		<view class="floating-btn cart-btn">
+		<view class="floating-btn cart-btn" @click="gotoCart">
 			<image src="/static/images/cart.png" mode="aspectFit" class="cart-icon"></image>
 			<view class="btn-text">购物车</view>
 		</view>
@@ -43,6 +43,11 @@ import BeeTabbarVue from '../../components/BeeTabbar.vue';
 const gotoMessage =()=>{
 	uni.navigateTo({
 		url:'/pages/messagePage/messagePage'
+	})
+}
+const gotoCart = ()=>{
+	uni.navigateTo({
+		url:'/pages/shoppingCart/shoppingCart'
 	})
 }
 </script>

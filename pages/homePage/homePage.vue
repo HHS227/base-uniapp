@@ -28,7 +28,7 @@
 						<image src="/static/images/蜂场数据logo.png" mode="" class="title-image"></image>
 					</view>
 					<view class="title-left">
-						<image src="/static/images/查看更多-btn.png" mode="" class="title-btn"></image>
+						<image src="/static/images/查看更多-btn.png" mode="" class="title-btn" @click="gotoHiveData"></image>
 					</view>
 				</view>
 				<view class="data-list">
@@ -123,6 +123,12 @@ import { ref } from 'vue';
 
 const percent = ref(45);
 const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
+
+const gotoHiveData = () => {
+	uni.navigateTo({
+		url: '/pages/beeHiveData/beeHiveData'
+	});
+};
 </script>
 
 <style lang="scss" scoped>

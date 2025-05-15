@@ -26,6 +26,36 @@
 				"navigationBarTitleText": "商场",
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
+		},
+		{
+			"path": "pages/shoppingCart/shoppingCart",
+			"style": {
+				"navigationBarTitleText": "购物车",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path" : "pages/mine/mine",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的蜂箱",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path" : "pages/beeHiveData/beeHiveData",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/honeySource/honeySource",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 
 	],
@@ -38,6 +68,12 @@
 		}, {
 			"text": "商场",
 			"pagePath": "pages/shoppingMall/shoppingMall"
+		},{
+			"text": "我的",
+			"pagePath": "pages/mine/mine"
+		},{
+			"text": "蜜源",
+			"pagePath": "pages/honeySource/honeySource"
 		}]
 	},
 	"globalStyle": {
