@@ -6,24 +6,23 @@
 				<text>首页</text>
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'shoppingMall' }" @click="switchTab('/pages/shoppingMall/shoppingMall')">
-				<image :src="activeTab == 'shoppingMall' ? '../static/images/底部导航栏@2x(4).png' : '../static/images/底部导航栏@2x(5).png'" class="icon"/>
+				<image :src="activeTab == 'shoppingMall' ? '../static/images/底部导航栏@2x(4).png' : '../static/images/底部导航栏@2x(5).png'" class="icon" />
 				<text>商场</text>
 			</view>
 			<view class="tab-item center-button" @click="scanCodeClick">
 				<image src="/static/images/养蜂.png" class="icon-large" />
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'monitorPage' }" @click="switchTab('/pages/honeySource/honeySource')">
-				<image :src="activeTab == 'honeySource' ? '../static/images/底部导航栏@2x(6).png' : '../static/images/底部导航栏@2x(7).png'" class="icon"/>
+				<image :src="activeTab == 'honeySource' ? '../static/images/底部导航栏@2x(6).png' : '../static/images/底部导航栏@2x(7).png'" class="icon" />
 				<text>蜜源</text>
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'mine' }" @click="switchTab('/pages/mine/mine')">
-				<image :src="activeTab == 'mine' ? '../static/images/底部导航栏@2x.png' : '../static/images/底部导航栏@2x(1).png'" class="icon"/>
+				<image :src="activeTab == 'mine' ? '../static/images/底部导航栏@2x.png' : '../static/images/底部导航栏@2x(1).png'" class="icon" />
 				<text>我的</text>
 			</view>
 		</view>
 		<view class="safe-view"></view>
 	</view>
-	
 </template>
 <script setup>
 import { ref } from 'vue';
@@ -36,12 +35,8 @@ defineProps({
 });
 // const activeTab = ref('/pages/index/index');
 const scanCodeClick = () => {
-	uni.scanCode({
-		onlyFromCamera: true,
-		success: function (res) {
-			console.log('条码类型：' + res.scanType);
-			console.log('条码内容：' + res.result);
-		}
+	uni.navigateTo({
+		url: '/pages/beeGame/beeGame'
 	});
 };
 const switchTab = (url) => {
