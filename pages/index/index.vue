@@ -4,7 +4,7 @@
 		<view class="text-area">
 			<text class="title">{{ title }}</text>
 		</view>
-		<NoticeVue :notices="['通知1', '通知2', '通知3']" />
+		<!-- <NoticeVue :notices="['通知1', '通知2', '通知3']" /> -->
 		<button open-type="getPhoneNumber" @getphonenumber="getPhone" :ref="btnRef" class="login-btn">点击登录</button>
 		<avatarStack :avatars="avatarList" :size="40" :overlap="20"></avatarStack>
 	</view>

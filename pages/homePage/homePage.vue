@@ -9,15 +9,10 @@
 		<scroll-view scroll-y="true" class="scroll-view">
 			<view class="swiper-content">
 				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
-					<swiper-item class="swiper-item">
-						<image src="/static/images/轮播图(1).png" class="swiper-image" mode=""></image>
+					<swiper-item class="swiper-item" v-for="item in swiperList">
+						<image :src=item.url class="swiper-image" mode=""></image>
 					</swiper-item>
-					<swiper-item class="swiper-item">
-						<image src="/static/images/轮播图(1).png" class="swiper-image" mode=""></image>
-					</swiper-item>
-					<swiper-item class="swiper-item">
-						<image src="/static/images/轮播图(1).png" class="swiper-image" mode=""></image>
-					</swiper-item>
+				
 				</swiper>
 			</view>
 			<view class="bee-farm-data">
@@ -36,7 +31,7 @@
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">国家</view>
 						<view class="data-item-text">
-							192
+							{{infoData.countryNumber}}
 							<text>/个</text>
 						</view>
 					</view>
@@ -44,7 +39,7 @@
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
-							192
+							{{infoData.outputAmount}}
 							<text>/万斤</text>
 						</view>
 					</view>
@@ -52,7 +47,7 @@
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">领养量</view>
 						<view class="data-item-text">
-							192
+							{{infoData.adoptionAmount}}
 							<text>/万箱</text>
 						</view>
 					</view>
@@ -60,7 +55,7 @@
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">蜜蜂数量</view>
 						<view class="data-item-text">
-							192
+							{{infoData.beeNumber}}
 							<text>/万斤</text>
 						</view>
 					</view>
@@ -73,7 +68,7 @@
 				<view>我的蜂箱</view>
 				<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
 			</view>
-			<view class="my-bee-card">
+			<view v-if="true" class="my-bee-card" v-for='item in dataList' @click="gotoMyBeehive(item)">
 				<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
 				<view class="card-content">
 					<view class="card-top">
@@ -81,10 +76,10 @@
 							<image src="/static/images/蜂箱logo.png" mode="" class="my-bee-icon"></image>
 						</view>
 						<view class="top-info">
-							<view class="card-title">四川天府极蜜部落单行标题展四川天府极蜜部落单行标题展</view>
+							<view class="card-title">{{item.name}}</view>
 							<view class="group-purchase">
 								<AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
-								<view class="gruop-info">还差6人</view>
+								<view class="gruop-info">还差{{item.groupNumber}}人</view>
 							</view>
 							<view class="progress-info">
 								<view class="progress-content">
@@ -97,16 +92,16 @@
 					<view class="card-bottom">
 						<view class="bottom-left">
 							领养类型：
-							<text class="bottom-text">拼团</text>
+							<text class="bottom-text">{{item.beehiveType}}</text>
 						</view>
 						<view class="bottom-right">
 							领养时间：
-							<text class="bottom-text">11:00 - 12:00</text>
+							<text class="bottom-text">{{item.createTime}}</text>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="no-bee">
+			<view v-else class="no-bee">
 				<image src="/static/images/无数据.png" mode=""></image>
 				<text>当前暂无蜂箱信息</text>
 			</view>
@@ -119,7 +114,75 @@
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import AvatarStackVue from '../../components/AvatarStack.vue';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
+import { request } from '@/utils/request'
+
+const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
+const infoData=ref({})
+const dataList=ref([
+{name:'张三',beehiveType:'领养',groupNumber:'4',createTime:'2025-5-10'}
+	
+])
+// 获取轮播图数据
+const getSwiperList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/banner',
+      showLoading: true, 
+      loadingText: '加载轮播图中...'
+    })
+    
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+      swiperList.value = res.data || []
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('轮播图加载失败:', err)
+   
+  }
+}
+//获取蜂场数据
+const getInfoData = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/info',
+      showLoading: true, 
+    })
+    
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+    infoData.value=res.data
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err)
+   
+  }
+}
+//获取我的蜂箱列表
+const getInfoDataList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/MyBeehiveInfo',
+      showLoading: true, 
+    })
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+		// dataList.value=res.data||[]
+		
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取我的蜂箱数据失败:', err)
+   
+  }
+}
+
 
 const percent = ref(45);
 const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
@@ -129,6 +192,30 @@ const gotoHiveData = () => {
 		url: '/pages/beeHiveData/beeHiveData'
 	});
 };
+
+const gotoMyBeehive = (item) => { // 接收当前item参数
+  // 示例：传递item的name和beehiveType（根据实际数据结构调整）
+  const params = {
+    name: item.name,
+    beehiveType: item.beehiveType,
+    groupNumber: item.groupNumber,
+    createTime: item.createTime
+  };
+  // 对参数进行URL编码
+  const paramString = Object.keys(params)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .join('&');
+  
+  uni.navigateTo({
+    url: `/pages/myBeeHive/myBeeHive?${paramString}`
+  });
+};
+
+onMounted(() => {
+  getSwiperList()
+  getInfoData()
+  getInfoDataList()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -275,6 +362,7 @@ const gotoHiveData = () => {
 		.my-bee-title {
 			position: relative;
 			display: flex;
+		
 			view {
 				margin-top: 24rpx;
 				margin-left: 54rpx;

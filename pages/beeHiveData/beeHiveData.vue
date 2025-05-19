@@ -5,12 +5,12 @@
 		<view class="data-panel">
 			<image class="panel-bg" src="/static/images/data-bg.png" mode=""></image>
 			<view class="data-content">
-				<view class="data-item" v-for="(value, key) in dataList" :key="key">
-					<view class="title">
-						<text class="title-text">{{ dataMap[key].text }}</text>
+				<view class="data-item" v-for="(value, key) in dataList"  :key="key">
+					<view class="title" v-if="key!= 'nectarSourceArea'">
+						<text class="title-text">{{ dataMap[key].text }} </text>
 						<image :src="dataMap[key].icon" mode="aspectFill" class="data-icon"></image>
 					</view>
-					<view class="data-value">
+					<view class="data-value" v-if="key!= 'nectarSourceArea'">
 						<text class="value">{{ value }}</text>
 						{{ dataMap[key].unit }}
 					</view>
@@ -26,12 +26,12 @@
 						<text>蜜源面积</text>
 						<view class="title-bt">
 							<image src="/static/images/砖石.png" mode="" class="icon"></image>
-							<text class="text">· 优质蜂源</text>
+							<text class="text" style='font-size: 8px;'>优质蜂源</text>
 						</view>
 					</view>
 				</view>
 				<view class="bar-right">
-					23220130
+						{{dataList.nectarSourceArea || '0'}}
 					<text class="unit">平方/公顷</text>
 				</view>
 			</view>
@@ -44,8 +44,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
+import { request } from '@/utils/request'
+
 
 const mapMarkers = ref([
 	{
@@ -64,22 +66,22 @@ const mapMarkers = ref([
 	}
 ]);
 const dataMap = ref({
-	countryCount: {
+	countryNumber: {
 		text: '国家',
 		icon: '/static/images/国家.png',
 		unit: '/个'
 	},
-	adoptCount: {
+	adoptionAmount: {
 		text: '领养量',
 		icon: '/static/images/领养量.png',
 		unit: '/万箱'
 	},
-	productionVolume: {
+	outputAmount: {
 		text: '产量',
 		icon: '/static/images/产量.png',
 		unit: '/万斤'
 	},
-	quantity: {
+	beeNumber: {
 		text: '数量',
 		icon: '/static/images/蜜蜂.png',
 		unit: '/万只'
@@ -89,20 +91,43 @@ const dataMap = ref({
 		icon: '/static/images/蜜蜂.png',
 		unit: '%'
 	},
-	userCount: {
+	userAmount: {
 		text: '用户量',
 		icon: '/static/images/用户量.png',
 		unit: '/万人'
 	}
 });
 const dataList = ref({
-	countryCount: 192,
-	adoptCount: 1.89,
-	productionVolume: 236.8,
-	quantity: 265.1,
+	countryNumber: 192,
+	adoptionAmount: 1.89,
+	outputAmount: 236.8,
+	beeNumber: 265.1,
 	attendanceRate: 86.6,
-	userCount: 232.3
+	userAmount: 232.3
 });
+
+//获取蜂场更多数据
+const getInfoData = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/info',
+      showLoading: true, 
+    })
+    
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+    dataList.value=res.data
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err)
+   
+  }
+}
+onMounted(() => {
+  getInfoData()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -215,7 +240,7 @@ const dataList = ref({
 					font-size: 28rpx;
 					line-height: 29rpx;
 					.title-bt {
-						width: 113rpx;
+						width: 140rpx;
 						height: 26rpx;
 						background: linear-gradient(275deg, #fff6d1 0%, #ffffff 100%);
 						border-radius: 23rpx;
@@ -228,6 +253,7 @@ const dataList = ref({
 							height: 18rpx;
 						}
 						.text {
+						
 							margin-left: 4rpx;
 							font-weight: 500;
 							font-size: 16rpx;
