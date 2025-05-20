@@ -1,11 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
+		
 		{
 			"path": "pages/homePage/homePage",
 			"style": {
@@ -13,8 +8,13 @@
 				"navigationStyle": "custom"
 			}
 		},
-	
-	
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		
 		{
 			"path": "pages/messagePage/messagePage",
 			"style": {
@@ -87,6 +87,14 @@
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/myPage/myPage",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
 		}
 
 	],
@@ -101,7 +109,7 @@
 			"pagePath": "pages/shoppingMall/shoppingMall"
 		}, {
 			"text": "我的",
-			"pagePath": "pages/mine/mine"
+			"pagePath": "pages/myPage/myPage"
 		}, {
 			"text": "蜜源",
 			"pagePath": "pages/honeySource/honeySource"

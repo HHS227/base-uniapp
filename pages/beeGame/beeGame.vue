@@ -1,14 +1,15 @@
 <template>
+	<GetHivePupopVue v-model:show="showPopup"  />
 	<view class="container">
 		<image src="/static/images/游戏背景.png" mode="" class="game-bg"></image>
 		<view class="right-top-btn">
-			<image src="/static/images/攻略.png" mode=""></image>
-			<image src="/static/images/蜂场活动.png" mode=""></image>
-			<image src="/static/images/兑换M币.png" mode=""></image>
+			<image src="/static/images/攻略.png" mode="" class="btn-image"></image>
+			<image src="/static/images/蜂场活动.png" mode="" class="btn-image"></image>
+			<image src="/static/images/兑换M币.png" mode="" class="btn-image"></image>
 		</view>
 		<view class="broadcast-btn">
-			<image src="/static/images/广播.png" mode=""></image>
-			<text>收获广播</text>
+			<image src="/static/images/广播.png" mode="" class="broadcast-image"></image>
+			收获广播
 		</view>
 		<view class="broadcast-content">
 			<introduction-v3 :items="noticeList" />
@@ -24,14 +25,32 @@
 			<image src="/static/images/任务.png" class="task-image"></image>
 			<text class="task-text">获取任务</text>
 		</view>
+		<template v-if="!hasHive">
+			<view class="get-hive" @click="getHive">领取蜜蜂</view>
+			<view class="combine">
+				<view class="combine-left">
+					<image src="/static/images/合养logo.png" class="combine-image"></image>
+					邀请好友和养，收获平分
+				</view>
+				<button class="combine-btn">开启合养</button>
+			</view>
+		</template>
 	</view>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import introductionV3 from '@/components/Introduction.vue';
-const noticeList = [
-  '通知1', '通知2', '通知3', '通知4'
-]
+import GetHivePupopVue from '../../components/GetHivePupop.vue';
+
+const showPopup = ref(false)
+const hasHive = ref(false);
+const noticeList = ['通知1', '通知2', '通知3', '通知4'];
+const getHive = () => {
+	console.log('111');
+	showPopup.value = true;
+	console.log(showPopup.value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -55,46 +74,44 @@ const noticeList = [
 		background: #fff;
 		display: flex;
 		align-items: center;
-		image {
+		color: rgba(155, 113, 32, 1);
+		font-size: 24rpx;
+		.broadcast-image {
 			width: 50rpx;
 			height: 50rpx;
 		}
-		text {
-			color: rgba(155, 113, 32, 1);
-			font-size: 24rpx;
-		}
 	}
-	.broadcast-content{
+	.broadcast-content {
 		position: absolute;
 		left: 30rpx;
 		top: 270rpx;
 		width: 356rpx;
 		height: 188rpx;
-		background-color: rgba(0,106,184,0.19);
+		background-color: rgba(0, 106, 184, 0.19);
 		border-radius: 18rpx;
-		}
+	}
 	.right-top-btn {
 		position: absolute;
 		right: 30rpx;
 		top: 220rpx;
-		image {
+		.btn-image {
 			margin-top: 24rpx;
 			width: 112rpx;
 			height: 110rpx;
 		}
 	}
-	.road-sign{
+	.road-sign {
 		position: absolute;
 		left: 76rpx;
 		top: 890rpx;
 		width: 136rpx;
 		height: 152rpx;
-		.road-sign-image{
+		.road-sign-image {
 			position: absolute;
 			height: 100%;
 			width: 100%;
 		}
-		.road-sign-text{
+		.road-sign-text {
 			position: absolute;
 			top: 32rpx;
 			left: 30rpx;
@@ -102,43 +119,98 @@ const noticeList = [
 			font-size: 26rpx;
 		}
 	}
-	.bee-hive{
+	.bee-hive {
 		position: absolute;
 		left: 232rpx;
 		top: 848rpx;
 		width: 286rpx;
 		height: 322rpx;
-		.bee-hive-image{
+		.bee-hive-image {
 			width: 286rpx;
 			height: 322rpx;
 		}
 	}
-	.get-task-btn{
+	.get-task-btn {
 		position: absolute;
 		left: 592rpx;
 		top: 1146rpx;
 		width: 128rpx;
 		height: 128rpx;
 		border-radius: 128rpx;
-		background-color: rgba(124,67,2,1);
-		border: 8rpx solid rgba(255,189,0,1);
-		.task-image{
+		background-color: rgba(124, 67, 2, 1);
+		border: 8rpx solid rgba(255, 189, 0, 1);
+		.task-image {
 			position: absolute;
 			top: 22rpx;
 			left: 20rpx;
 			width: 74rpx;
 			height: 86rpx;
 		}
-		.task-text{
+		.task-text {
 			position: absolute;
 			top: 88rpx;
 			width: 110rpx;
 			height: 40rpx;
 			line-height: 40rpx;
-			color: rgba(255,255,255,1);
+			color: rgba(255, 255, 255, 1);
 			font-size: 28rpx;
 			text-align: left;
-			text-shadow: 0rpx 0rpx 12rpx 0rpx rgba(239,80,48,1);
+			text-shadow: 0rpx 0rpx 12rpx 0rpx rgba(239, 80, 48, 1);
+		}
+	}
+	.get-hive {
+		position: absolute;
+		left: 226rpx;
+		top: 1258rpx;
+		width: 300rpx;
+		height: 118rpx;
+		line-height: 102rpx;
+		border-radius: 52rpx;
+		background: linear-gradient(180deg, rgba(255, 244, 111, 1) 0%, rgba(235, 211, 62, 1) 100%);
+		color: rgba(117, 64, 35, 1);
+		font-size: 36rpx;
+		text-align: center;
+		font-weight: bold;
+		border: 8rpx solid rgba(255, 189, 0, 1);
+	}
+	.combine {
+		position: absolute;
+		left: 30rpx;
+		top: 1396rpx;
+		width: 692rpx;
+		height: 130rpx;
+		line-height: 40rpx;
+		border-radius: 20rpx;
+		background-color: rgba(255, 255, 255, 1);
+		color: rgba(155, 113, 32, 1);
+		font-size: 28rpx;
+		text-align: center;
+		display: flex;
+		padding: 12rpx;
+		align-items: center;
+		justify-content: space-between;
+		.combine-left {
+			display: flex;
+			align-items: center;
+
+			.combine-image {
+				margin-right: 20rpx;
+				width: 106rpx;
+				height: 106rpx;
+			}
+		}
+		.combine-btn {
+			margin: 0;
+			width: 168rpx;
+			height: 64rpx;
+			line-height: 60rpx;
+			border-radius: 32rpx;
+			background-color: rgba(255, 255, 255, 1);
+			color: rgba(135, 211, 86, 1);
+			font-size: 28rpx;
+			text-align: center;
+			font-family: -regular;
+			border: 2rpx solid rgba(135, 211, 86, 1);
 		}
 	}
 }
