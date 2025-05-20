@@ -16,8 +16,8 @@
 				<image :src="activeTab == 'honeySource' ? '../static/images/底部导航栏@2x(6).png' : '../static/images/底部导航栏@2x(7).png'" class="icon" />
 				<text>蜜源</text>
 			</view>
-			<view class="tab-item" :class="{ active: activeTab === 'mine' }" @click="switchTab('/pages/mine/mine')">
-				<image :src="activeTab == 'mine' ? '../static/images/底部导航栏@2x.png' : '../static/images/底部导航栏@2x(1).png'" class="icon" />
+			<view class="tab-item" :class="{ active: activeTab === 'myPage' }" @click="switchTab('/pages/myPage/myPage')">
+				<image :src="activeTab == 'myPage' ? '../static/images/底部导航栏@2x.png' : '../static/images/底部导航栏@2x(1).png'" class="icon" />
 				<text>我的</text>
 			</view>
 		</view>
