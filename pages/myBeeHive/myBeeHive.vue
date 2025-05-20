@@ -1,5 +1,5 @@
 <template>
-	<BeeTabbarVue active-tab="mine"></BeeTabbarVue>
+<TransNavVue title="我的蜂场"></TransNavVue>
 	<view class="container">
 		<view class="swiper-content">
 			<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
@@ -83,14 +83,15 @@
 				</view>
 			</view>
 		</scroll-view>
-		<view class="tabbar-bottom"></view>
+		
 	</view>
 </template>
 
 <script setup>
-import BeeTabbarVue from '../../components/BeeTabbar.vue';
+
 import AvatarStackVue from '../../components/AvatarStack.vue';
 import { ref } from 'vue';
+import TransNavVue from '../../components/TransNav.vue';
 
 const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
 const steps = ref([
@@ -109,7 +110,7 @@ const steps = ref([
 	flex-direction: column;
 	background: #efefef;
 	.swiper-content {
-		height: 480rpx;
+		height: 380rpx;
 		width: 100%;
 		border-radius: 24rpx;
 		overflow: hidden;
@@ -129,8 +130,9 @@ const steps = ref([
 		height: 100rpx;
 		padding-top: 24rpx;
 		border-radius: 32rpx 32rpx 0rpx 0rpx;
+		margin-bottom: 44rpx;
 		.goods-info {
-			height: 204rpx;
+			height: 180rpx;
 			width: 702rpx;
 			position: relative;
 			display: flex;

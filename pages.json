@@ -53,14 +53,32 @@
 		{
 			"path": "pages/myBeeHive/myBeeHive",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "我的蜂箱",
+				"navigationStyle": "custom"
+				
+			}
+		},
+		{
+			"path": "pages/shoppingMall/shopDetails",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"navigationStyle": "custom"
+				
+			}
+		},
+		{
+			"path": "pages/shoppingMall/shoppingPay",
+			"style": {
+				"navigationBarTitleText": "购物支付",
+				"navigationStyle": "custom"
 				
 			}
 		},
 		{
 			"path": "pages/honeySource/honeySource",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -96,4 +114,6 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}
+	
+	
 }

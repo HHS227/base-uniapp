@@ -42,7 +42,7 @@
 					</view>
 				</view>
 				<view class="pay-btn">
-					<button class="settle-btn">立即付款</button>
+					<button class="settle-btn" @click='payBtn'>立即付款</button>
 				</view>
 			</view>
 			<view class="edit-actions" v-else>
@@ -133,6 +133,16 @@ const toggleAllSelect = () => {
 const deleteSelectedItems = () => {
 	cartList.value = cartList.value.filter((item) => !item.selected);
 };
+//跳转
+const payBtn=()=>{
+	console.log('跳转到支付页面')
+	uni.navigateTo({
+	    url:'/pages/shoppingMall/shoppingPay'
+	})
+}
+
+
+
 </script>
 
 <style lang="scss" scoped>
