@@ -64,11 +64,15 @@
 			<view class="scan-content">
 				<image src="/static/images/扫码1.png" mode="" class="scan-image"></image>
 			</view>
-			<view class="my-bee-title">
-				<view>我的蜂箱</view>
-				<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
+			<view class="my-bee-box">
+				<view class="my-bee-title">
+					<view>我的蜂箱</view>
+					<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
+				</view>
+				<view class="my-bee-right" @click="collectBee">领取蜂箱</view>
 			</view>
-			<view v-if="true" class="my-bee-card" v-for='item in dataList' @click="gotoMyBeehive(item)">
+	
+			<view v-if="dataList.length>0" class="my-bee-card" v-for='item in dataList' @click="gotoMyBeehive(item)">
 				<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
 				<view class="card-content">
 					<view class="card-top">
@@ -103,7 +107,9 @@
 			</view>
 			<view v-else class="no-bee">
 				<image src="/static/images/无数据.png" mode=""></image>
-				<text>当前暂无蜂箱信息</text>
+				<view><text>当前暂无蜂箱信息</text></view>
+				<view> <button class="buy-btn">点击领取蜂箱</button></view>
+				
 			</view>
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
@@ -120,9 +126,10 @@ import { request } from '@/utils/request'
 const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
 const infoData=ref({})
 const dataList=ref([
-{name:'张三',beehiveType:'领养',groupNumber:'4',createTime:'2025-5-10'}
-	
+{name:'张三',beehiveType:'领养',groupNumber:'4',createTime:'2025-5-10'}	
 ])
+const percent = ref(45);
+const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
 // 获取轮播图数据
 const getSwiperList = async () => {
   try {
@@ -171,7 +178,7 @@ const getInfoDataList = async () => {
     })
     // 处理返回数据（兼容code=0和code=200）
     if (res.code === 0 || res.code === 200) {
-		// dataList.value=res.data||[]
+		dataList.value=res.data||[]
 		
     } else {
       throw new Error(res.msg || '数据异常')
@@ -184,15 +191,13 @@ const getInfoDataList = async () => {
 }
 
 
-const percent = ref(45);
-const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
-
+// 蜂场数据 查看更多
 const gotoHiveData = () => {
 	uni.navigateTo({
 		url: '/pages/beeHiveData/beeHiveData'
 	});
 };
-
+// 我的蜂箱点击查看详情
 const gotoMyBeehive = (item) => { // 接收当前item参数
   // 示例：传递item的name和beehiveType（根据实际数据结构调整）
   const params = {
@@ -210,6 +215,12 @@ const gotoMyBeehive = (item) => { // 接收当前item参数
     url: `/pages/myBeeHive/myBeeHive?${paramString}`
   });
 };
+// 领取蜂箱跳转
+const collectBee=()=>{
+	uni.navigateTo({
+		url: '/pages/homePage/collectBee'
+	});
+}
 
 onMounted(() => {
   getSwiperList()
@@ -359,6 +370,26 @@ onMounted(() => {
 				height: 110rpx;
 			}
 		}
+		.my-bee-box{
+			
+			display: flex;
+			justify-content: space-between;
+			height: 76rpx;
+			.my-bee-right {
+				margin-top: 30rpx;
+				margin-right: 30rpx;
+				width: 140rpx;
+				height: 46rpx;
+				text-align: center;
+				font-size: 14px;
+				color:#FF6F0E;
+				background-color: #fff;
+				border: 1px solid #FF6F0E;
+				border-radius: 20rpx;
+			}
+			
+			
+		}
 		.my-bee-title {
 			position: relative;
 			display: flex;
@@ -465,23 +496,32 @@ onMounted(() => {
 		}
 		.no-bee {
 			width: 702rpx;
-			height: 186rpx;
+			height: 226rpx;
 			background: #ffffff;
 			box-shadow: 0rpx 4rpx 16rpx 0rpx rgba(0, 0, 0, 0.03);
 			border-radius: 16rpx 16rpx 16rpx 16rpx;
 			margin: auto;
 			margin-top: 24rpx;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+			text-align: center;
+			
 			image {
-				height: 130rpx;
-				width: 130rpx;
+				height: 120rpx;
+				width: 120rpx;
 			}
 			text {
 				font-weight: 400;
 				font-size: 24rpx;
 				color: #b5b5b5;
+			}
+			.buy-btn {
+			    width: 228rpx;
+			    height: 44rpx;
+			    background: #FF6F0E;
+			    border-radius: 130rpx 130rpx 130rpx 130rpx;
+			    line-height: 44rpx;
+			    font-weight: 500;
+			    font-size: 24rpx;
+			    color: #FFFFFF;
 			}
 		}
 	}

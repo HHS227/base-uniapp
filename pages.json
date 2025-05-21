@@ -82,6 +82,13 @@
 			}
 		},
 		{
+			"path": "pages/homePage/collectBee",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/beeGame/beeGame",
 			"style": {
 				"navigationBarTitleText": "",
