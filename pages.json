@@ -102,6 +102,29 @@
 				"navigationBarTitleText" : "",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/settingPage/settingPage",
+			"style" : 
+			{
+				"navigationBarTitleText" : "设置",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path" : "pages/addressManager/addressManager",
+			"style" : 
+			{
+				"navigationBarTitleText" : "收货地址",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path" : "pages/editAddress/editAddress",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 
 	],
