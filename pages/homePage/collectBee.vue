@@ -18,7 +18,7 @@
 					产品描述的标题
 					<view class="info-format">规格<text class="info-weight">500克</text></view>
 				</view>
-				<view class="pddBtn">￥299拼团</view>
+				<view class="pddBtn">￥599购买</view>
 			</view>
 		</view>
 		
