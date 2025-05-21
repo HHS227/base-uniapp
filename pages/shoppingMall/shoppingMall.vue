@@ -11,24 +11,24 @@
         </view>
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
             <view class="scroll-content">
-                <view class="goods-item" v-for="item in 10" @click="shopDetails(item)">
+                <view class="goods-item" v-for="item in shoppingList" >
                     <image src="/static/logo.png" mode="" class="goods-image"></image>
-                    <view class="goods-title">天然蜂蜜天然商品标题天然蜂蜜天然商品标题</view>
+                    <view class="goods-title" @click="shopDetails(item)">{{item.name}}</view>
                     <view class="goods-info">
                         <view class="goods-weight">
                             重量：
-                            <text>22kg</text>
+                            <text>{{item.weight||0}}kg</text>
                         </view>
-                        <view class="goods-weight">已售268</view>
+                        <view class="goods-weight">已售{{item.sold||0}}</view>
                     </view>
                     <view class="goods-handle">
                         <view class="goods-price">
                             ￥
-                            <text>76</text>
-                            <view class="normal-price">￥82</view>
+                            <text>{{item.price||'-'}}</text>
+                            <view class="normal-price">￥8888</view>
                         </view>
                         <view>
-                            <button class="buy-btn">购买</button>
+                            <button class="buy-btn" @click='shoppingBuy'>购买</button>
                         </view>
                     </view>
                 </view>
@@ -40,6 +40,9 @@
 
 <script setup>
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
+import { ref, onMounted } from 'vue'
+import { request } from '@/utils/request'
+const shoppingList=ref([])
 
 const gotoMessage =()=>{
     uni.navigateTo({
@@ -56,7 +59,39 @@ const shopDetails = ()=>{
         url:'/pages/shoppingMall/shopDetails'
     })
 }
+const shoppingBuy = ()=>{
+    uni.navigateTo({
+        url:'/pages/shoppingMall/shoppingPay'
+    })
+}
 
+//获取商场列表
+const getShoppingList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/product/get/productList',
+      showLoading: true, 
+    })
+		console.log(res)
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+	shoppingList.value=res.data
+	
+		
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取我的蜂箱数据失败:', err)
+   
+  }
+}
+
+
+onMounted(() => {
+  getShoppingList()
+})
 
 </script>
 
@@ -178,7 +213,7 @@ const shopDetails = ()=>{
 
                 text {
                     font-weight: bold;
-                    font-size: 36rpx;
+                    font-size: 24rpx;
                 }
 
                 .normal-price {

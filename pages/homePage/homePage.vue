@@ -108,7 +108,7 @@
 			<view v-else class="no-bee">
 				<image src="/static/images/无数据.png" mode=""></image>
 				<view><text>当前暂无蜂箱信息</text></view>
-				<view> <button class="buy-btn">点击领取蜂箱</button></view>
+				<view> <button class="buy-btn" @click='collectBee'>点击领取蜂箱</button></view>
 				
 			</view>
 		</scroll-view>
