@@ -79,12 +79,33 @@
 		"secondBrokerageProportion": 0
 	})
 
-	const buyBtn = () => {
-		console.log('跳转到购物车')
+	//添加物品
+	const buyBtn = async () => {
+		
+	  try {
+	    const res = await request({
+	      url: '/app-api/trade/cart/add',
+	      showLoading: true, 
+		  method:'post',
+		  data:{
+			  skuId:commodityDetails.value.id,
+			  count:'1'
+		  }
+	    })
+	    if (res.code === 0 || res.code === 200) {
 		uni.navigateTo({
 			url: '/pages/shoppingCart/shoppingCart'
 		})
+	    } else {
+	      throw new Error(res.msg || '数据异常')
+	    }
+	  } 
+	  catch (err) {
+	    console.error('获取商场数据失败:', err)
+	  }
 	}
+
+
 	const getCommodityDetail = async (id) => {
 		try {
 			const res = await request({
