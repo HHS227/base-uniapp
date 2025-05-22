@@ -5,10 +5,10 @@
             <image src="/static/images/cart.png" mode="aspectFit" class="cart-icon"></image>
             <view class="btn-text">购物车</view>
         </view>
-        <view class="floating-btn message-btn" @click="gotoMessage">
+       <!-- <view class="floating-btn message-btn" @click="gotoMessage">
             <image src="/static/images/message.png" mode="aspectFit" class="cart-icon"></image>
             <view class="btn-text">消息</view>
-        </view>
+        </view> -->
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
             <view class="scroll-content">
                 <view class="goods-item" v-for="item in shoppingList" >
@@ -54,9 +54,9 @@ const gotoCart = ()=>{
         url:'/pages/shoppingCart/shoppingCart'
     })
 }
-const shopDetails = ()=>{
+const shopDetails = (item)=>{
     uni.navigateTo({
-        url:'/pages/shoppingMall/shopDetails'
+        url:`/pages/shoppingMall/shopDetails?id=${item.id}`
     })
 }
 const shoppingBuy = ()=>{
@@ -72,8 +72,6 @@ const getShoppingList = async () => {
       url: '/app-api/WeiXinMini/product/get/productList',
       showLoading: true, 
     })
-		console.log(res)
-    // 处理返回数据（兼容code=0和code=200）
     if (res.code === 0 || res.code === 200) {
 	shoppingList.value=res.data
 	
@@ -83,7 +81,7 @@ const getShoppingList = async () => {
     }
   } 
   catch (err) {
-    console.error('获取我的蜂箱数据失败:', err)
+    console.error('获取商场数据失败:', err)
    
   }
 }

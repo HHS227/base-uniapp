@@ -2,7 +2,7 @@
 	<view class="container">
 		<!-- 购物车头部 -->
 		<view class="cart-header">
-			<text class="header-title" @click="editGoods">编辑商品</text>
+			<text class="header-title" @click="editGoods" v-if='cartList.lenght>0'>编辑商品</text>
 		</view>
 		<!-- 商品列表 -->
 		<scroll-view scroll-y class="goods-list">
@@ -33,7 +33,7 @@
 
 		<!-- 结算区域 -->
 		<view class="settlement-bar">
-			<view class="pay-content" v-if="!isEdit">
+			<view class="pay-content" v-if="!isEdit ">
 				<view class="total">
 					合计({{ selectedCount }})：
 					<view class="price">
@@ -42,7 +42,12 @@
 					</view>
 				</view>
 				<view class="pay-btn">
-					<button class="settle-btn" @click='payBtn'>立即付款</button>
+					<button class="settle-btn"  >
+						<text @click='payBtn' v-if='cartList.length>0'>立即付款</text>
+						<text v-else>暂无商品</text>
+					
+					
+					</button>
 				</view>
 			</view>
 			<view class="edit-actions" v-else>
@@ -55,32 +60,56 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-
+import { ref, computed ,onMounted} from 'vue';
+import {
+		request
+	} from '@/utils/request'
 const num = ref(1);
 const isEdit = ref(false);
 // 购物车数据
 const cartList = ref([
-	{
-		id: 1,
-		name: '蜂蜜',
-		price: 68.0,
-		image: '/static/logo.png',
-		weight: '5000g',
-		count: 1,
-		selected: false
-	},
-	{
-		id: 2,
-		name: '蜂王浆',
-		price: 128.0,
-		image: '/static/logo.png',
-		weight: '250g',
-		count: 1,
-		selected: false
-	}
+	
 ]);
+//获取购物车列表
+const getCartList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/trade/cart/list',
+      showLoading: true, 
+    })
+	console.log(res)
+    if (res.code === 0 || res.code === 200) {
+	cartList.value=res.data.validList
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取商场数据失败:', err)
+  }
+}
+// 获取购物车商品
+// const getCartList = async () => {
+//   try {
+//     const res = await request({
+//       url: '/app-api/trade/cart/list',
+//       showLoading: true, 
+//     })
+//     if (res.code === 0 || res.code === 200) {
+// 	cartList.value=res.data
+//     } else {
+//       throw new Error(res.msg || '数据异常')
+//     }
+//   } 
+//   catch (err) {
+//     console.error('获取商场数据失败:', err)
+//   }
+// }
 
+onMounted(() => {
+  getCartList()
+})
+ 
 //编辑商品
 const editGoods = () => {
 	isEdit.value = true;

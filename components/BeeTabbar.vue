@@ -40,10 +40,8 @@ const scanCodeClick = () => {
 	});
 };
 const switchTab = (url) => {
-	uni.switchTab({
-		url: url
-	});
-};
+  uni.switchTab({ url })
+}
 </script>
 <style lang="scss">
 .tabbar-layout {
