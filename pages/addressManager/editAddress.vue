@@ -19,6 +19,9 @@
 				<uni-easyinput :inputBorder="false" v-model="formData.address" placeholder="请输入详细地址" type="textarea" autoHeight />
 			</uni-forms-item>
 		</uni-forms>
+		<view class="line">
+			
+		</view>
 	</view>
 	<view class="bottom-btn">
 		<view class="btn-content">
@@ -60,6 +63,10 @@ const submitForm = () => {
 </script>
 
 <style lang="scss" scoped>
+	.line{
+		height: 2rpx;
+		background: #eee;
+	}
 ::v-deep .uni-forms-item__label .is-required {
 	display: none;
 }
@@ -75,9 +82,6 @@ const submitForm = () => {
 	padding: 30rpx;
 }
 
-.submit-btn {
-	margin-top: 40rpx;
-}
 .picker-content {
 	height: 100%;
 	.picker-view {

@@ -23,16 +23,21 @@
 						<text class="name-text">蜜友汇</text>
 						<text class="id">WE-ID88-999-888</text>
 					</view>
-					<image src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image>
+					<button class="share-btn" open-type="share"><image  src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image></button>
+					
 				</view>
 			</view>
 			<view class="commission-card">
-				<image src="/static/images/myPapeImages/Group 1000009077@2x.png" class="card-bg" mode=""></image>
-				<view class="card-left">
-					<text class="amount">￥1254.22</text>
-					<text class="commission-text">推广佣金</text>
+				<view class="card-item">
+					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
+					<text class="amount">1254.22</text>
+					<text class="commission-text">今日佣金</text>
 				</view>
-				<button class="withdraw-button">去提现</button>
+				<view class="card-item">
+					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
+					<text class="amount">1254.22</text>
+					<text class="commission-text">累计佣金</text>
+				</view>
 			</view>
 			<view class="assets-total">
 				<view class="assets-item">
@@ -57,28 +62,36 @@
 				</view>
 			</view>
 			<view class="menu-content">
-				<view class="menu-item">
+				<navigator class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">认养记录</text>
-				</view>
-				<view class="menu-item">
+				</navigator>
+				<navigator class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(1).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">订单列表</text>
-				</view>
-				<view class="menu-item">
+				</navigator>
+				<navigator  url="/pages/beeFarmerJion/beeFarmerJion" class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(2).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">蜂农入住</text>
-				</view>
-				<view class="menu-item">
+				</navigator>
+				<navigator class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(3).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">智能养蜂</text>
-				</view>
+				</navigator>
 			</view>
+			
 			<view class="list-content">
 				<navigator url="" class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(4).png" mode=""></image>
 						<text class="text">邀请有礼</text>
+					</view>
+					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+				</navigator>
+				<navigator url="/pages/messagePage/messagePage" class="list-item">
+					<view class="item-left">
+						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x (2).png" mode=""></image>
+						<text class="text">消息</text>
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</navigator>
@@ -89,13 +102,13 @@
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</navigator>
-				<navigator url="" class="list-item">
+				<button open-type="contact" class="list-item contact-btn">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(5).png" mode=""></image>
 						<text class="text">联系客服</text>
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
-				</navigator>
+				</button>
 				<navigator url="/pages/settingPage/settingPage" class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(6).png" mode=""></image>
@@ -135,6 +148,8 @@ onMounted(() => {
     })
   }
 })
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -163,7 +178,7 @@ onMounted(() => {
 			margin: auto;
 			width: 690rpx;
 			height: 308rpx;
-			background: linear-gradient(203deg, #e7b597 0%, #f5dbc1 100%);
+			background: linear-gradient(203deg, #e7b597 0%, #f2ece6  100%);
 			border-radius: 16rpx 16rpx 16rpx 16rpx;
 			border: 1rpx solid #ffffff;
 			.avatar-content {
@@ -235,8 +250,15 @@ onMounted(() => {
 						line-height: 34rpx;
 					}
 				}
-				.btn {
+				.share-btn{
+					margin: 0;
 					margin-top: 20rpx;
+					padding: 0;
+					background: transparent;
+					width: 60rpx;
+					height: 60rpx;
+				}
+				.btn {
 					width: 60rpx;
 					height: 60rpx;
 				}
@@ -245,47 +267,39 @@ onMounted(() => {
 		.commission-card {
 			margin: auto;
 			margin-top: 24rpx;
-			height: 192rpx;
-			width: 738rpx;
+			height: 144rpx;
+			width: 690rpx;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			position: relative;
-			.card-bg {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				z-index: -1;
-			}
-			.card-left {
-				margin-left: 66rpx;
-				margin-bottom: 10rpx;
+			
+			.card-item {
+				width: 336rpx;
+				height: 144rpx;
 				display: flex;
 				flex-direction: column;
+				position: relative;
+				.item-bg{
+					position: absolute;
+					width: 336rpx;
+					height: 144rpx;
+					z-index: -1;
+				}
 				.amount {
+					margin-top: 24rpx;
+					margin-left: 42rpx;
 					font-weight: 800;
 					font-size: 42rpx;
 					color: #fff7d6;
 				}
 				.commission-text {
+					margin-top: 2rpx;
+					margin-left: 42rpx;
 					font-weight: 500;
 					font-size: 24rpx;
 					color: #fff7d6;
 				}
-			}
-			.withdraw-button {
-				margin: 0;
-				width: 128rpx;
-				height: 56rpx;
-				background: #ff7f00;
-				box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(108, 0, 85, 0.1);
-				border-radius: 36rpx 36rpx 36rpx 36rpx;
-				margin-bottom: 10rpx;
-				margin-right: 64rpx;
-				line-height: 56rpx;
-				font-weight: 500;
-				font-size: 24rpx;
-				color: #ffffff;
 			}
 		}
 		.assets-total {
@@ -293,7 +307,7 @@ onMounted(() => {
 			display: flex;
 			justify-content: space-between;
 			margin: auto;
-			margin-top: 24rpx;
+			margin-top: 32rpx;
 			.assets-item {
 				padding: 16rpx 32rpx 0 28rpx;
 				width: 338rpx;
@@ -394,6 +408,14 @@ onMounted(() => {
 				.btn {
 					width: 27rpx;
 					height: 27rpx;
+				}
+			}
+			.contact-btn{
+				margin: 0;
+				background: #fff;
+				.item-left{
+					display: flex;
+					align-items: center;
 				}
 			}
 		}

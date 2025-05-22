@@ -18,7 +18,7 @@
 			</view>
 		</view>
 		<view class="bee-bar">
-			<image src="/static/images/bee-bg.png" class="bar-bg"></image>
+			<image src="/static/images/Group 1000008956.png" class="bar-bg"></image>
 			<view class="bar-content">
 				<view class="bar-left">
 					<image src="/static/images/bee.png" mode="" class="bee-image"></image>

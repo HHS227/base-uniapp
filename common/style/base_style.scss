@@ -10,7 +10,7 @@ image {
 	height: env(safe-area-inset-bottom);
 }
 .tabbar-bottom{
-	height: 197rpx;
+	height: calc(100rpx + env(safe-area-inset-bottom));
 }
 button::after {
 	border: none;

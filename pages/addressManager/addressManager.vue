@@ -65,7 +65,7 @@ const formatPhone = (phone) => {
 
 const gotoEdit = ()=>{
 	uni.navigateTo({
-		url:'/pages/editAddress/editAddress'
+		url:'/pages/addressManager/editAddress'
 	})
 }
 </script>

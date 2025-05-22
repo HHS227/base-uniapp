@@ -120,10 +120,26 @@
 			}
 		},
 		{
-			"path" : "pages/editAddress/editAddress",
+			"path" : "pages/addressManager/editAddress",
 			"style" : 
 			{
 				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/beeFarmerJion/beeFarmerJion",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/beeFarmerJion/jionForm",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		}
 
