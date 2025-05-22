@@ -3,8 +3,8 @@
 		<TransNavVue title="确认订单"></TransNavVue>
 		<view class="pay-center">
 			<view class="name-box">
-				<text>门店名称</text>
-				<view class="name">xxx酒店</view>
+				<text>{{ addrdessList.consigneeName }}</text>
+				<view class="name">{{ addrdessList.addressDetail }}</view>
 			</view>
 			<view class="pay-details">
 				<view class="details-box">
@@ -46,34 +46,18 @@
 				<view class="total">
 					合计({{ selectedCount }})：
 					<view class="price">
-						000
+						
 						{{ totalPrice }}
 					</view>
 				</view>
 				<view class="pay-btn">
-					<button class="settle-btn" >确认支付</button>
+					<button class="settle-btn" @click="getPayList">确认支付</button>
 				</view>
 			</view>
 			
 		</view>
 	</view>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import TransNavVue from '../../components/TransNav.vue';
-import { request } from '@/utils/request'
-
-const wechatPay=ref(false)
-  // 点击切换状态
-  const toggleSelection = () => {
-    wechatPay.value = !wechatPay.value;
-  };
-  
-onMounted(() => {
-  
-})
-</script>
 
 <style lang="scss" scoped>
 .container {
@@ -235,3 +219,77 @@ onMounted(() => {
 	
 }
 </style>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { request } from '@/utils/request'
+
+const selectedItems = ref([]);
+const totalPrice = ref(0);
+const addrdessList = ref({});
+
+const getShoppingList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/shipping-address/list',
+      showLoading: true, 
+    })
+	console.log(res)
+    if (res.code === 0 || res.code === 200) {
+		addrdessList.value=res.data[0]
+	
+		
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取商场数据失败:', err)
+   
+  }
+}
+const getPayList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/trade/cart/create/cartOrder',
+	  data:{
+		items:[{skuid:28522,count:1,}],
+		receiverName:addrdessList.consigneeName ,
+		deliveryType:1,
+		receiverMobile:addrdessList.phoneNumber
+	  },
+	  method:'post',
+      showLoading: true, 
+    })
+	console.log(res)
+    if (res.code === 0 || res.code === 200) {
+		
+	
+		
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取商场数据失败:', err)
+   
+  }
+}
+
+onMounted(() => {
+  // 使用uni-app内置方法获取页面实例
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  
+  // 通过页面参数获取数据
+  if (currentPage && currentPage.$vm) {
+    const eventChannel = currentPage.$vm.getOpenerEventChannel();
+    eventChannel.on('acceptSelectedItems', (data) => {
+		console.log(data)
+      selectedItems.value = data.selectedItems;
+      totalPrice.value = data.totalPrice;
+    });
+  }
+  getShoppingList()
+});
+</script>
