@@ -13,11 +13,13 @@
       <view>推荐蜜源</view>
       <image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
     </view>
-    <view class="bee-list-box" v-for="item in 3">
-      <view class="bee-item-img"></view>
+    <view class="bee-list-box" v-for="item in honeySourceList">
+      <view class="bee-item-img">
+		  <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
+	  </view>
       <view class="bee-item-title">
-        <text>蜜源名称</text>
-        <view>xxx详情地址</view>
+        <text>{{item.name}}</text>
+        <view class="bee-item-address">{{item.address}}</view>
       </view>
     </view>
   </view>
@@ -26,90 +28,148 @@
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { request } from '@/utils/request'
+
+const loading = ref(false);
+const honeySourceList = ref([]);
+const mapInstance = ref(null);
 
 // 成都的经纬度坐标
 const chengduCoords = [30.5728, 104.0668];
 
 onMounted(() => {
+  loading.value = true;
   
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-  link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-  link.crossOrigin = '';
-  document.head.appendChild(link);
-
- 
-  const script = document.createElement('script');
-  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-  script.crossOrigin = '';
-  script.onload = initMap;
-  document.head.appendChild(script);
-});
-
-const initMap = () => {
-  // 检查Leaflet是否已加载
-  if (typeof L === 'undefined') {
-    console.error('Leaflet library not loaded');
-    return;
-  }
-
-  // 创建地图实例（
-  const map = L.map('map-container', {
-    center: chengduCoords,
-    zoom: 12,
-    zoomControl: false,      // 禁用缩放控件
-    attributionControl: false // 禁用属性控件（水印）
-  });
-
-  // 高德地图瓦片图层配置
-  const gaodeLayer = L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
-    subdomains: ['1', '2', '3', '4'],
-    detectRetina: true
-  });
-  
-  // 添加高德地图底图
-  gaodeLayer.addTo(map);
-  
-  // 坐标转换函数（简化的WGS84转GCJ-02）
-  const transformToGCJ02 = (wgsLat, wgsLng) => {
-    return [wgsLat + 0.006, wgsLng + 0.0065];
+  // 加载Leaflet资源
+  const loadMapResources = async () => {
+    return new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+      link.crossOrigin = '';
+      document.head.appendChild(link);
+      
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+      script.crossOrigin = '';
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.head.appendChild(script);
+    });
   };
   
-  // 转换成都坐标到GCJ-02
-  const chengduGCJ = transformToGCJ02(...chengduCoords);
-  
-  // 自定义标记图标
-  const honeyIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34]
-  });
-  
-  // 添加主标记点
-  L.marker(chengduGCJ, { icon: honeyIcon })
-    .addTo(map)
-    // .bindPopup()
-    .openPopup();
-  
-  // 添加更多蜜源标记点
-  const honeySources = [
-    { name: '蜜源1', coords: [30.5828, 104.0568] },
-    { name: '蜜源2', coords: [30.5628, 104.0768] },
-    { name: '蜜源3', coords: [30.5928, 104.0668] }
-  ];
-  
-  honeySources.forEach(source => {
-    const gcjCoords = transformToGCJ02(...source.coords);
-    L.marker(gcjCoords, { icon: honeyIcon })
-      .addTo(map)
-      .bindPopup(source.name);
-  });
+  // 初始化地图
+  const initMap = () => {
+    // 检查Leaflet是否已加载
+    if (typeof L === 'undefined') {
+      console.error('Leaflet library not loaded');
+      return;
+    }
 
+    // 创建地图实例
+    mapInstance.value = L.map('map-container', {
+      center: chengduCoords,
+      zoom: 12,
+      zoomControl: false,      // 禁用缩放控件
+      attributionControl: false // 禁用属性控件
+    });
+
+    // 高德地图瓦片图层配置
+    const gaodeLayer = L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      detectRetina: true
+    });
+    
+    // 添加高德地图底图
+    gaodeLayer.addTo(mapInstance.value);
+  };
+  
+  // 加载资源并初始化地图
+  loadMapResources()
+    .then(() => {
+      initMap();
+      return getShoppingList();
+    })
+    .catch(err => {
+      console.error('加载地图资源失败:', err);
+      loading.value = false;
+    });
+});
+
+//获取蜜源列表
+const getShoppingList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/front/bee-farm/get/list',
+      showLoading: false, 
+    });
+    
+    
+    if (res.code === 0 || res.code === 200) {
+      honeySourceList.value = res.data || [];
+      // 等待DOM更新后再添加标记
+      nextTick(() => {
+        addMarkersToMap();
+        loading.value = false;
+      });
+    } else {
+      throw new Error(res.msg || '数据异常');
+    }
+  } catch (err) {
+    console.error('获取蜜源数据失败:', err);
+    loading.value = false;
+  }
+};
+
+// 根据后端数据添加标记
+const addMarkersToMap = () => {
+  if (!mapInstance.value || !honeySourceList.value.length) return;
+  
+  // 自定义橙色圆点标记样式
+  const orangeCircleMarker = {
+    radius: 8,
+    fillColor: "#FF7F50", // 橙色
+    color: "#fff",
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 0.8
+  };
+  
+  // 添加蜜源标记点
+  honeySourceList.value.forEach(item => {
+    // 确保数据中有经纬度
+    if (item.latitude && item.longitude) {
+      // 直接使用后端返回的坐标，不进行转换
+      const coords = [item.latitude, item.longitude];
+      
+      // 添加标记
+      L.circleMarker(coords, orangeCircleMarker)
+        .addTo(mapInstance.value)
+        .bindPopup(`
+          <div class="popup-content">
+            <h3>${item.name}</h3>
+            <p>${item.address}</p>
+          </div>
+        `);
+    }
+  });
+  
+  // 如果有数据，调整地图视图以显示所有标记
+  if (honeySourceList.value.length > 0) {
+    const validMarkers = honeySourceList.value
+      .filter(item => item.latitude && item.longitude)
+      .map(item => [item.latitude, item.longitude]);
+    
+    if (validMarkers.length > 0) {
+      // 创建包含所有标记的边界
+      const bounds = L.latLngBounds(validMarkers);
+      // 调整地图视图
+      mapInstance.value.fitBounds(bounds, { padding: [50, 50] });
+    }
+  }
 };
 </script>
 
@@ -194,6 +254,10 @@ const initMap = () => {
         font-weight: 600;
       }
       view {
+		  width: 500rpx;
+		 overflow: hidden;
+		 text-overflow: ellipsis;
+		 white-space: nowrap;
         font-size: 16rpx;
         color:#ddd;
       }
