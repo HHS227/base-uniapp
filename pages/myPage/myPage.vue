@@ -110,8 +110,31 @@
 </template>
 
 <script setup>
-import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
-import BeeTabbarVue from '../../components/BeeTabbar.vue';
+import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
+import { useTokenStorage } from '../../utils/storage'
+import BeeTabbarVue from '../../components/BeeTabbar.vue'
+import {
+		ref,
+		onMounted,
+		
+	} from 'vue'
+const { token, getToken } = useTokenStorage()
+
+onMounted(() => {
+  if (!getToken()) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({ url: '/pages/login/login' })
+        } else {
+          uni.switchTab({ url: '/pages/homePage/homePage' })
+        }
+      }
+    })
+  }
+})
 </script>
 
 <style lang="scss" scoped>
