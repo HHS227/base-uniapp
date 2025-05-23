@@ -35,7 +35,10 @@ const handleWechatLogin = async () => {
     if (res.code === 200) {
       setToken(res.data.token)
       uni.showToast({ title: '登录成功' })
-      uni.navigateBack()
+      // 跳转到指定页面，例如首页
+      uni.switchTab({
+        url: '/pages/myPage/myPage'
+      })
     }
   } catch (err) {
     console.error('登录失败:', err)
