@@ -13,7 +13,7 @@
 						<image src="/static/logo.png" mode="" class="avatar-image"></image>
 						<image src="/static/images/myPapeImages/Group 1000008640@2x.png" mode="" class="sex-image"></image>
 					</view>
-					<view class="name-content">
+					<view class="name-content" @click="handleUserInfo">
 						<text class="name-text">Jeefiy</text>
 						<text class="id-text">ID:32224112</text>
 					</view>
@@ -134,6 +134,7 @@ import {
 const { token, getToken } = useTokenStorage()
 
 onMounted(() => {
+	
   if (!getToken()) {
     uni.showModal({
       title: '提示',
@@ -149,7 +150,11 @@ onMounted(() => {
   }
 })
 
-
+const handleUserInfo = () => {
+	uni.navigateTo({
+        url:'/pages/userInfo/userInfo'
+    })
+}
 </script>
 
 <style lang="scss" scoped>

@@ -229,6 +229,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'  // 新增导入
+
+	const { getToken } = useTokenStorage()  // 新增获取token方法
 
 const selectedItems = ref([]);
 const totalPrice = ref(0);
@@ -239,6 +242,9 @@ const getShoppingList = async () => {
     const res = await request({
       url: '/app-api/weixin/shipping-address/list',
       showLoading: true, 
+	  header: {
+			  'Authorization': `Bearer ${getToken()}`
+		  }
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
@@ -259,8 +265,16 @@ const getPayList = async () => {
     // 1. 先创建订单
     const orderRes = await request({
       url: '/app-api/trade/cart/create/cartOrder',
+	  header: {
+			  'Authorization': `Bearer ${getToken()}`
+		  },
+
       data: {
-        items: [{skuid:28522,count:1}],
+        items: selectedItems.value.map(item => ({
+          skuId: item.sku.id,
+          count: item.count
+        })),
+		
         receiverName: addrdessList.value.consigneeName,
         deliveryType: 1,
         receiverMobile: addrdessList.value.phoneNumber
@@ -270,6 +284,8 @@ const getPayList = async () => {
     });
 
     if (orderRes.code === 0 || orderRes.code === 200) {
+		console.log(orderRes)
+      
       // 2. 调用微信支付API
       const payRes = await uni.requestPayment({
         provider: 'wxpay',

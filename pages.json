@@ -135,6 +135,27 @@
 			}
 		},
 		{
+			"path": "pages/userInfo/userInfo",
+			"style": {
+				"navigationBarTitleText": "编辑信息",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/userInfo/addressList", 
+			"style": {
+				"navigationBarTitleText": "地址列表",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/userInfo/addressEdit",
+			"style": {
+				"navigationBarTitleText": "编辑地址",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
 			"path" : "pages/beeFarmerJion/jionForm",
 			"style" : 
 			{

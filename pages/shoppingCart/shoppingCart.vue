@@ -60,6 +60,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'  // 新增导入
+
+	const { getToken } = useTokenStorage()  // 新增获取token方法
 
 const num = ref(1);
 const isEdit = ref(false);
@@ -70,10 +73,13 @@ const getCartList = async () => {
     const res = await request({
       url: '/app-api/trade/cart/list',
       showLoading: true, 
+	  header: {
+			  'Authorization': `Bearer ${getToken()}`
+		  }
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
-	cartList.value=res.data.invalidList
+	cartList.value=res.data.validList
     } else {
       throw new Error(res.msg || '数据异常')
     }

@@ -122,6 +122,9 @@ import AvatarStackVue from '../../components/AvatarStack.vue';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'  // 新增导入
+
+	const { getToken } = useTokenStorage()  
 
 const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
 const infoData=ref({})
@@ -175,6 +178,9 @@ const getInfoDataList = async () => {
     const res = await request({
       url: '/app-api/WeiXinMini/index/get/MyBeehiveInfo',
       showLoading: true, 
+	  header: {
+			  'Authorization': `Bearer ${getToken()}`
+		  }
     })
     // 处理返回数据（兼容code=0和code=200）
     if (res.code === 0 || res.code === 200) {

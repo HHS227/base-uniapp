@@ -35,32 +35,16 @@
 <script setup>
 	import {
 		ref,
-		onMounted,
-		getCurrentInstance
+		onMounted
 	} from 'vue'
 	import TransNavVue from '../../components/TransNav.vue';
 	import {
 		request
 	} from '@/utils/request'
-	import { onLoad } from '@dcloudio/uni-app'
+	import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
-	const routeParams = ref({})
-
-	onLoad((options) => {
-	// 兼容微信小程序和H5的路由参数获取
-	routeParams.value = options || {}
-	
-	if (routeParams.value.id) {
-	getCommodityDetail(routeParams.value.id)
-	} else {
-	console.error('商品 ID 缺失')
-	}
-	})
-	const {
-		proxy
-	} = getCurrentInstance()
-	const routeParams = proxy.$route.query // 等同于小程序 options
-
+	const { getToken } = useTokenStorage()  // 新增获取token方法
+	// 删除useRoute引入，改用uni-app方式获取参数
 	const commodityDetails = ref({
 		"id": 28522,
 		"name": "王五",
@@ -103,6 +87,9 @@
 		  data:{
 			  skuId:commodityDetails.value.id,
 			  count:'1'
+		  },
+		  header: {
+			  'Authorization': `Bearer ${getToken()}`
 		  }
 	    })
 	    if (res.code === 0 || res.code === 200) {
@@ -132,14 +119,17 @@
 	}
 
 	// 初始化数据
-	if (routeParams.id) {
-		getCommodityDetail(routeParams.id)
-	
-	} else {
-		console.error('商品 ID 缺失')
-	}
-
-
+	onMounted(() => {
+	  const pages = getCurrentPages()
+	  const currentPage = pages[pages.length - 1]
+	  const options = currentPage.$page.options || currentPage.options
+	  
+	  if (options.id) {
+	    getCommodityDetail(options.id)
+	  } else {
+	    console.error('商品 ID 缺失')
+	  }
+	})
 </script>
 
 <style lang="scss" scoped>
