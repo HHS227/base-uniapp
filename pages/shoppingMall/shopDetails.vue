@@ -42,7 +42,20 @@
 	import {
 		request
 	} from '@/utils/request'
-	// 获取当前页面实例
+	import { onLoad } from '@dcloudio/uni-app'
+
+	const routeParams = ref({})
+
+	onLoad((options) => {
+	// 兼容微信小程序和H5的路由参数获取
+	routeParams.value = options || {}
+	
+	if (routeParams.value.id) {
+	getCommodityDetail(routeParams.value.id)
+	} else {
+	console.error('商品 ID 缺失')
+	}
+	})
 	const {
 		proxy
 	} = getCurrentInstance()

@@ -11,11 +11,11 @@
 					<checkbox-group style="transform: scale(0.7)" @change="toggleSelect(item)">
 						<checkbox color="#ff6f0e" :checked="item.selected" />
 					</checkbox-group>
-					<image class="goods-image" :src="item.image" mode="aspectFill" />
+					<image class="goods-image" :src="item.sku.picUrl" mode="aspectFill" />
 					<view class="goods-info">
 						<text class="goods-title">{{ item.name }}</text>
 						<text class="goods-weight">{{ item.weight }}</text>
-						<text class="goods-price">¥{{ item.price }}</text>
+						<text class="goods-price">¥{{ item.sku.price }}</text>
 					</view>
 				</view>
 				<view class="item-right">
@@ -42,11 +42,9 @@
 					</view>
 				</view>
 				<view class="pay-btn">
-					<button class="settle-btn"  >
-						<text @click='payBtn' v-if='cartList.length>0'>立即付款</text>
-						<text v-else>暂无商品</text>
-					
-					
+					<button class="settle-btn" @click='payBtn'>
+						立即付款
+						
 					</button>
 				</view>
 			</view>
@@ -60,17 +58,13 @@
 </template>
 
 <script setup>
-import { ref, computed ,onMounted} from 'vue';
-import {
-		request
-	} from '@/utils/request'
+import { ref, computed, onMounted } from 'vue';
+import { request } from '@/utils/request'
+
 const num = ref(1);
 const isEdit = ref(false);
-// 购物车数据
-const cartList = ref([
-	
-]);
-//获取购物车列表
+const cartList = ref([]);
+
 const getCartList = async () => {
   try {
     const res = await request({
@@ -79,7 +73,7 @@ const getCartList = async () => {
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
-	cartList.value=res.data.validList
+	cartList.value=res.data.invalidList
     } else {
       throw new Error(res.msg || '数据异常')
     }
@@ -88,23 +82,6 @@ const getCartList = async () => {
     console.error('获取商场数据失败:', err)
   }
 }
-// 获取购物车商品
-// const getCartList = async () => {
-//   try {
-//     const res = await request({
-//       url: '/app-api/trade/cart/list',
-//       showLoading: true, 
-//     })
-//     if (res.code === 0 || res.code === 200) {
-// 	cartList.value=res.data
-//     } else {
-//       throw new Error(res.msg || '数据异常')
-//     }
-//   } 
-//   catch (err) {
-//     console.error('获取商场数据失败:', err)
-//   }
-// }
 
 onMounted(() => {
   getCartList()
@@ -141,7 +118,7 @@ const selectedCount = computed(() => {
 const totalPrice = computed(() => {
 	return cartList.value
 		.filter((item) => item.selected)
-		.reduce((total, item) => total + item.price * item.count, 0)
+		.reduce((total, item) => total + item.sku.price * item.count, 0)
 		.toFixed(2);
 });
 
@@ -162,15 +139,28 @@ const toggleAllSelect = () => {
 const deleteSelectedItems = () => {
 	cartList.value = cartList.value.filter((item) => !item.selected);
 };
-//跳转
-const payBtn=()=>{
-	console.log('跳转到支付页面')
-	uni.navigateTo({
-	    url:'/pages/shoppingMall/shoppingPay'
-	})
-}
 
-
+// 跳转到支付页面
+const payBtn = () => {
+  const selectedItems = cartList.value.filter(item => item.selected);
+  if (selectedItems.length === 0) {
+    uni.showToast({
+      title: '请选择要购买的商品',
+      icon: 'none'
+    });
+    return;
+  }
+  
+  uni.navigateTo({
+    url: '/pages/shoppingMall/shoppingPay',
+    success: (res) => {
+      res.eventChannel.emit('acceptSelectedItems', {
+        selectedItems: selectedItems,
+        totalPrice: totalPrice.value
+      });
+    }
+  });
+};
 
 </script>
 
