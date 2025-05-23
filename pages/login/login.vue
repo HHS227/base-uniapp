@@ -3,34 +3,31 @@
     <image src="/static/images/logo.png" class="logo"></image>
     <button 
       class="login-btn" 
-      open-type="getPhoneNumber" 
-      @getphonenumber="handleWechatLogin"
+      @click="handleWechatLogin"
+      :disabled="isLoading"
     >
-      微信一键登录
+      {{ isLoading ? '登录中...' : '微信一键登录' }}
     </button>
   </view>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
 
 const { setToken } = useTokenStorage()
+const isLoading = ref(false)
 
-const handleWechatLogin = async (e) => {
+const handleWechatLogin = async () => {
   try {
-    if (e.detail.errMsg !== 'getPhoneNumber:ok') {
-      uni.showToast({ title: '登录失败，请重试', icon: 'none' })
-      return
-    }
-
+    isLoading.value = true
     const loginRes = await uni.login({ provider: 'weixin' })
     
     const res = await request({
       url: '/app-api/auth/front/wechat/login',
       method: 'POST',
       data: {
-        phoneCode: e.detail.code,
         loginCode: loginRes.code
       }
     })
@@ -43,6 +40,8 @@ const handleWechatLogin = async (e) => {
   } catch (err) {
     console.error('登录失败:', err)
     uni.showToast({ title: '登录失败', icon: 'none' })
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -67,5 +66,9 @@ const handleWechatLogin = async (e) => {
     color: white;
     border-radius: 50rpx;
   }
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
 }
 </style>
