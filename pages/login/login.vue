@@ -36,24 +36,28 @@ const handleWechatLogin = async () => {
       setToken(res.data.token)
       uni.showToast({ title: '登录成功' })
       
-      // 判断是否需要保存用户信息
+      // 确保在需要用户信息时调用getUserProfile
       if (res.data.needuserinfo && res.data.newuser) {
-        const { encryptedData, iv } = await uni.getUserProfile({
-          desc: '获取用户信息'
-        })
-        
-        await request({
-          url: '/app-api/auth/front/wechat/saveUserInfo',
-          method: 'POST',
-          data: {
-            token: res.data.token,
-            encryptedData,
-            iv
-          }
-        })
+        try {
+          const userInfo = await uni.getUserProfile({
+            desc: '获取用户信息用于完善资料',
+            lang: 'zh_CN'
+          })
+          
+          await request({
+            url: '/app-api/auth/front/wechat/saveUserInfo',
+            method: 'POST',
+            data: {
+              token: res.data.token,
+              encryptedData: userInfo.encryptedData,
+              iv: userInfo.iv
+            }
+          })
+        } catch (err) {
+          console.error('获取用户信息失败:', err)
+        }
       }
       
-      // 跳转到我的页面
       uni.switchTab({
         url: '/pages/myPage/myPage'
       })
