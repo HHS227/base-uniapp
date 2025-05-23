@@ -2,7 +2,7 @@
 	<view class="container">
 		<!-- 购物车头部 -->
 		<view class="cart-header">
-			<text class="header-title" @click="editGoods" v-if='cartList.lenght>0'>编辑商品</text>
+			<text class="header-title" @click="editGoods" v-if='cartList.length>0'>编辑商品</text>
 		</view>
 		<!-- 商品列表 -->
 		<scroll-view scroll-y class="goods-list">
@@ -15,7 +15,7 @@
 					<view class="goods-info">
 						<text class="goods-title">{{ item.name }}</text>
 						<text class="goods-weight">{{ item.weight }}</text>
-						<text class="goods-price">¥{{ item.sku.price }}</text>
+						<text class="goods-price">¥{{ (item.sku.price * item.count / 100).toFixed(2) }}</text>
 					</view>
 				</view>
 				<view class="item-right">
@@ -38,7 +38,8 @@
 					合计({{ selectedCount }})：
 					<view class="price">
 						<text>¥</text>
-						{{ totalPrice }}
+						{{(totalPrice/100).toFixed(2) ||'-'}}
+						
 					</view>
 				</view>
 				<view class="pay-btn">
@@ -64,7 +65,6 @@ import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
 	const { getToken } = useTokenStorage()  // 新增获取token方法
 
-const num = ref(1);
 const isEdit = ref(false);
 const cartList = ref([]);
 
@@ -98,17 +98,7 @@ const editGoods = () => {
 	isEdit.value = true;
 };
 
-// 减少商品数量
-const decreaseCount = (item) => {
-	if (item.count > 1) {
-		item.count--;
-	}
-};
 
-// 增加商品数量
-const increaseCount = (item) => {
-	item.count++;
-};
 
 // 是否全选
 const isAllSelected = computed(() => {
@@ -124,14 +114,10 @@ const selectedCount = computed(() => {
 const totalPrice = computed(() => {
 	return cartList.value
 		.filter((item) => item.selected)
-		.reduce((total, item) => total + item.sku.price * item.count, 0)
-		.toFixed(2);
+		.reduce((total, item) => total + (item.sku.price * item.count), 0);
 });
 
-// 切换选中状态
-const toggleSelect = (item) => {
-	item.selected = !item.selected;
-};
+
 
 // 全选/取消全选
 const toggleAllSelect = () => {
@@ -166,6 +152,74 @@ const payBtn = () => {
       });
     }
   });
+};
+
+// 修改选中状态时调用接口
+const toggleSelect = async (item) => {
+  item.selected = !item.selected;
+  try {
+    await request({
+      url: '/app-api/trade/cart/update-selected',
+      method: 'put',
+      data: {
+        ids: [item.sku.id],
+        selected: item.selected
+      },
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    });
+  } catch (err) {
+    console.error('更新选中状态失败:', err);
+    item.selected = !item.selected; // 失败时回滚状态
+  }
+};
+
+// 修改商品数量时调用接口
+const updateCount = async (item, newCount) => {
+  const oldCount = item.count;
+  item.count = newCount; // 先更新本地显示
+  
+  try {
+    await request({
+      url: '/app-api/trade/cart/update-count',
+      method: 'put',
+      data: {
+        id: item.sku.id,
+        count: newCount
+      },
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    });
+    // 接口调用成功后，可以添加成功提示
+    uni.showToast({
+      title: '数量更新成功',
+      icon: 'none'
+    });
+  } catch (err) {
+    console.error('更新数量失败:', err);
+    item.count = oldCount; // 失败时回滚数量
+    uni.showToast({
+      title: '数量更新失败',
+      icon: 'none'
+    });
+  }
+};
+
+const decreaseCount = async (item) => {
+  if (item.count > 1) {
+    await updateCount(item, item.count - 1);
+  } else {
+    uni.showToast({
+      title: '商品数量不能少于1',
+      icon: 'none'
+    });
+  }
+};
+
+const increaseCount = async (item) => {
+  await updateCount(item, item.count + 1);
 };
 
 </script>

@@ -11,12 +11,12 @@
 					<image :src="item.sku.picUrl" class="details-img" mode="aspectFill"></image>
 					<view class="info">
 						<text>{{item.name}}</text>
-						<view class="details-price">￥{{item.sku.price}}</view>
+						<view class="details-price">￥{{(item.sku.price/100).toFixed(2) ||'-'}}</view>
 					</view>
 				</view>
 				<view class="details-info">
 					<text>商品价格</text>
-					<text>￥{{item.sku.price}}</text>
+					<text>￥{{(item.sku.price/100).toFixed(2) ||'-'}}</text>
 				</view>
 				<view class="details-info">
 					<text>购买数量</text>
@@ -53,7 +53,7 @@
 					合计({{ selectedCount }})：
 					<view class="price">
 						
-						{{ totalPrice }}
+						{{(totalPrice/100).toFixed(2) ||'-'}}
 					</view>
 				</view>
 				<view class="pay-btn">

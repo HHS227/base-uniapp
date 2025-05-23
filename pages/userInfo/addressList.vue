@@ -17,17 +17,21 @@
         </view>
         <view class="address">{{item.province}}{{item.city}}{{item.district}}{{item.detail}}</view>
 		<view class="default-box">
-		<view> <image style="width:25rpx ; height: 25rpx;"  
-			  src="/static/images/myPapeImages/change.png" >
-			  </image>
-			  <image style="width:25rpx ; height: 25rpx;"
-			  	  src="/static/images/myPapeImages/changeActive.png" >
-			  	  </image>
-			  设为默认地址</view>
-			<view>删除</view>
-			
-			
-		</view>
+          <view class="default-content" @click="setDefaultAddress(item.id)">
+            <image 
+              v-if="item.isDefault"
+              style="width:25rpx; height:25rpx;"  
+              src="/static/images/myPapeImages/changeActive.png"
+            ></image>
+            <image 
+              v-else
+              style="width:25rpx; height:25rpx;"  
+              src="/static/images/myPapeImages/change.png"
+            ></image>
+            <text>设为默认地址</text>
+          </view>
+          <view>删除</view>
+        </view>
         
       </view>
     </scroll-view>
@@ -39,9 +43,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 
+// 使用假数据
 const addressList = ref([
   {
     id: 1,
@@ -65,15 +70,36 @@ const addressList = ref([
   }
 ])
 
+// 新增地址
 const addAddress = () => {
-  uni.navigateTo({ url: '/pages/userInfo/addressEdit' })
-}
-
-const editAddress = (item) => {
   uni.navigateTo({ 
-    url: `/pages/userInfo/addressEdit?id=${item.id}`
+    url: '/pages/userInfo/addressEdit'
   })
 }
+
+// 编辑地址
+const editAddress = (item) => {
+  uni.navigateTo({
+    url: `/pages/userInfo/addressEdit?id=${item.id}`,
+    success: (res) => {
+      res.eventChannel.emit('acceptAddressData', {
+        address: item
+      })
+    }
+  })
+}
+
+// 设置默认地址
+const setDefaultAddress = (id) => {
+  addressList.value.forEach(item => {
+    item.isDefault = item.id === id
+  })
+}
+
+// 检查是否有默认地址
+const hasDefault = computed(() => {
+  return addressList.value.some(item => item.isDefault)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -120,6 +146,15 @@ const editAddress = (item) => {
 		justify-content: space-between;
 		font-size: 24rpx;
 		color: #6B6B6B;
+		
+		.default-content {
+		  display: flex;
+		  align-items: center;
+		  
+		  image {
+		    margin-right: 10rpx;
+		  }
+		}
 	  }
       
       .address {

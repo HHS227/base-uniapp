@@ -1,7 +1,9 @@
 <template>
   <view class="container">
+   
     
     <view class="form">
+      
       <view class="form-item">
         <text class="label">联系人</text>
         <input class="input" v-model="form.name" placeholder="请输入联系人姓名" />
@@ -25,24 +27,19 @@
         <input class="input" v-model="form.detail" placeholder="请输入详细地址" />
       </view>
       
-      <view class="form-item">
-        <text class="label">设为默认</text>
-        <switch class="switch" :checked="form.isDefault" @change="(e) => form.isDefault = e.detail.value" />
-      </view>
+     
     </view>
     
     <view class="footer">
       <button class="save-btn" @click="save">保存</button>
+   
     </view>
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import TransNavVue from '../../components/TransNav.vue'
-
-const route = useRoute()
-const id = ref(route.query.id || '')
+import { request } from '@/utils/request'
 
 const form = ref({
   name: '',
@@ -54,37 +51,62 @@ const form = ref({
   isDefault: false
 })
 
+const isEditMode = ref(false)
+const addressId = ref(null)
+
 onMounted(() => {
-  if (id.value) {
-    // 这里应该是从接口获取地址详情
-    form.value = {
-      name: '张三',
-      phone: '13800138000',
-      province: '广东省',
-      city: '深圳市',
-      district: '南山区',
-      detail: '科技园路1号',
-      isDefault: true
-    }
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  
+  if (currentPage && currentPage.$page.options.id) {
+    isEditMode.value = true
+    addressId.value = currentPage.$page.options.id
+    // 从页面参数获取地址数据
+    const eventChannel = currentPage.$vm.getOpenerEventChannel()
+    eventChannel.on('acceptAddressData', (data) => {
+      form.value = data.address
+    })
   }
 })
 
-const showRegionPicker = () => {
-  uni.chooseLocation({
-    success: (res) => {
-      form.value.province = res.province
-      form.value.city = res.city
-      form.value.district = res.district
+const fetchAddressDetail = async (id) => {
+  try {
+    const res = await request({
+      url: `/app-api/address/detail?id=${id}`,
+      method: 'get'
+    })
+    if (res.code === 0 || res.code === 200) {
+      formData.value = res.data
     }
-  })
+  } catch (err) {
+    console.error('获取地址详情失败:', err)
+  }
 }
 
-const save = () => {
-  // 这里应该是调用保存接口
-  uni.showToast({ title: '保存成功' })
-  setTimeout(() => {
-    uni.navigateBack()
-  }, 1500)
+const submitAddress = async () => {
+  try {
+    const url = isEditMode.value 
+      ? '/app-api/address/update' 
+      : '/app-api/address/create'
+      
+    const res = await request({
+      url,
+      method: 'post',
+      data: isEditMode.value 
+        ? { ...formData.value, id: addressId.value }
+        : formData.value
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+      uni.showToast({
+        title: isEditMode.value ? '修改成功' : '新增成功',
+        icon: 'success'
+      })
+      uni.navigateBack()
+    }
+  } catch (err) {
+    console.error('保存地址失败:', err)
+  }
 }
 </script>
 
