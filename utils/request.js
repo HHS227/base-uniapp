@@ -12,57 +12,47 @@ export const request = (options) => {
     loadingShown = true
   }
 
-  // 添加请求拦截器
-  const request = (options) => {
-    // 从本地存储获取token
-    const token = uni.getStorageSync('token')
-    
-    // 设置默认请求头
-    const defaultHeaders = {
-      'Content-Type': 'application/json',
-      'Authorization': token ? `Bearer ${token}` : ''
-    }
-    
-    // 合并自定义headers
-    options.header = {
-      ...defaultHeaders,
-      ...options.header
-    }
-    
-    return new Promise((resolve, reject) => {
-      uni.request({
-        ...options,
-        success: (res) => {
-          // 处理响应逻辑
-          if (res.statusCode === 401) {
-            // token过期处理
-            uni.navigateTo({ url: '/pages/login/login' })
+  return new Promise((resolve, reject) => {
+    uni.request({
+      url: BASE_URL + options.url,
+      method: options.method || 'GET',
+      data: options.data || {},
+      header: {
+        'Content-Type': 'application/json',
+        ...options.header
+      },
+      success: (res) => {
+        if (loadingShown) uni.hideLoading()
+        
+        if (res.statusCode === 200) {
+          // 修改这里：兼容code=0的情况
+          if (res.data.code === 200 || res.data.code === 0) {
+            resolve(res.data)
+          } else {
+            uni.showToast({
+              title: res.data.msg || '请求失败',
+              icon: 'none'
+            })
+            reject(res.data)
           }
-          resolve(res.data)
-        },
-        fail: (err) => {
-          reject(err)
+        } else {
+          handleHttpError(res.statusCode)
+          reject(res)
         }
-      })
+      },
+      fail: (err) => {
+        if (loadingShown) uni.hideLoading()
+        uni.showToast({
+          title: '网络连接失败',
+          icon: 'none'
+        })
+        reject(err)
+      },
+      complete: () => {
+        // 保险措施：确保无论如何都会隐藏loading
+        if (loadingShown) uni.hideLoading()
+      }
     })
-  }
-  
-  if (loadingShown) uni.hideLoading()
-  
-  if (res.statusCode === 200) {
-    // 修改这里：兼容code=0的情况
-    if (res.data.code === 200 || res.data.code === 0) {
-      resolve(res.data)
-    } else {
-      uni.showToast({
-        title: res.data.msg || '请求失败',
-        icon: 'none'
-      })
-      reject(res.data)
-    }
-  } else {
-    handleHttpError(res.statusCode)
-    reject(res)
-  }
+  })
 }
 
