@@ -133,20 +133,20 @@ import {
 const { token, getToken } = useTokenStorage()
 
 onMounted(() => {
-	
-  if (!getToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        } else {
-          uni.switchTab({ url: '/pages/homePage/homePage' })
-        }
-      }
-    })
-  }
+	uni.switchTab({ url: '/pages/homePage/homePage' })
+  // if (!getToken()) {
+  //   uni.showModal({
+  //     title: '提示',
+  //     content: '请先登录',
+  //     success: (res) => {
+  //       if (res.confirm) {
+  //         uni.navigateTo({ url: '/pages/login/login' })
+  //       } else {
+  //         uni.switchTab({ url: '/pages/homePage/homePage' })
+  //       }
+  //     }
+  //   })
+  // }
 })
 
 const handleUserInfo = () => {

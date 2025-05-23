@@ -4,11 +4,31 @@
     <scroll-view scroll-y class="list">
       <view class="item" v-for="(item, index) in addressList" :key="index" >
         <view class="info">
-          <text class="name">{{item.name}}</text>
-          <text class="phone">{{item.phone}}</text>
+          <view>
+			<text class="name">{{item.name}}</text>
+			<text class="phone">{{item.phone}}</text>
+		  </view>
+		  <view >
+			  <image style="width:25rpx ; height: 25rpx;"  
+			  src="/static/images/myPapeImages/edit.png" class="edit" 
+			   @click="editAddress(item)">
+			  </image>
+			  </view>
         </view>
         <view class="address">{{item.province}}{{item.city}}{{item.district}}{{item.detail}}</view>
-        <!-- <image src="/static/images/myPapeImages/编辑.png" class="edit"  @click="editAddress(item)""></image> -->
+		<view class="default-box">
+		<view> <image style="width:25rpx ; height: 25rpx;"  
+			  src="/static/images/myPapeImages/change.png" >
+			  </image>
+			  <image style="width:25rpx ; height: 25rpx;"
+			  	  src="/static/images/myPapeImages/changeActive.png" >
+			  	  </image>
+			  设为默认地址</view>
+			<view>删除</view>
+			
+			
+		</view>
+        
       </view>
     </scroll-view>
     
@@ -59,45 +79,48 @@ const editAddress = (item) => {
 <style lang="scss" scoped>
 .container {
   height: 100vh;
+  background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
   
   .list {
     flex: 1;
-    padding: 20rpx;
+  
     
     .item {
+		
       background: #fff;
       border-radius: 10rpx;
       padding: 30rpx;
-      margin-bottom: 20rpx;
+      margin: 20rpx;
       position: relative;
       
       .info {
         display: flex;
-        align-items: center;
+        // align-items: center;
+		justify-content: space-between;
         margin-bottom: 20rpx;
-        
         .name {
           font-size: 32rpx;
           font-weight: bold;
         }
-        
         .phone {
           font-size: 28rpx;
           color: #666;
           margin-left: 30rpx;
         }
-        
-        .default {
-          font-size: 24rpx;
-          color: #fff;
-          background: #ff6f0e;
-          padding: 4rpx 10rpx;
-          border-radius: 6rpx;
-          margin-left: 20rpx;
-        }
+	
+    
       }
+	  .default-box{
+		margin-top: 50rpx;
+		padding-top:30rpx ;
+		border-top:1px solid #E9E9E9;
+		display:flex;
+		justify-content: space-between;
+		font-size: 24rpx;
+		color: #6B6B6B;
+	  }
       
       .address {
         font-size: 28rpx;
