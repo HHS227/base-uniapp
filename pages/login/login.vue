@@ -31,11 +31,29 @@ const handleWechatLogin = async () => {
         loginCode: loginRes.code
       }
     })
-
+    
     if (res.code === 200) {
       setToken(res.data.token)
       uni.showToast({ title: '登录成功' })
-      // 跳转到指定页面，例如首页
+      
+      // 判断是否需要保存用户信息
+      if (res.data.needuserinfo && res.data.newuser) {
+        const { encryptedData, iv } = await uni.getUserProfile({
+          desc: '获取用户信息'
+        })
+        
+        await request({
+          url: '/app-api/auth/front/wechat/saveUserInfo',
+          method: 'POST',
+          data: {
+            token: res.data.token,
+            encryptedData,
+            iv
+          }
+        })
+      }
+      
+      // 跳转到我的页面
       uni.switchTab({
         url: '/pages/myPage/myPage'
       })
