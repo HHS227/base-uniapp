@@ -6,16 +6,22 @@
 				<text>{{ addrdessList.consigneeName }}</text>
 				<view class="name">{{ addrdessList.addressDetail }}</view>
 			</view>
-			<view class="pay-details">
+			<view class="pay-details" v-for="(item, index) in selectedItems" :key="index">
 				<view class="details-box">
-					<view class="details-img"></view>
+					<image :src="item.sku.picUrl" class="details-img" mode="aspectFill"></image>
 					<view class="info">
-						<text>商品名称</text>
-						<view class="details-price"> ￥88.5</view>
+						<text>{{item.name}}</text>
+						<view class="details-price">￥{{item.sku.price}}</view>
 					</view>
 				</view>
-				<view class="details-info"><text>商品价格</text><text>￥88.5</text></view>
-				<view class="details-info"><text>购买数量</text><text>1</text></view>
+				<view class="details-info">
+					<text>商品价格</text>
+					<text>￥{{item.sku.price}}</text>
+				</view>
+				<view class="details-info">
+					<text>购买数量</text>
+					<text>{{item.count}}</text>
+				</view>
 			</view>
 			<view class="sale-box">
 				<text>优惠券</text>
@@ -250,29 +256,51 @@ const getShoppingList = async () => {
 }
 const getPayList = async () => {
   try {
-    const res = await request({
+    // 1. 先创建订单
+    const orderRes = await request({
       url: '/app-api/trade/cart/create/cartOrder',
-	  data:{
-		items:[{skuid:28522,count:1,}],
-		receiverName:addrdessList.consigneeName ,
-		deliveryType:1,
-		receiverMobile:addrdessList.phoneNumber
-	  },
-	  method:'post',
-      showLoading: true, 
-    })
-	console.log(res)
-    if (res.code === 0 || res.code === 200) {
-		
-	
-		
+      data: {
+        items: [{skuid:28522,count:1}],
+        receiverName: addrdessList.value.consigneeName,
+        deliveryType: 1,
+        receiverMobile: addrdessList.value.phoneNumber
+      },
+      method: 'post',
+      showLoading: true,
+    });
+
+    if (orderRes.code === 0 || orderRes.code === 200) {
+      // 2. 调用微信支付API
+      const payRes = await uni.requestPayment({
+        provider: 'wxpay',
+        orderInfo: orderRes.data.payParams, // 假设后端返回支付参数
+        success: (res) => {
+          uni.showToast({
+            title: '支付成功',
+            icon: 'success'
+          });
+          // 3. 支付成功后跳转到"我的"页面
+          uni.switchTab({
+            url: '/pages/my/my'
+          });
+        },
+        fail: (err) => {
+          uni.showToast({
+            title: '支付失败',
+            icon: 'none'
+          });
+          console.error('支付失败:', err);
+        }
+      });
     } else {
-      throw new Error(res.msg || '数据异常')
+      throw new Error(orderRes.msg || '订单创建失败');
     }
-  } 
-  catch (err) {
-    console.error('获取商场数据失败:', err)
-   
+  } catch (err) {
+    console.error('支付流程出错:', err);
+    uni.showToast({
+      title: err.message || '支付出错',
+      icon: 'none'
+    });
   }
 }
 
@@ -285,7 +313,6 @@ onMounted(() => {
   if (currentPage && currentPage.$vm) {
     const eventChannel = currentPage.$vm.getOpenerEventChannel();
     eventChannel.on('acceptSelectedItems', (data) => {
-		console.log(data)
       selectedItems.value = data.selectedItems;
       totalPrice.value = data.totalPrice;
     });

@@ -37,11 +37,24 @@ const handleWechatLogin = async () => {
     isLoading.value = true
     const loginRes = await uni.login({ provider: 'weixin' })
     
+    // 获取手机号授权
+    const phoneRes = await uni.getPhoneNumber({
+      provider: 'weixin',
+      success: (res) => {
+        return res.code
+      },
+      fail: (err) => {
+        console.error('获取手机号失败:', err)
+        return null
+      }
+    })
+    
     const res = await request({
       url: '/app-api/auth/front/wechat/login',
       method: 'POST',
       data: {
-        loginCode: loginRes.code
+        loginCode: loginRes.code,
+        phoneCode: phoneRes.code // 添加phoneCode参数
       }
     })
     
