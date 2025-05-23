@@ -24,7 +24,6 @@
 						<text class="id">WE-ID88-999-888</text>
 					</view>
 					<button class="share-btn" open-type="share"><image  src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image></button>
-					
 				</view>
 			</view>
 			<view class="commission-card">
