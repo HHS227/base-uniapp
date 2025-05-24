@@ -53,7 +53,7 @@ const records = ref([
     date: '2023-05-10',
     amount: '299.00',
     status: '已认养',
-    image: '/static/images/蜜蜂.png'
+    image: '/static/images/pet1.jpg'
   },
   {
     id: 2,
@@ -61,7 +61,7 @@ const records = ref([
     date: '2023-06-15',
     amount: '399.00',
     status: '已发货',
-    iimage: '/static/images/蜜蜂.png'
+    image: '/static/images/pet2.jpg'
   },
   {
     id: 3,
@@ -69,7 +69,7 @@ const records = ref([
     date: '2023-07-20',
     amount: '499.00',
     status: '已完成',
-    image: '/static/images/蜜蜂.png'
+    image: '/static/images/pet3.jpg'
   },
   {
     id: 4,
@@ -77,7 +77,7 @@ const records = ref([
     date: '2023-08-05',
     amount: '599.00',
     status: '已认养',
-    image: '/static/images/蜜蜂.png'
+    image: '/static/images/pet4.jpg'
   },
   {
     id: 5,
@@ -85,17 +85,17 @@ const records = ref([
     date: '2023-09-12',
     amount: '699.00',
     status: '已发货',
-   image: '/static/images/蜜蜂.png'
+    image: '/static/images/pet5.jpg'
   }
 ]);
 
 const filteredList = computed(() => {
   if (activeTab.value === 'all') return records.value;
   
-  // 将导航栏状态值映射到数据状态值
+  // 将导航栏value值与数据status字段对应
   const statusMap = {
     'adopted': '已认养',
-    'delivered': '已发货', 
+    'delivered': '已发货',
     'completed': '已完成'
   };
   
@@ -114,61 +114,42 @@ const getStatusColor = (status) => {
 
 <style lang="scss" scoped>
 .container {
-  background-color: #f7f7f7;
-  padding: 0 20rpx;
-  height:100vh ;
+  padding: 20rpx;
+  
   .nav-tabs {
     display: flex;
     justify-content: space-around;
-    background-color: #fff;
-    margin: 0 -20rpx;
-    padding: 20rpx 0;
-    position: relative;
     border-bottom: 1rpx solid #eee;
+    padding-bottom: 20rpx;
     
     .tab-item {
-      padding: 10rpx 20rpx;
+      padding: 10rpx 0;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       
       &.active {
         font-weight: bold;
-        color: #ff6f0e;
         
         &::after {
           content: '';
           position: absolute;
-          bottom: -10rpx;
+          bottom: -20rpx;
           left: 50%;
           transform: translateX(-50%);
-          width: 60rpx;
-          height: 6rpx;
+          width: 80rpx;
+          height: 4rpx;
           background: #ff6f0e;
-          border-radius: 3rpx;
         }
       }
     }
   }
-  border-bottom: 1rpx solid #eee;
-    padding-bottom: 20rpx;
-    background-color: #fff;  // 导航栏白色背景
-    margin: 0 -20rpx;
-    padding: 20rpx;
-  }
   
   .list-container {
-    margin-top: 20rpx;
-    background-color: #f7f7f7;
-    
+    height: calc(100vh - 100rpx);
     
     .record-item {
       display: flex;
       padding: 30rpx;
-      margin-bottom: 20rpx;
-      background-color: #fff;
-      border-radius: 16rpx;
+      border-bottom: 1rpx solid #f5f5f5;
       align-items: center;
       
       .pet-image {
@@ -182,7 +163,6 @@ const getStatusColor = (status) => {
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         
         .pet-name {
           font-size: 32rpx;
@@ -204,8 +184,6 @@ const getStatusColor = (status) => {
       
       .status {
         font-size: 28rpx;
-        min-width: 100rpx;
-        text-align: right;
       }
     }
   }
