@@ -1,5 +1,6 @@
 <template>
-	<BeeTabbarVue></BeeTabbarVue>
+	<view>
+		<BeeTabbarVue></BeeTabbarVue>
 	<view class="container">
 		<image src="/static/images/背景.png" mode="aspectFill" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
@@ -9,7 +10,7 @@
 		<scroll-view scroll-y="true" class="scroll-view">
 			<view class="swiper-content">
 				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
-					<swiper-item class="swiper-item" v-for="item in swiperList">
+					<swiper-item class="swiper-item" v-for="item in swiperList" :key="item">
 						<image :src=item.url class="swiper-image" mode=""></image>
 					</swiper-item>
 				
@@ -72,7 +73,7 @@
 				<view class="my-bee-right" @click="collectBee">领取蜂箱</view>
 			</view>
 	
-			<view v-if="dataList.length>0" class="my-bee-card" v-for='item in dataList' @click="gotoMyBeehive(item)">
+			<view v-if="dataList.length>0" class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
 				<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
 				<view class="card-content">
 					<view class="card-top">
@@ -114,6 +115,7 @@
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
 	</view>
+	</view>
 </template>
 
 <script setup>
@@ -121,15 +123,33 @@ import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import AvatarStackVue from '../../components/AvatarStack.vue';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
-import { useTokenStorage } from '../../utils/storage'  // 新增导入
+import { useTokenStorage } from '../../utils/storage'
 
-	const { getToken } = useTokenStorage()  
+const { token, getToken } = useTokenStorage()
 
+
+
+// 使用uniapp的onShow生命周期
+onShow(() => {
+  if (getToken()) {
+    console.log('页面显示，检测到token')
+    getInfoDataList()
+  }
+})
+
+onMounted(() => {
+  getSwiperList()
+  getInfoData()
+  if (getToken()) {
+    getInfoDataList()
+  }
+})
 const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
 const infoData=ref({})
 const dataList=ref([
-{name:'张三',beehiveType:'领养',groupNumber:'4',createTime:'2025-5-10'}	
+
 ])
 const percent = ref(45);
 const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
@@ -228,11 +248,7 @@ const collectBee=()=>{
 	});
 }
 
-onMounted(() => {
-  getSwiperList()
-  getInfoData()
-  getInfoDataList()
-})
+
 </script>
 
 <style lang="scss" scoped>

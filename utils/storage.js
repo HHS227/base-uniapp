@@ -1,26 +1,26 @@
 import { ref } from 'vue'
 
-const TOKEN_KEY = 'bee_app_token'
-
 export const useTokenStorage = () => {
+  const token = ref(null)
+  
   const getToken = () => {
-    return uni.getStorageSync(TOKEN_KEY) || null
+    return uni.getStorageSync('token') || null
   }
-
-  const setToken = (token) => {
-    uni.setStorageSync(TOKEN_KEY, token)
+  
+  const setToken = (newToken) => {
+    uni.setStorageSync('token', newToken)
+    token.value = newToken
   }
-
-  const removeToken = () => {
-    uni.removeStorageSync(TOKEN_KEY)
+  
+  const clearToken = () => {
+    uni.removeStorageSync('token')
+    token.value = null
   }
-
-  const token = ref(getToken())
-
+  
   return {
     token,
     getToken,
     setToken,
-    removeToken
+    clearToken
   }
 }

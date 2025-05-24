@@ -1,17 +1,15 @@
 <template>
+   <view>
     <BeeTabbarVue active-tab="shoppingMall"></BeeTabbarVue>
     <view class="container">
         <view class="floating-btn cart-btn" @click="gotoCart">
             <image src="/static/images/cart.png" mode="aspectFit" class="cart-icon"></image>
             <view class="btn-text">购物车</view>
         </view>
-       <!-- <view class="floating-btn message-btn" @click="gotoMessage">
-            <image src="/static/images/message.png" mode="aspectFit" class="cart-icon"></image>
-            <view class="btn-text">消息</view>
-        </view> -->
+   
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
             <view class="scroll-content">
-                <view class="goods-item" v-for="item in shoppingList" >
+                <view class="goods-item" v-for="item in shoppingList" :key="item">
                     <image src="/static/logo.png" mode="" class="goods-image"></image>
                     <view class="goods-title" @click="shopDetails(item)">{{item.name}}</view>
                     <view class="goods-info">
@@ -36,6 +34,7 @@
         </scroll-view>
        
     </view>
+   </view>
 </template>
 
 <script setup>

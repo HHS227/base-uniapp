@@ -44,14 +44,16 @@ onMounted(() => {
     </view>
     
     
-    <map 
-      id="map" 
-      style="width: 100%; height: 500rpx;"
-      :latitude="30.5728"
-      :longitude="104.0668"
-      :markers="markers"
-      show-location
-    ></map>
+    <view class="map-container">
+      <map 
+        id="map" 
+        style="width: 100%; height: 500rpx;"
+        :latitude="30.5728"
+        :longitude="104.0668"
+        :markers="markers"
+        show-location
+      ></map>
+    </view>
     
     <view class="my-bee-title">
       <view>推荐蜜源</view>
@@ -151,5 +153,12 @@ onMounted(() => {
       }
     }
   }
+}
+
+.map-container {
+  margin: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 10rpx;
+  overflow: hidden;
 }
 </style>
