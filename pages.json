@@ -135,11 +135,28 @@
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
+		
 		{
 			"path": "pages/commissionDetail/commissionDetail",
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/cashWithdrow/cashWithdrow",
+			"style" : 
+			{
+				"navigationBarTitleText" : "提现",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/inviteGift/inviteGift",
+			"style" : 
+			{
+				"navigationBarTitleText" : "邀请有礼",
 				"navigationStyle": "custom"
 			}
 		},

@@ -1,21 +1,55 @@
 <template>
 	<view class="container">
-		<image src="/static/images/背景.png" mode="" class="bg-image"></image>
-		<TransNavVue title="蜂场数据"></TransNavVue>
+		<image src="/static/images/commissionDetail/yjng.png" mode="" class="bg-image"></image>
+		<TransNavVue title="推广佣金"></TransNavVue>
+		<view class="top-box">
+			<view>邀好友 得现金</view>
+			<text>邀请越多 奖励越多</text>
+		</view>
 		<view class="data-panel">
 			<image class="panel-bg" src="/static/images/data-bg.png" mode=""></image>
 			<view class="data-content">
-				<view class="data-item" v-for="(value, key) in dataList"  :key="key">
-					<view class="title" v-if="key!= 'nectarSourceArea'">
-						<text class="title-text">{{ dataMap[key].text }} </text>
-						<image :src="dataMap[key].icon" mode="aspectFill" class="data-icon"></image>
+				<view class="title">佣金详情</view>
+				<view class="data-row">
+					<view class="data-item">
+						<image class="data-icon" src="/static/images/commissionDetail/Group 1000009065.png"></image>
+						<text class="data-label">今日佣金</text>
+						<text class="data-value">1254.22</text>
 					</view>
-					<view class="data-value" v-if="key!= 'nectarSourceArea'">
-						<text class="value">{{ value }}</text>
-						{{ dataMap[key].unit }}
+					<view class="data-item">
+						<image class="data-icon" src="/static/images/commissionDetail/Vector.png"></image>
+						<text class="data-label">累计佣金</text>
+						<text class="data-value">6890.50</text>
+					</view>
+					<view class="data-item">
+						<image class="data-icon" src="/static/images/commissionDetail/Frame.png"></image>
+						<text class="data-label">当前收益</text>
+						<text class="data-value">15230.80</text>
 					</view>
 				</view>
+			
 			</view>
+		</view>
+        <view class="withdraw-btn" @click="goToWithdraw">提现</view>
+		<view class="withdraw-box">
+            <view class="withdraw-header">
+                <image style="width:100rpx;height:20rpx" src="/static/images/commissionDetail/left-icon.png" class="withdraw-icon"></image>
+                <text>提现佣金</text>
+                <image style="width:100rpx;height:20rpx" src="/static/images/commissionDetail/right-icon.png" class="withdraw-icon"></image>
+            </view>
+            <view class="withdraw-record">
+                <view 
+                    class="record-item" 
+                    v-for="(item, index) in records" 
+                    :key="index"
+                >
+                    <text class="record-time">{{ item.time }}</text>
+                    <view>
+                        <text>收益</text> 
+                        <text class="record-amount">{{ item.amount }}</text>
+                    </view>   
+                </view>
+            </view>
 		</view>
 		
 	</view>
@@ -26,92 +60,29 @@ import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
 
-
-const mapMarkers = ref([
-	{
-		id: 1,
-		latitude: 30.6667,
-		longitude: 104.0667,
-		iconPath: '/static/images/marker.png',
-		width: 34,
-		height: 38,
-		label: {
-			content: '1',
-			color: '#ffffff',
-			anchorY: -36,
-			anchorX: -12
-		}
-	}
-]);
-const dataMap = ref({
-	countryNumber: {
-		text: '国家',
-		icon: '/static/images/国家.png',
-		unit: '/个'
-	},
-	adoptionAmount: {
-		text: '领养量',
-		icon: '/static/images/领养量.png',
-		unit: '/万箱'
-	},
-	outputAmount: {
-		text: '产量',
-		icon: '/static/images/产量.png',
-		unit: '/万斤'
-	},
-	beeNumber: {
-		text: '数量',
-		icon: '/static/images/蜜蜂.png',
-		unit: '/万只'
-	},
-	attendanceRate: {
-		text: '出勤',
-		icon: '/static/images/蜜蜂.png',
-		unit: '%'
-	},
-	userAmount: {
-		text: '用户量',
-		icon: '/static/images/用户量.png',
-		unit: '/万人'
-	}
-});
-const dataList = ref({
-	countryNumber: 192,
-	adoptionAmount: 1.89,
-	outputAmount: 236.8,
-	beeNumber: 265.1,
-	attendanceRate: 86.6,
-	userAmount: 232.3
-});
-
-//获取蜂场更多数据
-const getInfoData = async () => {
-  try {
-    const res = await request({
-      url: '/app-api/WeiXinMini/index/get/info',
-      showLoading: true, 
+const records = ref([
+    { time: '2023-10-15 14:30', amount: '+125.50' },
+    { time: '2023-10-14 09:15', amount: '+80.00' },
+	{ time: '2023-10-14 09:15', amount: '+80.00' },
+	{ time: '2023-10-14 09:15', amount: '+80.00' },
+	{ time: '2023-10-14 09:15', amount: '+80.00' },
+    // 可以添加更多记录数据
+])
+const goToWithdraw = ()=>{
+    uni.navigateTo({
+        url:'/pages/cashWithdrow/cashWithdrow'
     })
-    
-    // 处理返回数据（兼容code=0和code=200）
-    if (res.code === 0 || res.code === 200) {
-    dataList.value=res.data
-    } else {
-      throw new Error(res.msg || '数据异常')
-    }
-  } catch (err) {
-    console.error('获取蜂场数据失败:', err)
-   
-  }
 }
+
 onMounted(() => {
-  getInfoData()
+    // 这里可以添加获取收益记录的API调用
 })
 </script>
 
 <style lang="scss" scoped>
 .container {
 	background-color: #f7f7f7;
-	height: 100vh;
+	
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -122,6 +93,14 @@ onMounted(() => {
 		height: 548rpx;
 		position: absolute;
 		z-index: -1;
+	}
+	.top-box{
+		margin: 70rpx 40rpx;
+		color: #ffffff;
+		view{
+			font-size: 58rpx;
+			margin-bottom: 20rpx;
+		}
 	}
 	.data-panel {
 		margin: 0 auto;
@@ -138,131 +117,119 @@ onMounted(() => {
 		}
 		.data-content {
 			width: 100%;
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			.data-item {
-				padding: 30rpx;
-				border-bottom: 2rpx solid #f6f6f6;
-				border-right: 2rpx solid #f6f6f6;
-				height: 175rpx;
-				&:nth-child(3n) {
-					border-right: 0;
-				}
-				&:nth-child(n + 4) {
-					border-bottom: 0;
-				}
-				.title {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					.title-text {
-						font-weight: 500;
-						font-size: 32rpx;
-						color: #666666;
-					}
-					.data-icon {
-						width: 58rpx;
-						height: 58rpx;
-					}
-				}
-				.data-value {
-					margin-top: 16rpx;
-					font-weight: 500;
-					font-size: 20rpx;
-					color: #999999;
-					.value {
-						font-weight: bold;
-						font-size: 36rpx;
-						color: #010022;
-					}
+			padding: 30rpx;
+			.title {
+				font-size: 36rpx;
+				font-weight: bold;
+				text-align: center;
+				margin-bottom: 70rpx;
+				position: relative;
+				
+				&::after {
+					content: '';
+					position: absolute;
+					bottom: -10rpx;
+					left: 50%;
+					transform: translateX(-50%);
+					width: 80rpx;
+					height: 6rpx;
+					background-color: #FF7D00;
+					border-radius: 3rpx;
 				}
 			}
-		}
-	}
-	.bee-bar {
-		margin: 6rpx 0;
-		height: 158rpx;
-		width: 750rpx;
-		display: flex;
-		position: relative;
-		z-index: 1;
-
-		.bar-bg {
-			position: absolute;
-			height: 158rpx;
-			width: 750rpx;
-			z-index: -1;
-		}
-		.bar-content {
-			width: 100%;
-			padding: 40rpx 48rpx;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			.bar-left {
+			.data-row {
 				display: flex;
-
-				.bee-image {
-					width: 76rpx;
-					height: 76rpx;
-				}
-				.bar-title {
-					background: linear-gradient(181deg, #fff6d1 0%, #ffffff 100%);
-					/* -webkit-background-clip: text; */
-					color: transparent;
-					margin-left: 24rpx;
+				justify-content: space-between;
+				margin-bottom: 40rpx;
+				.data-item {
 					display: flex;
 					flex-direction: column;
-					justify-content: space-between;
-					font-weight: bold;
-					font-size: 28rpx;
-					line-height: 29rpx;
-					.title-bt {
-						width: 140rpx;
-						height: 26rpx;
-						background: linear-gradient(275deg, #fff6d1 0%, #ffffff 100%);
-						border-radius: 23rpx;
-						display: flex;
-						align-items: center;
-						padding: 0 10rpx;
-
-						.icon {
-							width: 18rpx;
-							height: 18rpx;
-						}
-						.text {
-						
-							margin-left: 4rpx;
-							font-weight: 500;
-							font-size: 16rpx;
-							background: linear-gradient(356deg, #49433c 0%, #756c61 100%);
-							/* -webkit-background-clip: text; */
-						}
+					align-items: center;
+					.data-icon {
+						width: 60rpx;
+						height: 60rpx;
+						margin-bottom: 20rpx;
+					}
+					.data-label {
+						font-size: 28rpx;
+						color: #666;
+						margin-bottom: 10rpx;
+					}
+					.data-value {
+						font-size: 32rpx;
+						font-weight: bold;
+						color: #333;
 					}
 				}
 			}
-			.bar-right {
-				margin-bottom: 6rpx;
-				font-weight: bold;
-				font-size: 32rpx;
-				color: #fffefc;
-				line-height: 48rpx;
-				.unit {
-					font-weight: 500;
-					font-size: 24rpx;
-					color: #99927f;
-					line-height: 48rpx;
-				}
-			}
+			
 		}
 	}
-	.map-content {
-		flex: 1;
-		height: 200rpx;
-		.map-view {
-			height: 100%;
-			width: 100%;
-		}
-	}
+    .withdraw-btn {
+        height: 90rpx;
+        line-height: 90rpx;
+        background-color: #FF7D00;
+        color: white;
+        font-size: 32rpx;
+        border-radius: 35rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 40rpx 30rpx;
+    }
+    
+    .withdraw-box {
+        background-color: #fff;
+        border-radius: 16rpx;
+        margin: 30rpx;
+        padding: 20rpx;
+        margin-bottom: 0;
+        
+        .withdraw-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30rpx;
+            
+            text {
+                font-size: 32rpx;
+                font-weight: bold;
+                margin: 0 20rpx;
+            }
+            
+            .withdraw-icon {
+                width: 100rpx;
+                height: 20rpx;
+            }
+        }
+        
+        .withdraw-record {
+            max-height: 500rpx;
+            overflow-y: auto;
+            
+            .record-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 30rpx 0;
+                
+                &:not(:last-child) {
+                    margin-bottom: 20rpx;
+                }
+                
+                .record-time {
+                    font-size: 28rpx;
+                    color: #666;
+                }
+                
+                .record-amount {
+                    font-size: 28rpx;
+                    color: #FF7D00;
+                    font-weight: bold;
+                    margin-left: 10rpx;
+                }
+            }
+        }
+    }
 }
 </style>

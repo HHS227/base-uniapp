@@ -82,7 +82,7 @@
 			</view>
 			
 			<view class="list-content">
-				<navigator url="" class="list-item">
+				<navigator url="/pages/inviteGift/inviteGift" class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(4).png" mode=""></image>
 						<text class="text">邀请有礼</text>
