@@ -1,6 +1,6 @@
 <template>
   <view class="login-container">
-    <image src="/static/images/logo.png" class="logo"></image>
+    <image style='width: 200rpx; height: 80rpx;' src="/static/images/logo.png" class="logo"></image>
     <button 
       class="login-btn" 
       @click="handleWechatLogin"
