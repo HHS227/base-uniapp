@@ -208,7 +208,7 @@ onMounted(() => {
 				}
 				.bar-title {
 					background: linear-gradient(181deg, #fff6d1 0%, #ffffff 100%);
-					-webkit-background-clip: text;
+					/* -webkit-background-clip: text; */
 					color: transparent;
 					margin-left: 24rpx;
 					display: flex;
@@ -236,7 +236,7 @@ onMounted(() => {
 							font-weight: 500;
 							font-size: 16rpx;
 							background: linear-gradient(356deg, #49433c 0%, #756c61 100%);
-							-webkit-background-clip: text;
+							/* -webkit-background-clip: text; */
 						}
 					}
 				}
