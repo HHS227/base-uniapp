@@ -53,7 +53,7 @@ const records = ref([
     date: '2023-05-10',
     amount: '299.00',
     status: '已认养',
-    image: '/static/images/pet1.jpg'
+     image: '/static/images/蜜蜂.png'
   },
   {
     id: 2,
@@ -61,7 +61,7 @@ const records = ref([
     date: '2023-06-15',
     amount: '399.00',
     status: '已发货',
-    image: '/static/images/pet2.jpg'
+    image: '/static/images/蜜蜂.png'
   },
   {
     id: 3,
@@ -69,7 +69,7 @@ const records = ref([
     date: '2023-07-20',
     amount: '499.00',
     status: '已完成',
-    image: '/static/images/pet3.jpg'
+    image: '/static/images/蜜蜂.png'
   },
   {
     id: 4,
@@ -77,7 +77,7 @@ const records = ref([
     date: '2023-08-05',
     amount: '599.00',
     status: '已认养',
-    image: '/static/images/pet4.jpg'
+    image: '/static/images/蜜蜂.png'
   },
   {
     id: 5,
@@ -85,7 +85,7 @@ const records = ref([
     date: '2023-09-12',
     amount: '699.00',
     status: '已发货',
-    image: '/static/images/pet5.jpg'
+     image: '/static/images/蜜蜂.png'
   }
 ]);
 
@@ -114,7 +114,7 @@ const getStatusColor = (status) => {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+ 
   
   .nav-tabs {
     display: flex;
@@ -145,12 +145,18 @@ const getStatusColor = (status) => {
   
   .list-container {
     height: calc(100vh - 100rpx);
+    background-color: #f7f7f7; // 整体背景色
+    // padding: 20rpx; // 添加内边距
+	
     
     .record-item {
       display: flex;
       padding: 30rpx;
-      border-bottom: 1rpx solid #f5f5f5;
+      border-radius: 10rpx; // 圆角
+      background-color: #fff; // 列表项背景色
+      margin: 20rpx; // 列表项间距
       align-items: center;
+
       
       .pet-image {
         width: 120rpx;
@@ -183,7 +189,15 @@ const getStatusColor = (status) => {
       }
       
       .status {
-        font-size: 28rpx;
+        font-size: 24rpx;
+		width: 120rpx;
+		border: 1px solid #ddd;
+		border-radius: 10rpx;
+		text-align: center;
+		height: 50rpx;
+		line-height: 50rpx;
+		border-radius: 46rpx;
+		border: 2rpx solid rgba(153,153,153,0.7);
       }
     }
   }
