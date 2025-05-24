@@ -1,5 +1,6 @@
 <template>
-	<uni-popup ref="popup" type="center">
+	<view>
+		<uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">{{ currentMessage.title }}</view>
 			<view class="popup-time">{{ currentMessage.time }}</view>
@@ -23,6 +24,8 @@
 		</scroll-view>
 		<view class="safe-view"></view>
 	</view>
+	</view>
+	
 </template>
 
 <script setup>

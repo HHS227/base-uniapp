@@ -1,5 +1,6 @@
 <template>
-	<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
+	<view>
+		<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
 	<view class="container">
 		<image src="/static/images/myPapeImages/Rectangle 34625693@2x.png" mode="" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
@@ -13,7 +14,7 @@
 						<image src="/static/logo.png" mode="" class="avatar-image"></image>
 						<image src="/static/images/myPapeImages/Group 1000008640@2x.png" mode="" class="sex-image"></image>
 					</view>
-					<view class="name-content" @click="handleUserInfo">
+					<view class="name-content" >
 						<text class="name-text">Jeefiy</text>
 						<text class="id-text">ID:32224112</text>
 					</view>
@@ -27,12 +28,12 @@
 				</view>
 			</view>
 			<view class="commission-card">
-				<view class="card-item">
+				<view class="card-item" @click="gotoCommission">
 					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
 					<text class="amount">1254.22</text>
 					<text class="commission-text">今日佣金</text>
 				</view>
-				<view class="card-item">
+				<view class="card-item" @click="gotoCommission">
 					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
 					<text class="amount">1254.22</text>
 					<text class="commission-text">累计佣金</text>
@@ -61,19 +62,20 @@
 				</view>
 			</view>
 			<view class="menu-content">
-				<navigator class="menu-item" @click="gotoAdoptionRecords">
+				<navigator url="/pages/adoptionRecords/adoptionRecords" class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">认养记录</text>
 				</navigator>
-				<navigator class="menu-item">
+				<navigator url="/pages/orderList/orderList" class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(1).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">订单列表</text>
 				</navigator>
+
 				<navigator  url="/pages/beeFarmerJion/beeFarmerJion" class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(2).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">蜂农入住</text>
 				</navigator>
-				<navigator class="menu-item">
+				<navigator url="/pages/smartBee/smartBee" class="menu-item">
 					<image src="/static/images/myPapeImages/Frame@2x(3).png" class="menu-icon" mode=""></image>
 					<text class="menu-text">智能养蜂</text>
 				</navigator>
@@ -94,7 +96,7 @@
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</navigator>
-				<navigator url="" class="list-item">
+				<navigator url="/pages/surveyList/surveyList" class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/纸飞机_发布.png" mode=""></image>
 						<text class="text">问卷调查</text>
@@ -108,10 +110,10 @@
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</button>
-				<navigator url="/pages/settingPage/settingPage" class="list-item">
+				<navigator url="/pages/userInfo/userInfo" class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(6).png" mode=""></image>
-						<text class="text">设置</text>
+						<text class="text" >设置</text>
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</navigator>
@@ -119,21 +121,17 @@
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
 	</view>
+	</view>
 </template>
 
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
 import { useTokenStorage } from '../../utils/storage'
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
-import {
-		ref,
-		onMounted,
-		
-	} from 'vue'
+import {ref,onMounted,} from 'vue'
 const { token, getToken } = useTokenStorage()
 
 onMounted(() => {
-	
   if (!getToken()) {
     uni.showModal({
       title: '提示',
@@ -149,20 +147,16 @@ onMounted(() => {
   }
 })
 
-const handleUserInfo = () => {
-	uni.navigateTo({
-        url:'/pages/userInfo/userInfo'
-    })
-}
+
 const gotoWithdraw = () => {
   uni.navigateTo({
     url: '/pages/withdraw/withdraw'
   });
 };
-const gotoAdoptionRecords = () => {
-    uni.navigateTo({
-        url: '/pages/adoptionRecords/adoptionRecords'
-    });
+const gotoCommission = () => {
+  uni.navigateTo({
+    url: '/pages/commissionDetail/commissionDetail'
+  });
 };
 </script>
 

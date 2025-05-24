@@ -14,7 +14,7 @@
 			</picker>
 			<input :inputBorder="false" placeholder-class="place" v-model="formData.beeType" placeholder="蜜源种类" class="form-item form-input" />
 			<input :inputBorder="false" placeholder-class="place" v-model="formData.deviceNumber" placeholder="设备编号" class="form-item form-input" />
-			<button class="submit-btn">入驻</button>
+			<button class="submit-btn" @click="enterBtn">入驻</button>
 		</view>
 	</view>
 </template>
@@ -27,6 +27,12 @@ const formData = ref({
 	beeType: '',
 	deviceNumber: ''
 });
+
+const enterBtn = ()=>{
+    uni.navigateTo({
+        url:'/pages/beeFarmerJion/jionFeedback'
+    })
+}
 
 const selectCity = (e) => {
 	formData.value.region = e.detail.value;

@@ -9,11 +9,22 @@
 			<image src="/static/images/beeFarmerImages/Group 1000008596.png" class="info-image" mode=""></image>
 			审核时间大约1-3个工作日
 		</view>
-		<button class="back-btn">返回首页</button>
+		<button class="back-btn" @click="backHomeBtn">返回首页</button>
 	</view>
 </template>
 
-<script setup></script>
+<script setup>
+	import { ref } from 'vue';
+	
+	
+	
+	const backHomeBtn = ()=>{
+    uni.switchTab({  
+        url:'/pages/myPage/myPage'
+    })
+}
+
+</script>
 
 <style lang="scss" scoped>
 .container {

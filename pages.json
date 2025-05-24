@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ 
 		
 		{
 			"path": "pages/homePage/homePage",
@@ -120,6 +120,30 @@
 			}
 		},
 		{
+			"path": "pages/smartBee/smartBee",
+			"style" : 
+			{
+				"navigationBarTitleText" : "智能养蜂",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/surveyList/surveyList",
+			"style" : 
+			{
+				"navigationBarTitleText" : "问卷调查",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/commissionDetail/commissionDetail",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path" : "pages/addressManager/editAddress",
 			"style" : 
 			{
@@ -152,6 +176,13 @@
 			"path": "pages/adoptionRecords/adoptionRecords",
 			"style": {
 				"navigationBarTitleText": "认养记录",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/orderList/orderList",
+			"style": {
+				"navigationBarTitleText": "订单列表",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
