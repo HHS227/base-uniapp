@@ -142,6 +142,20 @@
 			}
 		},
 		{
+			"path": "pages/withdraw/withdraw",
+			"style": {
+				"navigationBarTitleText": "我的钱包",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/adoptionRecords/adoptionRecords",
+			"style": {
+				"navigationBarTitleText": "认养记录",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
 			"path": "pages/userInfo/addressList", 
 			"style": {
 				"navigationBarTitleText": "地址列表",

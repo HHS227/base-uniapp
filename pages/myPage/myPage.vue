@@ -39,7 +39,7 @@
 				</view>
 			</view>
 			<view class="assets-total">
-				<view class="assets-item">
+				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
 						<text class="amount">8239.32</text>
 						<text class="text">现金</text>
@@ -49,7 +49,7 @@
 						<image src="/static/images/myPapeImages/Ellipse 1836@2x.png" mode="" class="icon"></image>
 					</view>
 				</view>
-				<view class="assets-item">
+				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
 						<text class="amount">682</text>
 						<text class="text">M币</text>
@@ -61,7 +61,7 @@
 				</view>
 			</view>
 			<view class="menu-content">
-				<navigator class="menu-item">
+				<navigator class="menu-item" @click="gotoAdoptionRecords">
 					<image src="/static/images/myPapeImages/Frame@2x.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">认养记录</text>
 				</navigator>
@@ -154,6 +154,16 @@ const handleUserInfo = () => {
         url:'/pages/userInfo/userInfo'
     })
 }
+const gotoWithdraw = () => {
+  uni.navigateTo({
+    url: '/pages/withdraw/withdraw'
+  });
+};
+const gotoAdoptionRecords = () => {
+    uni.navigateTo({
+        url: '/pages/adoptionRecords/adoptionRecords'
+    });
+};
 </script>
 
 <style lang="scss" scoped>

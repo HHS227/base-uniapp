@@ -231,7 +231,7 @@ import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
-	const { getToken } = useTokenStorage()  // 新增获取token方法
+const { getToken } = useTokenStorage()  // 新增获取token方法
 
 const selectedItems = ref([]);
 const totalPrice = ref(0);
