@@ -64,7 +64,7 @@ const confirmGetUserInfo = async () => {
     })
     
     if (res.code === 0) {
-      setToken(res.data.token)
+      setToken(res.data.accessToken)
       uni.switchTab({ url: '/pages/myPage/myPage' })
     }
   } catch (err) {

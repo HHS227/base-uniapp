@@ -130,6 +130,7 @@ import { useTokenStorage } from '../../utils/storage'
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
 import {ref,onMounted,} from 'vue'
 const { token, getToken } = useTokenStorage()
+import { request } from '@/utils/request'
 
 onMounted(() => {
   if (!getToken()) {
@@ -141,10 +142,12 @@ onMounted(() => {
           uni.navigateTo({ url: '/pages/login/login' })
         } else {
           uni.switchTab({ url: '/pages/homePage/homePage' })
+		  
         }
       }
     })
   }
+ 
 })
 
 
@@ -158,6 +161,30 @@ const gotoCommission = () => {
     url: '/pages/commissionDetail/commissionDetail'
   });
 };
+// 获取用户信息
+const getMyInfo = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/user/get/myInfo',
+      showLoading: true, 
+      header: {
+      			  'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    // 处理返回数据（兼容code=0和code=200）
+    if (res.code === 0 || res.code === 200) {
+     
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('轮播图加载失败:', err)
+   
+  }
+}
+
+
 </script>
 
 <style lang="scss" scoped>
