@@ -256,7 +256,7 @@ const getShoppingList = async () => {
     }
   } 
   catch (err) {
-    console.error('获取商场数据失败:', err)
+    console.error('获取地址失败:', err)
    
   }
 }

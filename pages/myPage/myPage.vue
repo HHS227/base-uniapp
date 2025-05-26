@@ -11,18 +11,18 @@
 			<view class="my-info-card">
 				<view class="avatar-content">
 					<view class="avatar-view">
-						<image src="/static/logo.png" mode="" class="avatar-image"></image>
+						<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						<image src="/static/images/myPapeImages/Group 1000008640@2x.png" mode="" class="sex-image"></image>
 					</view>
 					<view class="name-content" >
-						<text class="name-text">Jeefiy</text>
-						<text class="id-text">ID:32224112</text>
+						<text class="name-text">{{userInfo.nickname }}</text>
+						<text class="id-text">ID:{{ userInfo.id || '' }}</text>
 					</view>
 				</view>
 				<view class="app-info">
 					<view class="info-left">
 						<text class="name-text">蜜友汇</text>
-						<text class="id">WE-ID88-999-888</text>
+						<text class="id">{{ userInfo.weId }}</text>
 					</view>
 					<button class="share-btn" open-type="share"><image  src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image></button>
 				</view>
@@ -42,7 +42,7 @@
 			<view class="assets-total">
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
-						<text class="amount">8239.32</text>
+						<text class="amount">{{ walletData.balance }}</text>
 						<text class="text">现金</text>
 					</view>
 					<view class="item-right">
@@ -52,7 +52,7 @@
 				</view>
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
-						<text class="amount">682</text>
+						<text class="amount">{{ walletData.coin ||0 }}</text>
 						<text class="text">M币</text>
 					</view>
 					<view class="item-right">
@@ -129,8 +129,21 @@ import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
 import { useTokenStorage } from '../../utils/storage'
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
 import {ref,onMounted,} from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 const { token, getToken } = useTokenStorage()
 import { request } from '@/utils/request'
+
+const userInfo = ref({})
+const walletData = ref({})
+
+onShow(() => {
+  if (getToken()) {
+    console.log('页面显示，检测到token')
+    getMyInfo()
+	getCommissionDetail()
+	getWalletInfo()
+  }
+})
 
 onMounted(() => {
   if (!getToken()) {
@@ -142,25 +155,25 @@ onMounted(() => {
           uni.navigateTo({ url: '/pages/login/login' })
         } else {
           uni.switchTab({ url: '/pages/homePage/homePage' })
-		  
         }
       }
     })
-  }
- 
+  } 
 })
-
-
+const gotoCommission = () => {
+	uni.navigateTo({
+		url: '/pages/commissionDetail/commissionDetail'
+	})
+}
 const gotoWithdraw = () => {
   uni.navigateTo({
-    url: '/pages/withdraw/withdraw'
-  });
-};
-const gotoCommission = () => {
-  uni.navigateTo({
-    url: '/pages/commissionDetail/commissionDetail'
-  });
-};
+    url: '/pages/withdraw/withdraw',
+    success: (res) => {
+      res.eventChannel.emit('walletData', walletData.value)
+    }
+  })
+}
+
 // 获取用户信息
 const getMyInfo = async () => {
   try {
@@ -168,21 +181,66 @@ const getMyInfo = async () => {
       url: '/app-api/weixin/user/get/myInfo',
       showLoading: true, 
       header: {
-      			  'Authorization': `Bearer ${getToken()}`
+        'Authorization': `Bearer ${getToken()}`
       }
     })
     
-    // 处理返回数据（兼容code=0和code=200）
     if (res.code === 0 || res.code === 200) {
-     
+     userInfo.value = res.data || {};
+      console.log('用户信息:', userInfo.value)
     } else {
       throw new Error(res.msg || '数据异常')
     }
   } catch (err) {
-    console.error('轮播图加载失败:', err)
+    console.error('获取用户信息失败:', err)
    
   }
 }
+// 获取佣金详情
+const getCommissionDetail = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/weixin/distribution/get/commission/info',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     
+      console.log('用户信息:', userInfo.value)
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
+// 获取钱包信息
+const getWalletInfo = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/wallet/get/Info',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     walletData.value = res.data || {};
+      console.log('钱包信息:')
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
+
 
 
 </script>

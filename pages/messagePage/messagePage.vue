@@ -2,50 +2,80 @@
 	<view>
 		<uni-popup ref="popup" type="center">
 		<view class="popup-content">
-			<view class="popup-title">{{ currentMessage.title }}</view>
-			<view class="popup-time">{{ currentMessage.time }}</view>
-			<view class="popup-body">{{ currentMessage.content }}</view>
+			<view class="popup-title">{{ currentMessage.templateNickname }}</view>
+			<view class="popup-time">{{ currentMessage.createTime }}</view>
+			<view class="popup-body">{{ currentMessage.templateContent }}</view>
 			<button class="popup-btn" @click="closePopup">确定</button>
 		</view>
 	</uni-popup>
 	<view class="container">
 		<scroll-view scroll-y="true" class="scroll-content">
-			<view class="message-item" @click="showMessageDetail">
+			<view 
+				v-for="(item, index) in messageList" 
+				:key="index" 
+				class="message-item" 
+				@click="showMessageDetail(item)"
+			>
 				<view class="item-left">
 					<image src="/static/images/message-icon.png" mode=""></image>
 					<view class="item-info">
-						<view class="item-title">系统升级</view>
-						<view class="item-time">2025.01.01 15:30:20</view>
+						<view class="item-title">{{ item.templateNickname }}</view>
+						<view class="item-time">{{ item.createTime }}</view>
 					</view>
 				</view>
-				<view class="item-right unread">未读</view>
-				<view class="item-right read">未读</view>
+				<view class="item-right read" v-if="item.readStatus">已读</view>
+				<view class="item-right unread" v-else>未读</view>
 			</view>
 		</scroll-view>
 		<view class="safe-view"></view>
 	</view>
 	</view>
-	
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref ,onMounted} from 'vue';
+import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'
+const { token, getToken } = useTokenStorage()
 
 const popup = ref(null);
-const currentMessage = ref({
-	title: '系统升级',
-	time: '2025.01.01 15:30:20',
-	content: '这里是消息的详细内容这里是消息的详细内容这里是消息的详细内容这里是消息的详细内容...'
-});
+const messageList = ref([]);
+const currentMessage = ref({});
 
-const showMessageDetail = () => {
-	console.log('11');
+const showMessageDetail = (item) => {
+	currentMessage.value = item;
 	popup.value.open();
 };
 
 const closePopup = () => {
 	popup.value.close();
 };
+onMounted(() => {
+	getCurrentMessage()
+ 
+
+})
+const getCurrentMessage = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/myMessageList',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     messageList.value = res.data || []; 
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取消息失败:', err)
+   
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>

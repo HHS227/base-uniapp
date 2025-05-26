@@ -19,97 +19,110 @@
         :key="item.id" 
         class="record-item"
       >
-        <image class="pet-image" :src="item.image" mode="aspectFill"></image>
+        <image class="pet-image" :src="item.image ?item.image  :'/static/images/蜜蜂.png'" mode="aspectFill"></image>
         <view class="info-content">
-          <text class="pet-name">{{ item.name }}</text>
-          <text class="pet-date">{{ item.date }}</text>
-          <text class="pet-amount">¥{{ item.amount }}</text>
+          <text class="pet-name">{{ item.beehiveName }}</text>
+          <text class="pet-date">{{ item.createTime }}</text>
+          <text class="pet-amount">¥{{ item.price||0 }}</text>
         </view>
-        <text class="status" :style="{color: getStatusColor(item.status)}">
-          {{ item.status }}
+        <text class="status" :style="{
+          color: getStatusColor(item.status),
+          borderColor: getStatusColor(item.status)
+        }">
+          {{ getStatusText(item.status) }}
         </text>
+      </view>
+      
+      <!-- 添加空状态展示 -->
+      <view v-if="filteredList.length === 0" class="empty-state">
+        <image src="/static/images/empty.png" class="empty-image"></image>
+        <text class="empty-text">暂无认养记录</text>
       </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed , onMounted} from 'vue';
+import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'
+const { token, getToken } = useTokenStorage()
 
 const tabs = [
-  { label: '全部认养', value: 'all' },
-  { label: '已认养', value: 'adopted' },
-  { label: '已发货', value: 'delivered' },
-  { label: '已完成', value: 'completed' }
+  { label: '全部认养', value: '' },
+  { label: '已认养', value: 0 },
+  { label: '已完成', value: 1 },
+  { label: '已取消', value: 2 }
 ];
 
-const activeTab = ref('all');
+const activeTab = ref('');
 
 // 模拟数据
 const records = ref([
   {
-    id: 1,
-    name: '小蜜蜂001号',
-    date: '2023-05-10',
-    amount: '299.00',
-    status: '已认养',
+    adoptCircle: 3,
+adoptType: 2,
+beehiveId: 24989,
+id: 6,
+price: 473,
+sharedPrice: 279,
+status: 2,
+userId: 23038,
      image: '/static/images/蜜蜂.png'
   },
-  {
-    id: 2,
-    name: '小蜜蜂002号',
-    date: '2023-06-15',
-    amount: '399.00',
-    status: '已发货',
-    image: '/static/images/蜜蜂.png'
-  },
-  {
-    id: 3,
-    name: '小蜜蜂003号',
-    date: '2023-07-20',
-    amount: '499.00',
-    status: '已完成',
-    image: '/static/images/蜜蜂.png'
-  },
-  {
-    id: 4,
-    name: '小蜜蜂004号',
-    date: '2023-08-05',
-    amount: '599.00',
-    status: '已认养',
-    image: '/static/images/蜜蜂.png'
-  },
-  {
-    id: 5,
-    name: '小蜜蜂005号',
-    date: '2023-09-12',
-    amount: '699.00',
-    status: '已发货',
-     image: '/static/images/蜜蜂.png'
-  }
+
 ]);
 
 const filteredList = computed(() => {
-  if (activeTab.value === 'all') return records.value;
-  
-  // 将导航栏value值与数据status字段对应
-  const statusMap = {
-    'adopted': '已认养',
-    'delivered': '已发货',
-    'completed': '已完成'
-  };
-  
-  return records.value.filter(item => item.status === statusMap[activeTab.value]);
+  if (activeTab.value === '') return records.value;
+  return records.value.filter(item => item.status === activeTab.value);
 });
 
 const getStatusColor = (status) => {
   const colors = {
-    '已认养': '#ff6f0e',
-    '已发货': '#1989fa',
-    '已完成': '#67c23a'
+    0: '#ff6f0e', // 已认养
+    1: '#67c23a', // 已完成
+    2: '#909399'  // 已取消
   };
-  return colors[status] || '#909399';
+  return colors[status] || '#1989fa';
 };
+
+const getStatusText = (status) => {
+  const texts = {
+    0: '已认养',
+    1: '已完成', 
+    2: '已取消'
+  };
+  return texts[status] || '未知状态';
+};
+
+onMounted(() => {
+  getRecordsList()
+ 
+
+})
+//获取认养记录记录
+const getRecordsList= async () => {
+	try {
+    const res = await request({
+      url: '/app-api/front/beehive/get/records/list',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+      records.value = res.data || [];
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取认养记录失败:', err)
+   
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -200,6 +213,25 @@ const getStatusColor = (status) => {
 		border: 2rpx solid rgba(153,153,153,0.7);
       }
     }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  
+  .empty-image {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
   }
 }
 </style>

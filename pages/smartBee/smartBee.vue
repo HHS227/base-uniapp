@@ -1,47 +1,61 @@
 <template>
   <view class="container">
     <scroll-view scroll-y class="content">
-      <!-- 养蜂问题 -->
-      <view class="question-item">
-        <text class="question-title">1. 养蜂问题</text>
+      <!-- 使用v-for遍历后端数据 -->
+      <view 
+        v-for="(item, index) in smartBeeList" 
+        :key="index" 
+        class="question-item"
+      >
+        <text class="question-title">{{ index + 1 }}. {{ item.title }}</text>
         <text class="question-content">
-          这里是关于养蜂常见问题的详细解答内容...
+          {{ item.content }}
         </text>
         <view class="divider"></view>
       </view>
-
-      <!-- 使用注意事项 -->
-      <view class="question-item">
-        <text class="question-title">2. 使用注意事项</text>
-        <text class="question-content">
-          这里是使用智能养蜂系统的注意事项说明...
-        </text>
-        <view class="divider"></view>
-      </view>
-
-      <!-- 如何智能养蜂 -->
-      <view class="question-item">
-        <text class="question-title">3. 如何智能养蜂</text>
-        <text class="question-content">
-          这里是智能养蜂的操作指南和步骤说明...
-        </text>
-        <view class="divider"></view>
-      </view>
-
-      <!-- 什么时候发货 -->
-      <view class="question-item">
-        <text class="question-title">4. 什么时候发货</text>
-        <text class="question-content">
-          这里是关于蜜蜂产品发货时间和流程的说明...
-        </text>
-        <view class="divider"></view>
+      
+      <!-- 空状态提示 -->
+      <view v-if="smartBeeList.length === 0" class="empty-state">
+        <image src="/static/images/empty.png" class="empty-image"></image>
+        <text class="empty-text">暂无相关内容</text>
       </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-// 可以使用组合式API添加逻辑
+import { ref,  onMounted} from 'vue';
+import { request } from '@/utils/request'
+
+const smartBeeList=ref([])
+
+onMounted(() => {
+  getSmartBeeList()
+ 
+
+})
+//获取智能养蜂内容
+
+const getSmartBeeList= async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/bee-keeping/get/list',
+      showLoading: true,
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+      smartBeeList.value = res.data || [] // 确保数据为数组
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取智能养蜂内容:', err)
+    uni.showToast({
+      title: '获取内容失败',
+      icon: 'error'
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -78,6 +92,25 @@
         background: #eee;
       }
     }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  
+  .empty-image {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
   }
 }
 </style>

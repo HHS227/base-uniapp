@@ -5,8 +5,8 @@
       <view class="item" v-for="(item, index) in addressList" :key="index" >
         <view class="info">
           <view>
-			<text class="name">{{item.name}}</text>
-			<text class="phone">{{item.phone}}</text>
+			<text class="name">{{item.consigneeName}}</text>
+			<text class="phone">{{item.phoneNumber}}</text>
 		  </view>
 		  <view >
 			  <image style="width:25rpx ; height: 25rpx;"  
@@ -15,7 +15,7 @@
 			  </image>
 			  </view>
         </view>
-        <view class="address">{{item.province}}{{item.city}}{{item.district}}{{item.detail}}</view>
+        <view class="address">{{item.addressDetail}}</view>
 		<view class="default-box">
           <view class="default-content" @click="setDefaultAddress(item.id)">
             <image 
@@ -43,10 +43,40 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed ,onMounted} from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
+import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'
+const { token, getToken } = useTokenStorage()
 
-// 使用假数据
+onMounted(() => {
+  getAddrdessList()
+})
+
+const getAddrdessList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/shipping-address/list',
+      showLoading: true, 
+	  header: {
+			  'Authorization': `Bearer ${getToken()}`
+		  }
+    })
+	console.log(res)
+    if (res.code === 0 || res.code === 200) {
+      addressList.value=res.data
+	
+		
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取地址失败:', err)
+   
+  }
+}
+// 地址列表数据
 const addressList = ref([
   {
     id: 1,
@@ -90,16 +120,39 @@ const editAddress = (item) => {
 }
 
 // 设置默认地址
-const setDefaultAddress = (id) => {
-  addressList.value.forEach(item => {
-    item.isDefault = item.id === id
-  })
-}
+const setDefaultAddress = async (id) => {
+  try {
+    const res = await request({
+      url: `/app-api/weixin/shipping-address/defaultShippingAddress?id=${id}`,
+      method: 'put',
+      showLoading: true,
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    });
+    
+    if (res.code === 0 || res.code === 200) {
+      // 更新本地数据
+      addressList.value.forEach(item => {
+        item.isDefault = item.id === id;
+      });
+      uni.showToast({
+        title: '设置默认地址成功',
+        icon: 'success'
+      });
+    } else {
+      throw new Error(res.msg || '设置失败');
+    }
+  } catch (err) {
+    console.error('设置默认地址失败:', err);
+    uni.showToast({
+      title: err.message || '设置失败',
+      icon: 'error'
+    });
+  }
+};
 
-// 检查是否有默认地址
-const hasDefault = computed(() => {
-  return addressList.value.some(item => item.isDefault)
-})
+
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,6 @@
 // /utils/request.js
-const BASE_URL = 'https://www.cdsrh.top'
+// const BASE_URL = 'https://www.cdsrh.top'
+const BASE_URL = 'http://192.168.1.132:48080'
 
 export const request = (options) => {
   // 显示加载中

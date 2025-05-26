@@ -8,9 +8,9 @@
           :key="index"
           @click="handleSurveyClick"
         >
-          <image class="survey-icon" :src="survey.icon"></image>
+          <image class="survey-icon" :src="survey.icon?survey.icon:'/static/images/养蜂.png'"></image>
           <view class="survey-info">
-            <text class="survey-title">{{ survey.title }}</text>
+            <text class="survey-title">{{ survey.templateName }}</text>
           </view>
           <view class="survey-action">
             <text class="action-text">立即参与</text>
@@ -18,12 +18,21 @@
           </view>
         </view>
       </view>
+      
+      <!-- 添加空状态提示 -->
+      <view v-if="surveyList.length === 0" class="empty-state">
+        <image src="/static/images/empty.png" class="empty-image"></image>
+        <text class="empty-text">暂无问卷调查</text>
+      </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+
+import { ref, onMounted } from 'vue'
+import { request } from '@/utils/request'
+
 
 const surveyList = ref([
   {
@@ -43,6 +52,31 @@ const surveyList = ref([
 const handleSurveyClick = () => {
   console.log('问卷点击事件');
 };
+
+onMounted(() => {
+  getQuestionList()
+
+})
+//获取问卷列表
+const getQuestionList= async () => {
+	try {
+    const res = await request({
+      url: '/app-api/weixin/questionnaire/get/list',
+      showLoading: true, 
+    
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+      surveyList.value=res.data || [] // 确保数据为数组
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -93,6 +127,25 @@ const handleSurveyClick = () => {
         }
       }
     }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  
+  .empty-image {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
   }
 }
 </style>

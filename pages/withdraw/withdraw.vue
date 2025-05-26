@@ -1,10 +1,10 @@
 <template>
   <view class="container">
-    <!-- 顶部黑色背景区域 -->
+    <!-- 修改顶部黑色区域显示现金余额 -->
     <view class="top-card black-bg">
       <view class="card-content">
         <view class="left-content">
-          <text class="amount">{{ cashBalance }}</text>
+          <text class="amount">{{ walletData.balance || 0 }}</text>
           <text class="label">账号余额</text>
         </view>
         <view class="right-content" @click="showCashWithdraw">
@@ -14,23 +14,22 @@
       </view>
     </view>
     
-    <!-- 下方橙色背景区域 -->
+    <!-- 修改下方橙色区域显示M币余额 -->
     <view class="bottom-card orange-bg">
       <view class="card-content">
         <view class="left-content">
-          <text class="amount">{{ mCoinBalance }}</text>
+          <text class="amount">{{ walletData.coin || 0 }}</text>
           <text class="label">M币</text>
         </view>
-        <image src="/static/images/myPapeImages/采蜜图标.png" class="honey-icon"></image>
+        <image src="/static/images/myPapeImages/使用工具生成图片 3@2x.png" class="honey-icon"></image>
       </view>
     </view>
     
-    <!-- 提现弹窗 -->
-   
+    <!-- 修改弹窗中的余额显示 -->
     <uni-popup ref="popup" type="center">
       <view class="popup-content center-popup">
         <text class="title">现金提现</text>
-        <text class="balance">当前有<text class="amount-highlight">{{ cashBalance }}</text>可提现</text>
+        <text class="balance">当前有<text class="amount-highlight">{{ walletData.balance || 0 }}</text>可提现</text>
         <text class="notice">提现3-5分钟到账</text>
         <button class="confirm-btn" @click="handleWithdraw">立即提现</button>
       </view>
@@ -39,30 +38,94 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { ref, onMounted } from 'vue'
+import { request } from '@/utils/request'
+import { useTokenStorage } from '../../utils/storage'
+const { token, getToken } = useTokenStorage()
 
-const cashBalance = ref('8239.32');
-const mCoinBalance = ref('682');
-const popup = ref(null);
+const popup = ref(null)
+const walletData = ref({
+  balance: 0,
+  coin: 0
+})
 
+onMounted(() => {
+  getWalletInfo()
+ 
+
+})
+const getWalletInfo = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/wallet/get/Info',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     walletData.value = res.data || {};
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
+
+
+const handleWithdraw = async () => {
+  try {
+   
+    if (walletData.value.balance === 0) {  
+      throw new Error('账号余额不足')
+    } else {
+      const res = await request({
+        url: '/app-api/weixin/pay/payouts',
+        method: 'POST',
+        data: { amount: walletData.value.balance },
+        showLoading: true,
+        header: {
+          'Authorization': `Bearer ${getToken()}`
+        }
+      })
+      
+      if (res.code === 0 || res.code === 200) {
+        uni.showToast({
+          title: '提现申请已提交',
+          icon: 'success'
+        });
+        await getWalletInfo()
+      } else {
+        throw new Error(res.msg || '提现失败')
+      }
+    }
+  } catch (err) {
+    console.error('提现失败:', err)
+    uni.showToast({
+      title: err.message || '提现失败',
+      icon: 'error'
+    });
+  } finally {
+    popup.value.close()
+  }
+};
 const showCashWithdraw = () => {
   popup.value.open();
 };
 
-const handleWithdraw = () => {
-  // 处理提现逻辑
-  uni.showToast({
-    title: '提现申请已提交',
-    icon: 'success'
-  });
-  popup.value.close();
-};
-
-onLoad(() => {
-  // 可以在这里加载用户资产数据
-});
 </script>
+
+
+
+
+
+
+
+
 
 <style lang="scss" scoped>
 .container {
