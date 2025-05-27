@@ -2,6 +2,7 @@
     <view class="container">
         <TransNavVue title="微信提现"></TransNavVue>
         
+        
         <view class="withdraw-card">
             <view class="title">提现金额</view>
             <view class="input-box">
@@ -25,12 +26,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import TransNavVue from '../../components/TransNav.vue'
+import { ref ,onMounted} from 'vue'
+
 import { request } from '@/utils/request'
 
+import TransNavVue from '../../components/TransNav.vue'
+
 const amount = ref('')
-const availableBalance = ref('15230.80')
+const availableBalance = ref('0')
 const wechatInfo = ref({
     nickname: '微信用户',
     avatar: ''
@@ -74,6 +77,21 @@ const submitWithdraw = async () => {
 const fillAllAmount = () => {
     amount.value = availableBalance.value
 }
+onMounted(() => {
+
+    const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  
+  // 通过页面参数获取数据
+  if (currentPage && currentPage.$vm) {
+    const eventChannel = currentPage.$vm.getOpenerEventChannel();
+    eventChannel.on('withdrawAmount', (data) => {
+        // 处理提现金额数据
+        availableBalance.value = data.amount||0
+    });
+  }
+  
+})
 </script>
 
 <style lang="scss" scoped>

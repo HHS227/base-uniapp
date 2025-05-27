@@ -78,29 +78,42 @@
 
 	//添加物品
 	const buyBtn = async () => {
-		
+	  if (!getToken()) {
+	    uni.showModal({
+	      title: '提示',
+	      content: '请先登录',
+	      success: (res) => {
+	        if (res.confirm) {
+	          uni.navigateTo({
+	            url: '/pages/login/login'
+	          })
+	        }
+	      }
+	    })
+	    return
+	  }
+	  
 	  try {
 	    const res = await request({
 	      url: '/app-api/trade/cart/add',
 	      showLoading: true, 
-		  method:'post',
-		  data:{
-			  skuId:commodityDetails.value.id,
-			  count:'1'
-		  },
-		  header: {
-			  'Authorization': `Bearer ${getToken()}`
-		  }
+	      method:'post',
+	      data:{
+	        skuId:commodityDetails.value.id,
+	        count:'1'
+	      },
+	      header: {
+	        'Authorization': `Bearer ${getToken()}`
+	      }
 	    })
 	    if (res.code === 0 || res.code === 200) {
-		uni.navigateTo({
-			url: '/pages/shoppingCart/shoppingCart'
-		})
+	      uni.navigateTo({
+	        url: '/pages/shoppingCart/shoppingCart'
+	      })
 	    } else {
 	      throw new Error(res.msg || '数据异常')
 	    }
-	  } 
-	  catch (err) {
+	  } catch (err) {
 	    console.error('获取商场数据失败:', err)
 	  }
 	}

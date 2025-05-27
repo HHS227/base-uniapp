@@ -73,35 +73,37 @@
 				<view class="my-bee-right" @click="collectBee">领取蜂箱</view>
 			</view>
 	
-			<view v-if="dataList.length>0" class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
-				<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
-				<view class="card-content">
-					<view class="card-top">
-						<view>
-							<image src="/static/images/蜂箱logo.png" mode="" class="my-bee-icon"></image>
-						</view>
-						<view class="top-info">
-							<view class="card-title">{{item.name}}</view>
-							<view class="group-purchase">
-								<AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
-								<view class="gruop-info">还差{{item.groupNumber}}人</view>
+			<view v-if="dataList.length>0">
+				<view class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
+					<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
+					<view class="card-content">
+						<view class="card-top">
+							<view>
+								<image src="/static/images/蜂箱logo.png" mode="" class="my-bee-icon"></image>
 							</view>
-							<view class="progress-info">
-								<view class="progress-content">
-									<view class="progress-val" :style="{ width: `${percent}%` }"></view>
+							<view class="top-info">
+								<view class="card-title">{{item.name}}</view>
+								<view class="group-purchase">
+									<AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
+									<view class="gruop-info">还差{{item.groupNumber}}人</view>
 								</view>
-								{{ percent + '%' }}
+								<view class="progress-info">
+									<view class="progress-content">
+										<view class="progress-val" :style="{ width: `${percent}%` }"></view>
+									</view>
+									{{ percent + '%' }}
+								</view>
 							</view>
 						</view>
-					</view>
-					<view class="card-bottom">
-						<view class="bottom-left">
-							领养类型：
-							<text class="bottom-text">{{item.beehiveType}}</text>
-						</view>
-						<view class="bottom-right">
-							领养时间：
-							<text class="bottom-text">{{item.createTime}}</text>
+						<view class="card-bottom">
+							<view class="bottom-left">
+								领养类型：
+								<text class="bottom-text">{{item.beehiveType}}</text>
+							</view>
+							<view class="bottom-right">
+								领养时间：
+								<text class="bottom-text">{{item.createTime}}</text>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -142,9 +144,7 @@ onShow(() => {
 onMounted(() => {
   getSwiperList()
   getInfoData()
-  if (getToken()) {
-    getInfoDataList()
-  }
+  
 })
 const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
 const infoData=ref({})
@@ -242,10 +242,26 @@ const gotoMyBeehive = (item) => { // 接收当前item参数
   });
 };
 // 领取蜂箱跳转
-const collectBee=()=>{
+const collectBee = () => {
+  if (!getToken()) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          })
+        }
+      }
+    })
+    return
+  }else{
 	uni.navigateTo({
-		url: '/pages/homePage/collectBee'
-	});
+    url: '/pages/homePage/collectBee'
+  });
+  }
+ 
 }
 
 
@@ -254,7 +270,7 @@ const collectBee=()=>{
 <style lang="scss" scoped>
 .container {
 	background-color: #f7f7f7;
-	height: 100vh;
+	padding-bottom: 40rpx;
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -524,11 +540,15 @@ const collectBee=()=>{
 			border-radius: 16rpx 16rpx 16rpx 16rpx;
 			margin: auto;
 			margin-top: 24rpx;
-			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
 			
 			image {
 				height: 120rpx;
 				width: 120rpx;
+				margin-top: 5rpx;
 			}
 			text {
 				font-weight: 400;
@@ -539,11 +559,12 @@ const collectBee=()=>{
 			    width: 228rpx;
 			    height: 44rpx;
 			    background: #FF6F0E;
-			    border-radius: 130rpx 130rpx 130rpx 130rpx;
+			    border-radius: 130rpx;
 			    line-height: 44rpx;
 			    font-weight: 500;
 			    font-size: 24rpx;
 			    color: #FFFFFF;
+			    
 			}
 		}
 	}

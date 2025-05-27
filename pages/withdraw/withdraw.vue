@@ -7,7 +7,11 @@
           <text class="amount">{{ walletData.balance || 0 }}</text>
           <text class="label">账号余额</text>
         </view>
+      <view>
+        
+      </view>
         <view class="right-content" @click="showCashWithdraw">
+          <image src="/static/images/myPapeImages/Frame (1).png" class="arrow-icon"></image>
           <text class="withdraw-text">余额提现</text>
           <image src="/static/images/myPapeImages/向右箭头.png" class="arrow-icon"></image>
         </view>
@@ -21,7 +25,7 @@
           <text class="amount">{{ walletData.coin || 0 }}</text>
           <text class="label">M币</text>
         </view>
-        <image src="/static/images/myPapeImages/使用工具生成图片 3@2x.png" class="honey-icon"></image>
+        <image style="width: 150rpx; height:150rpx" src="/static/images/myPapeImages/Group 1000009076.png" class="honey-icon"></image>
       </view>
     </view>
     
@@ -133,8 +137,9 @@ const showCashWithdraw = () => {
   
   .top-card, .bottom-card {
     border-radius: 16rpx;
-    padding: 30rpx;
+    padding: 50rpx;
     margin-bottom: 20rpx;
+    height: 230rpx;
     
     .card-content {
       display: flex;
@@ -165,6 +170,7 @@ const showCashWithdraw = () => {
         .withdraw-text {
           font-size: 28rpx;
           color: #fff;
+          margin-left: 10rpx;
         }
         
         .arrow-icon {
@@ -182,11 +188,11 @@ const showCashWithdraw = () => {
   }
   
   .black-bg {
-    background: #000;
+    background: linear-gradient(to bottom, #3b3b3b, #060608);
   }
   
   .orange-bg {
-    background: #ff6f0e;
+    background: #ff7f27;
   }
   
   .withdraw-btn {

@@ -94,7 +94,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .container {
-    height: 100vh;
+    padding-bottom: 120rpx;
     display: flex;
     flex-direction: column;
     background: #f7f7f7;

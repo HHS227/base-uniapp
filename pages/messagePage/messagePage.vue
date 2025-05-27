@@ -10,7 +10,12 @@
 	</uni-popup>
 	<view class="container">
 		<scroll-view scroll-y="true" class="scroll-content">
+			<view v-if="messageList.length === 0" class="empty-tip">
+				<image src="/static/images/empty.png" mode="aspectFit"></image>
+				<text>暂无消息数据</text>
+			</view>
 			<view 
+				v-else
 				v-for="(item, index) in messageList" 
 				:key="index" 
 				class="message-item" 
@@ -182,6 +187,24 @@ const getCurrentMessage = async () => {
 			.read {
 				color: #999999;
 			}
+		}
+	}
+	.empty-tip {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 500rpx;
+		
+		image {
+			width: 200rpx;
+			height: 200rpx;
+			margin-bottom: 30rpx;
+		}
+		
+		text {
+			font-size: 28rpx;
+			color: #999;
 		}
 	}
 }

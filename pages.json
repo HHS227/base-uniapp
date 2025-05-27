@@ -145,6 +145,14 @@
 			}
 		},
 		{
+			"path": "pages/deviceManagement/deviceManagement",
+			"style" : 
+			{
+				"navigationBarTitleText" : "设备管理",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/cashWithdrow/cashWithdrow",
 			"style" : 
 			{

@@ -12,7 +12,18 @@
 				<view class="avatar-content">
 					<view class="avatar-view">
 						<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
-						<image src="/static/images/myPapeImages/Group 1000008640@2x.png" mode="" class="sex-image"></image>
+						<image 
+						v-if="userInfo.gender == 1" 
+						src="/static/images/myPapeImages/Group 1000008640@2x.png" 
+						mode="" 
+						class="sex-image">
+						</image>
+						<image 
+						v-else-if="userInfo.gender == 0" 
+						src="/static/images/myPapeImages/Group 1000009029.png" 
+						mode="" 
+						class="sex-image">
+						</image>
 					</view>
 					<view class="name-content"  >
 						<text class="name-text">{{userInfo.nickname||'暂未登陆' }}</text>
@@ -245,21 +256,27 @@ const gotoOrderList = () => {
 }
 // 跳转蜂农入住
 const gotoBeeFarmerJion = () => {
-	if (!getToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
+    if (!getToken()) {
+        uni.showModal({
+            title: '提示',
+            content: '请先登录',
+            success: (res) => {
+                if (res.confirm) {
+                    uni.navigateTo({ url: '/pages/login/login' })
+                }
+            }
+        })
+    } else {
+        if (userInfo.value.isBeefarmer) {
+            uni.navigateTo({
+                url: '/pages/deviceManagement/deviceManagement'
+            })
+        } else {
+            uni.navigateTo({
+                url: '/pages/beeFarmerJion/beeFarmerJion'
+            })
         }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/beeFarmerJion/beeFarmerJion'
-  })
-	}
+    }
 }
 // 跳转智能养蜂
 const gotoSmartBee = () => {

@@ -14,17 +14,18 @@
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/commissionDetail/Group 1000009065.png"></image>
 						<text class="data-label">今日佣金</text>
-						<text class="data-value">1254.22</text>
+						<text class="data-value">{{ commissionData.todaySEarnings}}</text>
 					</view>
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/commissionDetail/Vector.png"></image>
 						<text class="data-label">累计佣金</text>
-						<text class="data-value">6890.50</text>
+	
+						<text class="data-value">{{ commissionData.cumulativeEarnings }}</text>
 					</view>
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/commissionDetail/Frame.png"></image>
 						<text class="data-label">当前收益</text>
-						<text class="data-value">15230.80</text>
+						<text class="data-value">{{ commissionData.currentEarnings }}</text>
 					</view>
 				</view>
 			
@@ -58,24 +59,60 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
+import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
+const { token, getToken } = useTokenStorage()
 
 const records = ref([
-    { time: '2023-10-15 14:30', amount: '+125.50' },
-    { time: '2023-10-14 09:15', amount: '+80.00' },
-	{ time: '2023-10-14 09:15', amount: '+80.00' },
-	{ time: '2023-10-14 09:15', amount: '+80.00' },
-	{ time: '2023-10-14 09:15', amount: '+80.00' },
+    { time: '2023-10-15 14:30', amount: '+0' },
+    { time: '2023-10-14 09:15', amount: '+0' },
+	{ time: '2023-10-14 09:15', amount: '+0' },
+	{ time: '2023-10-14 09:15', amount: '+0' },
+	{ time: '2023-10-14 09:15', amount: '+0' },
     // 可以添加更多记录数据
 ])
+const commissionData = ref({
+	cumulativeEarnings: 0,
+	currentEarnings: 0,
+	todaySEarnings: 0
+})
 const goToWithdraw = ()=>{
     uni.navigateTo({
-        url:'/pages/cashWithdrow/cashWithdrow'
+        url:'/pages/cashWithdrow/cashWithdrow',
+        success: (res) => {
+            res.eventChannel.emit('withdrawAmount', {
+                amount: commissionData.value.currentEarnings
+            })
+        }
     })
 }
+// 获取佣金详情
+const getCommissionDetail = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/weixin/distribution/get/commission/info',
+      showLoading: true, 
+      header: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     commissionData.value=res.data || {};
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
+
 
 onMounted(() => {
     // 这里可以添加获取收益记录的API调用
+	getCommissionDetail()
 })
 </script>
 
