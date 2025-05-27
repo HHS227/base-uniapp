@@ -152,14 +152,8 @@
 				"navigationStyle": "custom"
 			}
 		},
-		{
-			"path": "pages/inviteGift/inviteGift",
-			"style" : 
-			{
-				"navigationBarTitleText" : "邀请有礼",
-				"navigationStyle": "custom"
-			}
-		},
+	
+	
 		{
 			"path" : "pages/addressManager/editAddress",
 			"style" : 
