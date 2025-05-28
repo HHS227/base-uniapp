@@ -47,7 +47,7 @@ import { ref, computed ,onMounted} from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken} = useTokenStorage()
 
 onMounted(() => {
   getAddrdessList()
@@ -58,9 +58,7 @@ const getAddrdessList = async () => {
     const res = await request({
       url: '/app-api/weixin/shipping-address/list',
       showLoading: true, 
-	  header: {
-			  'Authorization': `Bearer ${getToken()}`
-		  }
+	
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
@@ -126,9 +124,7 @@ const setDefaultAddress = async (id) => {
       url: `/app-api/weixin/shipping-address/defaultShippingAddress?id=${id}`,
       method: 'put',
       showLoading: true,
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+      
     });
     
     if (res.code === 0 || res.code === 200) {

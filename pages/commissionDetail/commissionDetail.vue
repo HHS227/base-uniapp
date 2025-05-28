@@ -61,7 +61,7 @@ import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken } = useTokenStorage()
 
 const records = ref([
     { time: '2023-10-15 14:30', amount: '+0' },
@@ -92,9 +92,7 @@ const getCommissionDetail = async () => {
     const res = await request({
       url: '/app-api/weixin/distribution/get/commission/info',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+     
     })
     
     if (res.code === 0 || res.code === 200) {

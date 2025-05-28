@@ -41,7 +41,7 @@
 import { ref ,onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken} = useTokenStorage()
 
 const popup = ref(null);
 const messageList = ref([]);
@@ -65,9 +65,7 @@ const getCurrentMessage = async () => {
     const res = await request({
       url: '/app-api/WeiXinMini/index/get/myMessageList',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+     
     })
     
     if (res.code === 0 || res.code === 200) {

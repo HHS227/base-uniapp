@@ -1,16 +1,16 @@
+import { ref } from 'vue'
+
 export const useTokenStorage = () => {
   const token = ref(null)
   
-  // 初始化时从 storage 读取
-  token.value = uni.getStorageSync('token') || null
-  
   const getToken = () => {
-    return token.value // 直接返回 ref 的值，而不是 storage
+    const tokenData = uni.getStorageSync('token')
+    return tokenData || null
   }
   
   const setToken = (tokenData) => {
-    uni.setStorageSync('token', tokenData) // 仍然写入 storage
-    token.value = tokenData // 更新 ref
+    uni.setStorageSync('token', tokenData)
+    token.value = tokenData
   }
   
   const clearToken = () => {
@@ -18,12 +18,15 @@ export const useTokenStorage = () => {
     token.value = null
   }
   
+  // 获取的token
   const getAccessToken = () => {
-    return token.value?.accessToken || null // 直接读取 ref
+    const tokenData = getToken()
+    return tokenData?.accessToken || null
   }
-  
+  //获取刷新的token
   const getRefreshToken = () => {
-    return token.value?.refreshToken || null // 直接读取 ref
+    const tokenData = getToken()
+    return tokenData?.refreshToken || null
   }
   
   return {

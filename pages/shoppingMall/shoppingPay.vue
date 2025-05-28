@@ -231,7 +231,7 @@ import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
-const { getToken } = useTokenStorage()  // 新增获取token方法
+const { getAccessToken} = useTokenStorage()  // 新增获取token方法
 
 const selectedItems = ref([]);
 const totalPrice = ref(0);
@@ -242,9 +242,7 @@ const getShoppingList = async () => {
     const res = await request({
       url: '/app-api/weixin/shipping-address/list',
       showLoading: true, 
-	  header: {
-			  'Authorization': `Bearer ${getToken()}`
-		  }
+	  
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
@@ -265,9 +263,7 @@ const getPayList = async () => {
     // 1. 先创建订单
     const orderRes = await request({
       url: '/app-api/trade/cart/create/cartOrder',
-	  header: {
-			  'Authorization': `Bearer ${getToken()}`
-		  },
+	 
 
       data: {
         items: selectedItems.value.map(item => ({

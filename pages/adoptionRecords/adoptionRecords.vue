@@ -46,7 +46,7 @@
 import { ref, computed , onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken } = useTokenStorage()
 
 const tabs = [
   { label: '全部认养', value: '' },
@@ -107,9 +107,7 @@ const getRecordsList= async () => {
     const res = await request({
       url: '/app-api/front/beehive/get/records/list',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+     
     })
     
     if (res.code === 0 || res.code === 200) {

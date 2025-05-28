@@ -359,9 +359,7 @@ const getCommissionDetail = async () => {
     const res = await request({
       url: '/app-api/weixin/distribution/get/commission/info',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getAccessToken()}`
-      }
+    
     })
     
     if (res.code === 0 || res.code === 200) {
@@ -381,9 +379,7 @@ const getWalletInfo = async () => {
     const res = await request({
       url: '/app-api/WeiXinMini/wallet/get/Info',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getAccessToken()}`
-      }
+     
     })
     
     if (res.code === 0 || res.code === 200) {
@@ -403,9 +399,7 @@ const getMyInfo = async () => {
     const res = await request({
       url: '/app-api/weixin/user/get/myInfo',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getAccessToken()}`
-      }
+      
     })
     
     if (res.code === 0 || res.code === 200) {

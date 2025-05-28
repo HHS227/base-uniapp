@@ -70,7 +70,9 @@
 					<view>我的蜂箱</view>
 					<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
 				</view>
-				<view class="my-bee-right" @click="collectBee">领取蜂箱</view>
+				<view class="my-bee-right" @click="collectBee">
+					去领养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images//myPapeImages/向右箭头.png" mode="" ></image>
+				</view>
 			</view>
 	
 			<view v-if="dataList.length>0">
@@ -415,15 +417,13 @@ const collectBee = () => {
 			height: 76rpx;
 			.my-bee-right {
 				margin-top: 30rpx;
-				margin-right: 30rpx;
 				width: 140rpx;
 				height: 46rpx;
-				text-align: center;
+				display: flex;
+				align-items: center;
 				font-size: 14px;
-				color:#FF6F0E;
-				background-color: #fff;
-				border: 1px solid #FF6F0E;
-				border-radius: 20rpx;
+				
+			
 			}
 			
 			

@@ -46,7 +46,7 @@
 import { ref, computed , onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken} = useTokenStorage()
 
 const tabs = [
   { label: '全部订单', value: '' },
@@ -110,9 +110,7 @@ const getRecordsList= async () => {
     const res = await request({
       url: '/app-api/weixin/order/get/my',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+    
     })
     
     if (res.code === 0 || res.code === 200) {

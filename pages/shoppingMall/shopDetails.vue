@@ -43,7 +43,7 @@
 	} from '@/utils/request'
 	import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
-	const { getToken } = useTokenStorage()  // 新增获取token方法
+	const { getAccessToken } = useTokenStorage()  // 新增获取token方法
 	// 删除useRoute引入，改用uni-app方式获取参数
 	const commodityDetails = ref({
 		"id": 28522,
@@ -78,7 +78,7 @@
 
 	//添加物品
 	const buyBtn = async () => {
-	  if (!getToken()) {
+	  if (!getAccessToken()) {
 	    uni.showModal({
 	      title: '提示',
 	      content: '请先登录',
@@ -102,9 +102,7 @@
 	        skuId:commodityDetails.value.id,
 	        count:'1'
 	      },
-	      header: {
-	        'Authorization': `Bearer ${getToken()}`
-	      }
+	    
 	    })
 	    if (res.code === 0 || res.code === 200) {
 	      uni.navigateTo({

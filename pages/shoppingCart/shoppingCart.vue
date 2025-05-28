@@ -63,7 +63,7 @@ import { ref, computed, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'  // 新增导入
 
-	const { getToken } = useTokenStorage()  // 新增获取token方法
+	const { getAccessToken } = useTokenStorage()  // 新增获取token方法
 
 const isEdit = ref(false);
 const cartList = ref([]);
@@ -73,9 +73,7 @@ const getCartList = async () => {
     const res = await request({
       url: '/app-api/trade/cart/list',
       showLoading: true, 
-	  header: {
-			  'Authorization': `Bearer ${getToken()}`
-		  }
+	  
     })
 	console.log(res)
     if (res.code === 0 || res.code === 200) {
@@ -165,9 +163,7 @@ const toggleSelect = async (item) => {
         ids: [item.sku.id],
         selected: item.selected
       },
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+     
     });
   } catch (err) {
     console.error('更新选中状态失败:', err);
@@ -188,9 +184,7 @@ const updateCount = async (item, newCount) => {
         id: item.sku.id,
         count: newCount
       },
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+   
     });
     // 接口调用成功后，可以添加成功提示
     uni.showToast({

@@ -45,7 +45,7 @@
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-const { token, getToken } = useTokenStorage()
+const { getAccessToken } = useTokenStorage()
 
 const popup = ref(null)
 const walletData = ref({
@@ -63,9 +63,7 @@ const getWalletInfo = async () => {
     const res = await request({
       url: '/app-api/WeiXinMini/wallet/get/Info',
       showLoading: true, 
-      header: {
-        'Authorization': `Bearer ${getToken()}`
-      }
+     
     })
     
     if (res.code === 0 || res.code === 200) {
@@ -92,9 +90,7 @@ const handleWithdraw = async () => {
         method: 'POST',
         data: { amount: walletData.value.balance },
         showLoading: true,
-        header: {
-          'Authorization': `Bearer ${getToken()}`
-        }
+       
       })
       
       if (res.code === 0 || res.code === 200) {

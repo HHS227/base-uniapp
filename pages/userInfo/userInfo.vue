@@ -68,7 +68,7 @@ import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import { onMounted } from 'vue'
 
-const { getToken } = useTokenStorage()
+const { getAccessToken} = useTokenStorage()
 
 const userInfo = ref({
  
@@ -129,9 +129,7 @@ const updateUserInfo = async (type, value) => {
             url: '/app-api/weixin/user/modify/info',
             method: 'POST',
             data: data,
-            header: {
-                'Authorization': `Bearer ${getToken()}`
-            }
+           
         });
         
         if (res.code === 0 || res.code === 200) {
@@ -175,9 +173,7 @@ const updateNickname = async (nickname) => {
             data: {
                 nickname: nickname
             },
-            header: {
-                'Authorization': `Bearer ${getToken()}`
-            }
+           
         })
         
         if (res.code === 0 || res.code === 200) {
@@ -203,9 +199,7 @@ const getUserInfo = async () => {
         const res = await request({
             url: '/app-api/weixin/user/get/myInfo',
             method: 'GET',
-            header: {
-                'Authorization': `Bearer ${getToken()}`
-            }
+           
         });
         
         if (res.code === 0 || res.code === 200) {
@@ -226,7 +220,7 @@ const getUserInfo = async () => {
 };
 
 onMounted(() => {
-    if (getToken()) {
+    if (getAccessToken()) {
         getUserInfo();
     } else {
         uni.showModal({
