@@ -129,13 +129,13 @@ import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 
-const { token, getToken } = useTokenStorage()
 
+const {  getAccessToken } = useTokenStorage()
 
 
 // 使用uniapp的onShow生命周期
 onShow(() => {
-  if (getToken()) {
+  if (getAccessToken()) {
     console.log('页面显示，检测到token')
     getInfoDataList()
   }
@@ -199,7 +199,7 @@ const getInfoDataList = async () => {
       url: '/app-api/WeiXinMini/index/get/MyBeehiveInfo',
       showLoading: true, 
 	  header: {
-			  'Authorization': `Bearer ${getToken()}`
+			  'Authorization': `Bearer ${getAccessToken()}`
 		  }
     })
     // 处理返回数据（兼容code=0和code=200）
@@ -243,7 +243,7 @@ const gotoMyBeehive = (item) => { // 接收当前item参数
 };
 // 领取蜂箱跳转
 const collectBee = () => {
-  if (!getToken()) {
+  if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',

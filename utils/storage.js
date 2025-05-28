@@ -4,12 +4,13 @@ export const useTokenStorage = () => {
   const token = ref(null)
   
   const getToken = () => {
-    return uni.getStorageSync('token') || null
+    const tokenData = uni.getStorageSync('token')
+    return tokenData || null
   }
   
-  const setToken = (newToken) => {
-    uni.setStorageSync('token', newToken)
-    token.value = newToken
+  const setToken = (tokenData) => {
+    uni.setStorageSync('token', tokenData)
+    token.value = tokenData
   }
   
   const clearToken = () => {
@@ -17,10 +18,23 @@ export const useTokenStorage = () => {
     token.value = null
   }
   
+  // 获取的token
+  const getAccessToken = () => {
+    const tokenData = getToken()
+    return tokenData?.accessToken || null
+  }
+  //获取刷新的token
+  const getRefreshToken = () => {
+    const tokenData = getToken()
+    return tokenData?.refreshToken || null
+  }
+  
   return {
     token,
     getToken,
     setToken,
-    clearToken
+    clearToken,
+    getAccessToken,
+    getRefreshToken
   }
 }

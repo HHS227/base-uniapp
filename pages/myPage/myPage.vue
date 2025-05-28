@@ -142,7 +142,7 @@ import { useTokenStorage } from '../../utils/storage'
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
 import {ref,onMounted,} from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-const { token, getToken } = useTokenStorage()
+const {  getAccessToken } = useTokenStorage()
 import { request } from '@/utils/request'
 
 const userInfo = ref({})
@@ -150,7 +150,9 @@ const walletData = ref({})
 const commissionData = ref({})
 
 onShow(() => {
-  if (getToken()) {
+  if (getAccessToken()) {
+	console.log('onShow',getAccessToken(),)
+    // 重新获取用户信息和钱包信息
     getMyInfo()
 	getCommissionDetail()
 	getWalletInfo()
@@ -158,7 +160,7 @@ onShow(() => {
 })
 
 onMounted(() => {
-  if (!getToken()) {
+  if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -175,7 +177,7 @@ onMounted(() => {
 
 // 跳转佣金详情
 const gotoCommission = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -195,7 +197,7 @@ const gotoCommission = () => {
 }
 // 跳转提现
 const gotoWithdraw = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -220,7 +222,7 @@ const gotoWithdraw = () => {
 
 // 跳转认养记录
 const gotAdoptionRecords = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -238,7 +240,7 @@ const gotAdoptionRecords = () => {
 }
 // 跳转订单列表
 const gotoOrderList = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -256,7 +258,7 @@ const gotoOrderList = () => {
 }
 // 跳转蜂农入住
 const gotoBeeFarmerJion = () => {
-    if (!getToken()) {
+    if (!getAccessToken()) {
         uni.showModal({
             title: '提示',
             content: '请先登录',
@@ -280,7 +282,7 @@ const gotoBeeFarmerJion = () => {
 }
 // 跳转智能养蜂
 const gotoSmartBee = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -298,7 +300,7 @@ const gotoSmartBee = () => {
 }
 // 跳转消息
 const gotoMessagePage = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -316,7 +318,7 @@ const gotoMessagePage = () => {
 }
 // 跳转问卷调查
 const gotoSurveyList = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -334,7 +336,7 @@ const gotoSurveyList = () => {
 }
 // 跳转用户信息
 const gotoUserInfo = () => {
-	if (!getToken()) {
+	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
       content: '请先登录',
@@ -358,7 +360,7 @@ const getCommissionDetail = async () => {
       url: '/app-api/weixin/distribution/get/commission/info',
       showLoading: true, 
       header: {
-        'Authorization': `Bearer ${getToken()}`
+        'Authorization': `Bearer ${getAccessToken()}`
       }
     })
     
@@ -380,7 +382,7 @@ const getWalletInfo = async () => {
       url: '/app-api/WeiXinMini/wallet/get/Info',
       showLoading: true, 
       header: {
-        'Authorization': `Bearer ${getToken()}`
+        'Authorization': `Bearer ${getAccessToken()}`
       }
     })
     
@@ -402,7 +404,7 @@ const getMyInfo = async () => {
       url: '/app-api/weixin/user/get/myInfo',
       showLoading: true, 
       header: {
-        'Authorization': `Bearer ${getToken()}`
+        'Authorization': `Bearer ${getAccessToken()}`
       }
     })
     

@@ -74,7 +74,10 @@ const handleWechatLogin = async (e) => {
     })
     
     if(res.code === 0 || res.code === 200) {
-      setToken(res.data.accessToken)
+      setToken({
+        accessToken: res.data.accessToken,
+        refreshToken: res.data.refreshToken
+      })
       uni.switchTab({ url: '/pages/myPage/myPage' })
     } else {
       throw new Error(res.msg || '登录失败')
@@ -98,7 +101,7 @@ const handleAgreementChange = async (e) => {
         desc: '获取用户信息用于完善资料',
         lang: 'zh_CN'
       })
-      console.log('用户信息获取成功:', userInfoRes.value)
+      
     } catch(err) {
       console.error('获取用户信息失败:', err)
       agreed.value = false
