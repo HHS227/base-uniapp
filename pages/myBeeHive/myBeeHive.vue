@@ -1,10 +1,11 @@
 <template>
-<TransNavVue title="我的蜂场"></TransNavVue>
+<view>
+	<TransNavVue title="我的蜂场"></TransNavVue>
 	<view class="container">
 		<view class="swiper-content">
 			<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
-				<swiper-item class="swiper-item">
-					<image src="/static/images/轮播图(1).png" class="swiper-image" mode=""></image>
+				<swiper-item class="swiper-item" v-for="item in MyBeehiveInfo.images" :key="item">
+					<image :src="item" class="swiper-image" mode=""></image>
 				</swiper-item>
 			
 			</swiper>
@@ -16,26 +17,26 @@
 					<view class="info-content">
 						<view class="goods-price">
 							￥
-							<text>218</text>
+							<text>{{ MyBeehiveInfo.price }}</text>
 						</view>
-						<view class="goods-weight">净重500g</view>
+						
 					</view>
-					<view class="goods-name">商品名称</view>
+					<view class="goods-name">{{MyBeehiveInfo.name }}</view>
 				</view>
 				<view class="user-avatars">
-					<AvatarStackVue :avatars="avatarList" :size="48"></AvatarStackVue>
+					<AvatarStackVue :avatars="MyBeehiveInfo.avatars" :size="48"></AvatarStackVue>
 				</view>
 			</view>
 			<view class="progress-panel">
 				<view class="progress-title">
 					<text class="title-text">进度报告</text>
-					<text class="progress-text">50%交付进度</text>
+					<text class="progress-text">{{(MyBeehiveInfo.process/5) *100}}%交付进度</text>
 				</view>
 				<view class="progress-content">
 					<view class="steps-container">
 						<view class="step-item" v-for="(step, index) in steps" :key="index">
 							<view class="step-ccontent">
-								<image :src="step.completed ? step.curl : step.curl" class="step-icon"></image>
+								<image :src="step.completed ? step.url : step.curl" class="step-icon"></image>
 								<text :class="['step-text', { 'completed-text': step.completed }]">{{ step.text }}</text>
 							</view>
 							<image v-if="index < steps.length - 1" src="/static/images/下一步.png" class="arrow-icon"></image>
@@ -48,59 +49,133 @@
 				<view class="state-info">
 					<view class="info-item">
 						<view class="info-val">
-							80
+							{{ MyBeehiveInfo.beeAttendance }}
 							<text class="unit">/%</text>
 						</view>
 						<view class="info-name">蜜蜂出勤</view>
 					</view>
 					<view class="info-item">
 						<view class="info-val">
-							80
+							{{ MyBeehiveInfo.beeYield }}
 							<text class="unit">/万斤</text>
 						</view>
 						<view class="info-name">蜂蜜产量</view>
 					</view>
 					<view class="info-item">
 						<view class="info-val">
-							80
+							{{ MyBeehiveInfo.beeYield }}
 							<text class="unit">/万箱</text>
 						</view>
 						<view class="info-name">蜂箱领养</view>
 					</view>
 					<view class="info-item">
 						<view class="info-val">
-							80
-							<text class="unit">/万斤</text>
+							{{ MyBeehiveInfo.beeNumber }}
+							<text class="unit">/万只</text>
 						</view>
 						<view class="info-name">蜜蜂数量</view>
 					</view>
 				</view>
 			</view>
-			<view class="message-content">
-				<view class="message-item" v-for="item in 4">
-					<text class="message-type">任务描述</text>
-					2025-01-02 14:20:25 完成打扫
+			
+				<view class="message-content">
+					<view v-if="MyBeehiveTask.length > 0">
+						<view class="message-item" v-for="item in MyBeehiveTask" :key="item">
+							<text class="message-type">{{ item.name }}</text>
+							{{item.finishUser }} {{ item.status }}
+						</view>
+					</view>
+					<view v-else class="message-item">
+						<text class="message-type">暂无任务描述</text>
+					</view>
 				</view>
-			</view>
+		
 		</scroll-view>
 		
 	</view>
+</view>
 </template>
 
 <script setup>
 
 import AvatarStackVue from '../../components/AvatarStack.vue';
-import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
-
-const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
+import { ref, onMounted, watch } from 'vue'
+import { request } from '@/utils/request'
+const MyBeehiveInfo=ref({})
+const MyBeehiveTask=ref([])
+const beeId=ref('')
 const steps = ref([
-	{ text: '开始', completed: true, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
-	{ text: '采蜜', completed: true, url: '/static/images/采蜜.png', curl: '/static/images/采蜜s.png' },
+	{ text: '开始', completed: false, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
+	{ text: '采蜜', completed: false, url: '/static/images/采蜜.png', curl: '/static/images/采蜜s.png' },
 	{ text: '分装', completed: false, url: '/static/images/分装.png', curl: '/static/images/分装s.png' },
 	{ text: '完成', completed: false, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
 	{ text: '交付', completed: false, url: '/static/images/交付.png', curl: '/static/images/交付s.png' }
 ]);
+
+watch(MyBeehiveInfo, (newVal) => {
+    const processValue = parseInt(newVal.process);
+    if (!isNaN(processValue)) {
+        steps.value = steps.value.map((step, index) => ({
+            ...step,
+            completed: index < processValue
+        }));
+    }
+	console.log(steps.value)
+}, { immediate: true });
+onMounted(() => {
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  
+ 
+
+  // 保留原有事件通道监听
+  if (currentPage && currentPage.$vm) {
+    const eventChannel = currentPage.$vm.getOpenerEventChannel();
+    eventChannel.on('itemId', (data) => {
+      if (data?.beeId) {
+        beeId.value = data.beeId;
+        getBeeHiveInfo();
+		getBeeHiveTask()
+      } else {
+        console.error('未接收到有效的beeId参数');
+        uni.showToast({ title: '参数错误', icon: 'none' });
+      }
+    });
+  }
+})
+const getBeeHiveInfo = async () => {
+  try {
+    const res = await request({
+      url: `/app-api/front/beehive/get/info?id=${beeId.value}`,
+      showLoading: true, 
+    })
+    if (res.code === 0 ) {
+		MyBeehiveInfo.value=res.data
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err)
+   
+  }
+}
+const getBeeHiveTask = async () => {
+  try {
+    const res = await request({
+      url: `/app-api/front/beehive/get/taskInfo?id=${beeId.value}`,
+      showLoading: true, 
+    })
+    if (res.code === 0 ) {
+		MyBeehiveTask.value=res.data
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err)
+   
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -84,27 +84,27 @@
 								<image src="/static/images/蜂箱logo.png" mode="" class="my-bee-icon"></image>
 							</view>
 							<view class="top-info">
-								<view class="card-title">{{item.name}}</view>
+								<view class="card-title">{{item.beehiveName}}</view>
 								<view class="group-purchase">
 									<AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
-									<view class="gruop-info">还差{{item.groupNumber}}人</view>
+									<view class="gruop-info">还差{{item.adoptNumber||0}}人</view>
 								</view>
 								<view class="progress-info">
 									<view class="progress-content">
-										<view class="progress-val" :style="{ width: `${percent}%` }"></view>
+										<view class="progress-val" :style="{ width: `${Math.min((item.groupNumber/5)*100, 100)}%` }"></view>
 									</view>
-									{{ percent + '%' }}
+									{{ Math.min(((item.adoptNumber) /5)*100, 100) + '%' }}
 								</view>
 							</view>
 						</view>
 						<view class="card-bottom">
 							<view class="bottom-left">
 								领养类型：
-								<text class="bottom-text">{{item.beehiveType}}</text>
+								<text class="bottom-text">{{item.adoptType==1?'单独领养':'拼团'}}</text>
 							</view>
 							<view class="bottom-right">
 								领养时间：
-								<text class="bottom-text">{{item.createTime}}</text>
+								<text class="bottom-text">{{formatDateTime(item.createTime)}}</text>
 							</view>
 						</view>
 					</view>
@@ -130,11 +130,7 @@ import { ref, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-
-
 const {  getAccessToken } = useTokenStorage()
-
-
 // 使用uniapp的onShow生命周期
 onShow(() => {
   if (getAccessToken()) {
@@ -200,9 +196,7 @@ const getInfoDataList = async () => {
     const res = await request({
       url: '/app-api/WeiXinMini/index/get/MyBeehiveInfo',
       showLoading: true, 
-	  header: {
-			  'Authorization': `Bearer ${getAccessToken()}`
-		  }
+	
     })
     // 处理返回数据（兼容code=0和code=200）
     if (res.code === 0 || res.code === 200) {
@@ -226,21 +220,15 @@ const gotoHiveData = () => {
 	});
 };
 // 我的蜂箱点击查看详情
-const gotoMyBeehive = (item) => { // 接收当前item参数
-  // 示例：传递item的name和beehiveType（根据实际数据结构调整）
-  const params = {
-    name: item.name,
-    beehiveType: item.beehiveType,
-    groupNumber: item.groupNumber,
-    createTime: item.createTime
-  };
-  // 对参数进行URL编码
-  const paramString = Object.keys(params)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-    .join('&');
-  
+const gotoMyBeehive = (item) => { 
   uni.navigateTo({
-    url: `/pages/myBeeHive/myBeeHive?${paramString}`
+    url: '/pages/myBeeHive/myBeeHive',
+	success: (res) => {
+      res.eventChannel.emit('itemId', {
+        beeId: item.beehiveId,
+        
+      });
+    }
   });
 };
 // 领取蜂箱跳转
@@ -264,6 +252,12 @@ const collectBee = () => {
   });
   }
  
+}
+// 时间戳转换
+const formatDateTime = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 
 
@@ -570,3 +564,5 @@ const collectBee = () => {
 	}
 }
 </style>
+
+

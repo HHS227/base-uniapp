@@ -9,9 +9,9 @@
    
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
             <view class="scroll-content">
-                <view class="goods-item" v-for="item in shoppingList" :key="item">
-                    <image src="/static/logo.png" mode="" class="goods-image"></image>
-                    <view class="goods-title" @click="shopDetails(item)">{{item.name}}</view>
+                <view class="goods-item" v-for="item in shoppingList" :key="item" @click="shopDetails(item)">
+                    <image :src="item.imgUrl" mode="" class="goods-image"></image>
+                    <view class="goods-title" >{{item.name}}</view>
                     <view class="goods-info">
                         <view class="goods-weight">
                             重量：
@@ -23,10 +23,10 @@
                         <view class="goods-price">
                             ￥
                             <text>{{item.price||'-'}}</text>
-                            <view class="normal-price">￥8888</view>
+                            <view class="normal-price">￥{{item.originalPrice||0}}</view>
                         </view>
-                        <view>
-                            <button class="buy-btn" @click='shoppingBuy'>购买</button>
+                        <view @click.stop="shoppingBuy(item)">
+                            <button class="buy-btn">购买</button>
                         </view>
                     </view>
                 </view>
@@ -42,6 +42,9 @@ import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 const shoppingList=ref([])
+import { useTokenStorage } from '../../utils/storage'
+
+const {  getAccessToken } = useTokenStorage()
 
 const gotoMessage =()=>{
     uni.navigateTo({
@@ -49,18 +52,51 @@ const gotoMessage =()=>{
     })
 }
 const gotoCart = ()=>{
-    uni.navigateTo({
+    if (!getAccessToken()) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({ url: '/pages/login/login' })
+        }
+      }
+    })
+	}else{
+        uni.navigateTo({
         url:'/pages/shoppingCart/shoppingCart'
     })
+	}
+   
 }
 const shopDetails = (item)=>{
     uni.navigateTo({
         url:`/pages/shoppingMall/shopDetails?id=${item.id}`
     })
 }
-const shoppingBuy = ()=>{
+const shoppingBuy = (item)=>{
+    
+const selectedItems = [
+    {
+        count: 1,
+sku: {
+    id:item.id, 
+    picUrl: item.imgUrl,
+    name: item.name,
+     weight: item.weight,
+      price: item.price *100,}
+
+    }
+]
+  
     uni.navigateTo({
-        url:'/pages/shoppingMall/shoppingPay'
+        url:'/pages/shoppingMall/shoppingPay',
+        success: (res) => {
+         res.eventChannel.emit('acceptSelectedItems', {
+        selectedItems: selectedItems,
+        totalPrice: item.price * 100
+      });
+    }
     })
 }
 

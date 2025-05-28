@@ -50,7 +50,7 @@
 		<view class="pay-bottom">
 			<view class="pay-content" >
 				<view class="total">
-					合计({{ selectedCount }})：
+					合计：
 					<view class="price">
 						
 						{{(totalPrice/100).toFixed(2) ||'-'}}
@@ -68,7 +68,7 @@
 <style lang="scss" scoped>
 .container {
 	background-color: #f7f7f7;
-	height: 100vh;
+	padding-bottom:40rpx ;
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -230,6 +230,7 @@
 import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'  // 新增导入
+import TransNavVue from '../../components/TransNav.vue';
 
 const { getAccessToken} = useTokenStorage()  // 新增获取token方法
 
@@ -317,18 +318,25 @@ const getPayList = async () => {
 }
 
 onMounted(() => {
-  // 使用uni-app内置方法获取页面实例
+  
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  
-  // 通过页面参数获取数据
   if (currentPage && currentPage.$vm) {
     const eventChannel = currentPage.$vm.getOpenerEventChannel();
     eventChannel.on('acceptSelectedItems', (data) => {
-      selectedItems.value = data.selectedItems;
+	
+      if (data?.selectedItems) {
+		console.log(data)
+	selectedItems.value = data.selectedItems;
       totalPrice.value = data.totalPrice;
+      getShoppingList()
+      } else {
+      
+        uni.showToast({ title: '参数错误', icon: 'none' });
+      }
     });
   }
-  getShoppingList()
+  
+  
 });
 </script>

@@ -26,7 +26,7 @@
 		</view>
 
 		<view class="details-bottom">
-			<button class="settle-btn" @click="buyBtn">立即购买</button>
+			<button class="settle-btn" @click="buyBtn">加入购物车</button>
 		</view>
 
 	</view>
