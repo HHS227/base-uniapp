@@ -22,7 +22,7 @@
         <image class="pet-image" :src="item.image ?item.image  :'/static/images/蜜蜂.png'" mode="aspectFill"></image>
         <view class="info-content">
           <text class="pet-name">{{ item.productName }}</text>
-          <text class="pet-date">{{ item.createTime ||'2025-05-25'}}</text>
+          <text class="pet-date">{{ formatDateTime(item.createTime) ||'2025-05-25'}}</text>
           <text class="pet-amount">¥{{ item.amount||0 }}</text>
         </view>
         <text class="status" :style="{
@@ -36,7 +36,7 @@
       <!-- 添加空状态展示 -->
       <view v-if="filteredList.length === 0" class="empty-state">
         <image src="/static/images/empty.png" class="empty-image"></image>
-        <text class="empty-text">暂无认养记录</text>
+        <text class="empty-text">暂无订单记录</text>
       </view>
     </scroll-view>
   </view>
@@ -123,6 +123,12 @@ const getRecordsList= async () => {
     console.error('获取认养记录失败:', err)
    
   }
+}
+// 时间戳转换
+const formatDateTime = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 </script>
 

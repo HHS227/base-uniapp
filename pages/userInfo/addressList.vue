@@ -1,22 +1,27 @@
 <template>
   <view class="container">
-   
     <scroll-view scroll-y class="list">
-      <view class="item" v-for="(item, index) in addressList" :key="index" >
+      <view class="item" v-for="item in addressList" :key="item.id">
         <view class="info">
           <view>
-			<text class="name">{{item.consigneeName}}</text>
-			<text class="phone">{{item.phoneNumber}}</text>
-		  </view>
-		  <view >
-			  <image style="width:25rpx ; height: 25rpx;"  
-			  src="/static/images/myPapeImages/edit.png" class="edit" 
-			   @click="editAddress(item)">
-			  </image>
-			  </view>
+            <text class="name">{{item.consigneeName}}</text>
+            <text class="phone">{{item.phoneNumber}}</text>
+          </view>
+          <view>
+            <image 
+              style="width:25rpx ; height: 25rpx;"  
+              src="/static/images/myPapeImages/edit.png" 
+             
+              @click="editAddress(item)"></image>
+          </view>
         </view>
-        <view class="address">{{item.addressDetail}}</view>
-		<view class="default-box">
+        <view class="address">
+          <text>{{item.province}} </text>
+          <text>{{item.city}} </text>
+          <text>{{item.region}} </text>
+          {{item.addressDetail}}
+        </view>
+        <view class="default-box">
           <view class="default-content" @click="setDefaultAddress(item.id)">
             <image 
               v-if="item.isDefault"
@@ -30,9 +35,8 @@
             ></image>
             <text>设为默认地址</text>
           </view>
-          <view>删除</view>
+          <view @click.stop="deleteAddress(item.id)">删除</view>
         </view>
-        
       </view>
     </scroll-view>
     
@@ -43,60 +47,49 @@
 </template>
 
 <script setup>
-import { ref, computed ,onMounted} from 'vue'
-import TransNavVue from '../../components/TransNav.vue'
+import { ref, onMounted, } from 'vue'
 import { request } from '@/utils/request'
-import { useTokenStorage } from '../../utils/storage'
-const { getAccessToken} = useTokenStorage()
+import { onShow } from '@dcloudio/uni-app';
 
-onMounted(() => {
-  getAddrdessList()
-})
+const addressList = ref([])
+const refreshing = ref(false)
 
-const getAddrdessList = async () => {
+// 获取地址列表
+const getAddressList = async () => {
+  if (refreshing.value) return
+  refreshing.value = true
+  
   try {
     const res = await request({
       url: '/app-api/weixin/shipping-address/list',
-      showLoading: true, 
-	
+      showLoading: true
     })
-	console.log(res)
+    
     if (res.code === 0 || res.code === 200) {
-      addressList.value=res.data
-	
-		
+      addressList.value = res.data || []
     } else {
-      throw new Error(res.msg || '数据异常')
+      throw new Error(res.msg || '获取地址列表失败')
     }
-  } 
-  catch (err) {
-    console.error('获取地址失败:', err)
-   
+  } catch (err) {
+    console.error('获取地址列表失败:', err)
+    uni.showToast({
+      title: err.message || '获取地址列表失败',
+      icon: 'none'
+    })
+  } finally {
+    refreshing.value = false
   }
 }
-// 地址列表数据
-const addressList = ref([
-  {
-    id: 1,
-    name: '张三',
-    phone: '13800138000',
-    province: '广东省',
-    city: '深圳市',
-    district: '南山区',
-    detail: '科技园路1号',
-    isDefault: true
-  },
-  {
-    id: 2,
-    name: '李四',
-    phone: '13900139000',
-    province: '北京市',
-    city: '朝阳区',
-    district: '',
-    detail: '建国路88号',
-    isDefault: false
-  }
-])
+
+// 生命周期钩子
+onMounted(() => {
+  getAddressList()
+})
+
+onShow(() => {
+  // 每次页面显示时刷新数据
+  getAddressList()
+})
 
 // 新增地址
 const addAddress = () => {
@@ -108,11 +101,12 @@ const addAddress = () => {
 // 编辑地址
 const editAddress = (item) => {
   uni.navigateTo({
-    url: `/pages/userInfo/addressEdit?id=${item.id}`,
+    url: '/pages/userInfo/addressEdit',
     success: (res) => {
       res.eventChannel.emit('acceptAddressData', {
         address: item
       })
+     
     }
   })
 }
@@ -122,33 +116,67 @@ const setDefaultAddress = async (id) => {
   try {
     const res = await request({
       url: `/app-api/weixin/shipping-address/defaultShippingAddress?id=${id}`,
-      method: 'put',
-      showLoading: true,
-      
-    });
+      method: 'PUT',
+      showLoading: true
+    })
     
     if (res.code === 0 || res.code === 200) {
       // 更新本地数据
       addressList.value.forEach(item => {
-        item.isDefault = item.id === id;
-      });
+        item.isDefault = item.id === id
+      })
+      
       uni.showToast({
         title: '设置默认地址成功',
         icon: 'success'
-      });
+      })
     } else {
-      throw new Error(res.msg || '设置失败');
+      throw new Error(res.msg || '设置失败')
     }
   } catch (err) {
-    console.error('设置默认地址失败:', err);
+    console.error('设置默认地址失败:', err)
     uni.showToast({
       title: err.message || '设置失败',
-      icon: 'error'
-    });
+      icon: 'none'
+    })
   }
-};
+}
 
-
+// 删除地址
+const deleteAddress = async (id) => {
+  uni.showModal({
+    title: '确认删除',
+    content: '确定要删除这个地址吗？',
+    success: async (res) => {
+      if (res.confirm) {
+        try {
+          const result = await request({
+            url: `/app-api/weixin/shipping-address/delete?id=${id}`,
+            method: 'DELETE',
+            showLoading: true
+          })
+          
+          if (result.code === 0 ) {
+            // 从列表中移除已删除的地址
+            addressList.value = addressList.value.filter(item => item.id !== id)
+            uni.showToast({
+              title: '删除成功',
+              icon: 'success'
+            })
+          } else {
+            throw new Error(result.msg || '删除失败')
+          }
+        } catch (err) {
+          console.error('删除地址失败:', err)
+          uni.showToast({
+            title: err.message || '删除失败',
+            icon: 'none'
+          })
+        }
+      }
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -172,8 +200,9 @@ const setDefaultAddress = async (id) => {
       
       .info {
         display: flex;
-        // align-items: center;
-		justify-content: space-between;
+        align-items: center;
+      
+		  justify-content: space-between;
         margin-bottom: 20rpx;
         .name {
           font-size: 32rpx;
@@ -188,7 +217,7 @@ const setDefaultAddress = async (id) => {
     
       }
 	  .default-box{
-		margin-top: 50rpx;
+		margin-top: 30rpx;
 		padding-top:30rpx ;
 		border-top:1px solid #E9E9E9;
 		display:flex;
@@ -208,17 +237,14 @@ const setDefaultAddress = async (id) => {
       
       .address {
         font-size: 28rpx;
-        color: #666;
+        color: #000;
+        text {
+          margin-right: 10rpx;  // 添加省市区之间的间距
+        }
+      
       }
       
-      .edit {
-        position: absolute;
-        right: 30rpx;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 40rpx;
-        height: 40rpx;
-      }
+     
     }
   }
   

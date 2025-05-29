@@ -196,7 +196,8 @@ const handleUnbind = (id) => {
       
       .device-detail {
         display: flex;
-        
+        justify-content: space-between;
+        align-items: center;
         .device-image {
           width: 120rpx;
           height: 120rpx;

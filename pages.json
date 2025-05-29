@@ -135,6 +135,14 @@
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
+		{
+			"path": "pages/surveyList/surveyDetail",
+			"style" : 
+			{
+				"navigationBarTitleText" : "问卷调查",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
 		
 		{
 			"path": "pages/commissionDetail/commissionDetail",

@@ -2,20 +2,19 @@
   <view class="container">
     <!-- 修改顶部黑色区域显示现金余额 -->
     <view class="top-card black-bg">
-      <view class="card-content">
-        <view class="left-content">
-          <text class="amount">{{ walletData.balance || 0 }}</text>
+      
+        <text class="amount">{{ walletData.balance || 0 }}</text>
+        <view class="card-content">
           <text class="label">账号余额</text>
-        </view>
-      <view>
-        
-      </view>
-        <view class="right-content" @click="showCashWithdraw">
+          <view class="right-content" @click="showCashWithdraw">
           <image src="/static/images/myPapeImages/Frame (1).png" class="arrow-icon"></image>
           <text class="withdraw-text">余额提现</text>
           <image src="/static/images/myPapeImages/向右箭头.png" class="arrow-icon"></image>
         </view>
-      </view>
+        </view>
+   
+      
+
     </view>
     
     <!-- 修改下方橙色区域显示M币余额 -->
@@ -23,7 +22,10 @@
       <view class="card-content">
         <view class="left-content">
           <text class="amount">{{ walletData.coin || 0 }}</text>
-          <text class="label">M币</text>
+          <view class="label">M币使用
+            <image  style="width:24rpx;height:24rpx;display:inline-block" src="/static/images/myPapeImages/向右箭头.png" ></image>
+          </view>
+        
         </view>
         <image style="width: 150rpx; height:150rpx" src="/static/images/myPapeImages/Group 1000009076.png" class="honey-icon"></image>
       </view>
@@ -137,27 +139,26 @@ const showCashWithdraw = () => {
     margin-bottom: 20rpx;
     height: 230rpx;
     
-    .card-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .left-content {
-        display: flex;
-        flex-direction: column;
-        
-        .amount {
+    .amount {
           font-size: 48rpx;
           font-weight: bold;
           color: #fff;
         }
+    .card-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+     
+   
+        
+        
         
         .label {
           font-size: 28rpx;
           color: rgba(255, 255, 255, 0.8);
           margin-top: 10rpx;
         }
-      }
+      
       
       .right-content {
         display: flex;

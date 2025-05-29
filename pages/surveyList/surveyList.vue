@@ -5,12 +5,12 @@
         <view 
           class="survey-item" 
           v-for="(survey, index) in surveyList" 
-          :key="index"
-          @click="handleSurveyClick"
+          :key="survey.id || index"  
+          @click="handleSurveyClick(survey.id)" 
         >
           <image class="survey-icon" :src="survey.icon?survey.icon:'/static/images/养蜂.png'"></image>
           <view class="survey-info">
-            <text class="survey-title">{{ survey.templateName }}</text>
+            <text class="survey-title">{{ survey.templateName || survey.title }}</text>  <!-- 兼容原数据结构 -->
           </view>
           <view class="survey-action">
             <text class="action-text">立即参与</text>
@@ -19,7 +19,7 @@
         </view>
       </view>
       
-      <!-- 添加空状态提示 -->
+      <!-- 空状态提示 -->
       <view v-if="surveyList.length === 0" class="empty-state">
         <image src="/static/images/empty.png" class="empty-image"></image>
         <text class="empty-text">暂无问卷调查</text>
@@ -29,64 +29,68 @@
 </template>
 
 <script setup>
-
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 
 
 const surveyList = ref([
   {
+    id: 1,  // 添加ID字段
     icon: '/static/images/养蜂.png',
     title: '蜂蜜产品满意度调查'
   },
   {
+    id: 2,  // 添加ID字段
     icon: '/static/images/养蜂.png',
     title: '养蜂体验反馈问卷'
   },
   {
+    id: 3,  // 添加ID字段
     icon: '/static/images/养蜂.png',
     title: '会员服务评价调查'
   }
-]);
+])
 
-const handleSurveyClick = () => {
-  console.log('问卷点击事件');
-};
+// 处理问卷点击事件，跳转到详情页
+const handleSurveyClick = (id) => {
+  uni.navigateTo({
+    url: `/pages/surveyList/surveyDetail?id=${id}`  // 携带问卷ID跳转
+  })
+}
 
 onMounted(() => {
   getQuestionList()
-
 })
-//获取问卷列表
-const getQuestionList= async () => {
-	try {
+
+// 获取问卷列表
+const getQuestionList = async () => {
+  try {
     const res = await request({
       url: '/app-api/weixin/questionnaire/get/list',
-      showLoading: true, 
-    
+      showLoading: true
     })
     
     if (res.code === 0 || res.code === 200) {
-      surveyList.value=res.data || [] // 确保数据为数组
-      
+      surveyList.value = res.data || []
     } else {
       throw new Error(res.msg || '数据异常')
     }
   } catch (err) {
-    console.error('获取用户信息失败:', err)
-   
+    console.error('获取问卷列表失败:', err)
   }
 }
 </script>
+
 
 <style lang="scss" scoped>
 .container {
   background-color: #f7f7f7;
   height: 100vh;
+  padding: 20rpx;
   
   .content {
     height: 100%;
-    padding: 20rpx;
+    
     
     .survey-list {
       .survey-item {

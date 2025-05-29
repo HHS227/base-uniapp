@@ -3,7 +3,7 @@
 		<uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">{{ currentMessage.templateNickname }}</view>
-			<view class="popup-time">{{ currentMessage.createTime }}</view>
+			<view class="popup-time">{{ formatDateTime(currentMessage.createTime) }}</view>
 			<view class="popup-body">{{ currentMessage.templateContent }}</view>
 			<button class="popup-btn" @click="closePopup">确定</button>
 		</view>
@@ -25,7 +25,7 @@
 					<image src="/static/images/message-icon.png" mode=""></image>
 					<view class="item-info">
 						<view class="item-title">{{ item.templateNickname }}</view>
-						<view class="item-time">{{ item.createTime }}</view>
+						<view class="item-time">{{formatDateTime(item.createTime) }}</view>
 					</view>
 				</view>
 				<view class="item-right read" v-if="item.readStatus">已读</view>
@@ -40,26 +40,53 @@
 <script setup>
 import { ref ,onMounted} from 'vue';
 import { request } from '@/utils/request'
-import { useTokenStorage } from '../../utils/storage'
-const { getAccessToken} = useTokenStorage()
+
+
 
 const popup = ref(null);
 const messageList = ref([]);
 const currentMessage = ref({});
 
 const showMessageDetail = (item) => {
-	currentMessage.value = item;
-	popup.value.open();
+  currentMessage.value = {
+    ...item,
+    id: item.id // 确保使用正确的ID字段
+  };
+  popup.value.open();
 };
 
-const closePopup = () => {
-	popup.value.close();
-};
+const closePopup = async () => {
+  // 如果已经是已读状态，直接关闭弹窗
+  if (currentMessage.value.readStatus) {
+    popup.value.close()
+    return
+  }
+
+  const ids = [currentMessage.value.id]
+  try {
+    // 调用已读接口
+    await request({
+      url: `/app-api/WeiXinMini/index/read?ids=${ids}`,
+      method: 'POST'
+    })
+    
+    // 更新本地数据状态
+    const index = messageList.value.findIndex(item => item.id === currentMessage.value.id)
+    if (index !== -1) {
+      messageList.value[index].readStatus = true
+    }
+  } catch (err) {
+    console.error('更新已读状态失败:', err)
+  } finally {
+    popup.value.close()
+  }
+}
 onMounted(() => {
 	getCurrentMessage()
  
 
 })
+// 获取当前消息
 const getCurrentMessage = async () => {
 	try {
     const res = await request({
@@ -77,6 +104,12 @@ const getCurrentMessage = async () => {
     console.error('获取消息失败:', err)
    
   }
+}
+// 时间戳转换
+const formatDateTime = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 
 </script>
