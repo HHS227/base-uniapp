@@ -8,6 +8,41 @@ import { request } from '@/utils/request'
 const loading = ref(false);
 const honeySourceList = ref([]);
 // 移除mapInstance引用
+const markers = ref([
+  {
+		id: 1,
+		latitude: 30.6667,
+		longitude: 104.0667,
+		iconPath: '/static/images/marker.png',
+		width: 34,
+		height: 38,
+		label: {
+			content: '1',
+			color: '#ffffff',
+			anchorY: -36,
+			anchorX: -12
+		}
+	}
+])
+const generateMarkers = (list) => {
+  return list
+    .filter(item => item.latitude && item.longitude)
+    .map((item, index) => ({
+      id: index,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      iconPath: '/static/images/marker.png',
+      width: 34,
+      height: 38,
+      label: {  // 使用label属性在图标上方显示名称
+        content: item.name,
+        color: '#fff',
+        fontSize: 14,
+        anchorX: -13,
+        anchorY: -35  // 调整位置在图标上方
+      }
+    }))
+}
 
 // 获取蜜源列表
 const getShoppingList = async () => {
@@ -19,6 +54,7 @@ const getShoppingList = async () => {
     
     if (res.code === 0 || res.code === 200) {
       honeySourceList.value = res.data || [];
+      markers.value = generateMarkers(honeySourceList.value);
       loading.value = false;
     } else {
       throw new Error(res.msg || '数据异常');
@@ -59,7 +95,8 @@ onMounted(() => {
       <view>推荐蜜源</view>
       <image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
     </view>
-    <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index">
+    <view class="bee-list-center">
+      <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index">
       <view class="bee-item-img">
 		  <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
 	  </view>
@@ -68,7 +105,10 @@ onMounted(() => {
         <view class="bee-item-address">{{item.address}}</view>
       </view>
     </view>
-  </view></view>
+    </view>
+  
+  </view>
+  </view>
 </template>
 
 <style lang="scss" scoped>
@@ -122,7 +162,10 @@ onMounted(() => {
       z-index: -1;
     }
   }
-  .bee-list-box {
+  .bee-list-center{
+    height: 450rpx;
+    overflow: auto;
+    .bee-list-box {
     margin: 5rpx 30rpx;
     height: 150rpx;
     background-color:#fff;
@@ -153,6 +196,8 @@ onMounted(() => {
       }
     }
   }
+  }
+  
 }
 
 .map-container {

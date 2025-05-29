@@ -30,7 +30,9 @@
 				<view class="data-list">
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
+						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">国家</view>
+						
 						<view class="data-item-text">
 							{{infoData.countryNumber}}
 							<text>/个</text>
@@ -38,6 +40,7 @@
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
+						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
 							{{infoData.outputAmount}}
@@ -46,6 +49,7 @@
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
+						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">领养量</view>
 						<view class="data-item-text">
 							{{infoData.adoptionAmount}}
@@ -54,6 +58,7 @@
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
+						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">蜜蜂数量</view>
 						<view class="data-item-text">
 							{{infoData.beeNumber}}
@@ -63,7 +68,7 @@
 				</view>
 			</view>
 			<view class="scan-content">
-				<image src="/static/images/扫码1.png" mode="" class="scan-image"></image>
+				<image @click="scanCode" src="/static/images/扫码1.png" mode="" class="scan-image"></image>
 			</view>
 			<view class="my-bee-box">
 				<view class="my-bee-title">
@@ -85,15 +90,15 @@
 							</view>
 							<view class="top-info">
 								<view class="card-title">{{item.beehiveName}}</view>
-								<view class="group-purchase">
-									<AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
-									<view class="gruop-info">还差{{item.adoptNumber||0}}人</view>
+								<view class="group-purchase" v-if="item.adoptType != 1">
+								  <AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
+								  <view class="gruop-info">还差{{item.adoptNumber||0}}人</view>
 								</view>
-								<view class="progress-info">
-									<view class="progress-content">
-										<view class="progress-val" :style="{ width: `${Math.min((item.groupNumber/5)*100, 100)}%` }"></view>
-									</view>
-									{{ Math.min(((item.adoptNumber) /5)*100, 100) + '%' }}
+								<view class="progress-info" v-if="item.adoptType != 1">
+								  <view class="progress-content">
+									<view class="progress-val" :style="{ width: `${Math.min((item.groupNumber/5)*100, 100)}%` }"></view>
+								  </view>
+								  {{ Math.min(((item.adoptNumber) /5)*100, 100) + '%' }}
 								</view>
 							</view>
 						</view>
@@ -260,7 +265,26 @@ const formatDateTime = (dateString) => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 
-
+//扫码溯源
+const scanCode = () => {
+  uni.scanCode({
+    success: (res) => {
+      console.log('扫码结果:', res.result)
+      uni.showToast({
+        title: '扫码成功',
+        icon: 'success'
+      })
+      // 这里可以处理扫码结果
+    },
+    fail: (err) => {
+      console.error('扫码失败:', err)
+      uni.showToast({
+        title: '扫码失败',
+        icon: 'none'
+      })
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -364,6 +388,14 @@ const formatDateTime = (dateString) => {
 						width: 310rpx;
 						height: 157rpx;
 						z-index: -1;
+					}
+					.data-icon {
+						position: absolute;
+						right: 22rpx;
+						top: 1rpx;
+						width: 97rpx;
+						height: 97rpx;
+						z-index: 1;
 					}
 					.six-imge {
 						position: absolute;

@@ -134,6 +134,7 @@ onMounted(() => {
 .container {
 	background-color: #f7f7f7;
 	height: 100vh;
+	padding-bottom: 20rpx;
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -281,7 +282,10 @@ onMounted(() => {
 	.map-content {
 		flex: 1;
 		height: 200rpx;
+		padding: 0 30rpx;
+		
 		.map-view {
+			border: 5rpx solid #fff;
 			height: 100%;
 			width: 100%;
 		}

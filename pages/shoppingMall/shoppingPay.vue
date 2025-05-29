@@ -2,9 +2,13 @@
 	<view class="container">
 		<TransNavVue title="确认订单"></TransNavVue>
 		<view class="pay-center">
-			<view class="name-box">
+			<view v-if="addrdessList.consigneeName" class="name-box">
 				<text>{{ addrdessList.consigneeName }}</text>
 				<view class="name">{{ addrdessList.addressDetail }}</view>
+			</view>
+			<view v-else class="empty-address" @click="goToAddAddress">
+				<text>暂无收货地址，去添加</text>
+				<image src="/static/images/right-arrow.png" mode="aspectFit"></image>
 			</view>
 			<view class="pay-details" v-for="(item, index) in selectedItems" :key="index">
 				<view class="details-box">
@@ -69,10 +73,7 @@
 .container {
 	background-color: #f7f7f7;
 	padding-bottom:40rpx ;
-	position: relative;
-	z-index: 1;
-	display: flex;
-	flex-direction: column;
+	height: 100vh;
 	
 	.pay-center{
 		padding: 30rpx 30rpx 0rpx;
@@ -224,6 +225,22 @@
 	
 	
 }
+.empty-address {
+  background-color: #fff;
+  height: 150rpx;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ff6f0e;
+  font-size: 32rpx;
+  
+  image {
+    width: 40rpx;
+    height: 40rpx;
+  }
+}
 </style>
 
 <script setup>
@@ -233,10 +250,17 @@ import { useTokenStorage } from '../../utils/storage'  // 新增导入
 import TransNavVue from '../../components/TransNav.vue';
 
 const { getAccessToken} = useTokenStorage()  // 新增获取token方法
+import { onShow } from '@dcloudio/uni-app';
 
 const selectedItems = ref([]);
 const totalPrice = ref(0);
 const addrdessList = ref({});
+
+
+onShow(() => {
+  // 每次页面显示时刷新数据
+  getShoppingList()
+})
 
 const getShoppingList = async () => {
   try {
@@ -339,4 +363,9 @@ onMounted(() => {
   
   
 });
+const goToAddAddress = () => {
+  uni.navigateTo({
+    url: '/pages/userInfo/addressEdit'
+  })
+}
 </script>

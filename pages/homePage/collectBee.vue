@@ -1,29 +1,18 @@
 <template>
-	<view class="container">
-		<TransNavVue title="认养一箱蜂"></TransNavVue>
-		<view class="collect-box">
-			<view class="collect-img"></view>
-			<view class="collect-info">
-				<view class="info-title">
-					产品描述的标题
-					<view class="info-format">规格<text class="info-weight">500克</text></view>
-				</view>
-				<view class="pddBtn">￥299拼团</view>
-			</view>
-		</view>
-		<view class="collect-box">
-			<view class="collect-img"></view>
-			<view class="collect-info">
-				<view class="info-title">
-					产品描述的标题
-					<view class="info-format">规格<text class="info-weight">500克</text></view>
-				</view>
-				<view class="pddBtn">￥599购买</view>
-			</view>
-		</view>
-		
-	
-	</view>
+  <view class="container">
+    <TransNavVue title="认养一箱蜂"></TransNavVue>
+    <view class="collect-box" v-for="item in beehiveList" :key="item.id">
+      <view class="collect-img"></view>
+      <view class="collect-info">
+        <view class="info-title">
+          {{item.name}}
+          <view class="info-format">蜂箱类型：<text class="info-weight">{{getBeehiveTypeName(item.beehiveType)}}</text></view>
+        </view>
+        <view class="pddBtn" v-if="item.adoptionType == 2" @click="handleBuy(item)">￥{{item.sharePrice}}拼团</view>
+        <view class="pddBtn" v-else @click="handleBuy(item)">￥{{item.price}}购买</view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script setup>
@@ -31,18 +20,52 @@ import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
 
-const buyBtn=()=>{
-	console.log('跳转到购物车')
-	uni.navigateTo({
-	    url:'/pages/shoppingCart/shoppingCart'
-	})
-}
-
-
+const beehiveList = ref([])
 
 onMounted(() => {
-  
+  getBeehiveList()
 })
+
+const getBeehiveList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/front/beehive/all/list',
+      showLoading: true
+    })
+    
+    if (res.code === 0 ) {
+      beehiveList.value = res.data || []
+    } else {
+      throw new Error(res.msg || '获取蜂箱列表失败')
+    }
+  } catch (err) {
+    console.error('获取蜂箱列表失败:', err)
+    uni.showToast({
+      title: '获取蜂箱列表失败',
+      icon: 'none'
+    })
+  }
+}
+
+const getBeehiveTypeName = (type) => {
+  const typeMap = {
+    1: '基础蜂箱',
+    2: '智慧蜂箱', 
+    3: '超级蜂巢',
+    4: '未来蜂巢'
+  }
+  return typeMap[type] || '未知类型'
+}
+
+const handleBuy = (item) => {
+  uni.showToast({
+    title: `购买了${item.name}蜂箱`,
+    icon: 'none'
+  })
+  
+  // 这里可以添加后续的购买逻辑
+  // 比如跳转到支付页面或调用购买接口
+}
 </script>
 
 <style lang="scss" scoped>
