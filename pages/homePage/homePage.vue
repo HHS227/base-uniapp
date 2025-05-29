@@ -30,7 +30,7 @@
 				<view class="data-list">
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
+						<image src="/static/images/commissionDetail/Group 1000009088.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">国家</view>
 						
 						<view class="data-item-text">
@@ -40,7 +40,7 @@
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
+						<image src="/static/images/commissionDetail/Group 1000009091.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
 							{{infoData.outputAmount}}
@@ -49,7 +49,7 @@
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
+						<image src="/static/images/commissionDetail/Group 1000009089.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">领养量</view>
 						<view class="data-item-text">
 							{{infoData.adoptionAmount}}
