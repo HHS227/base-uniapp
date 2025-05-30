@@ -19,7 +19,7 @@
         :key="item.id" 
         class="record-item"
       >
-        <image class="pet-image" :src="item.image ?item.image  :'/static/images/蜜蜂.png'" mode="aspectFill"></image>
+        <image class="pet-image" :src="item.image ?item.image  :'/static/images/养蜂.png'" mode="aspectFill"></image>
         <view class="info-content">
           <text class="pet-name">{{ item.beehiveName }}</text>
           <text class="pet-date">{{ formatDateTime(item.createTime) }}</text>
@@ -68,7 +68,7 @@ price: 473,
 sharedPrice: 279,
 status: 2,
 userId: 23038,
-     image: '/static/images/蜜蜂.png'
+     image: '/static/images/养蜂.png'
   },
 
 ]);
