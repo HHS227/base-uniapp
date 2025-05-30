@@ -14,6 +14,14 @@
 				"navigationBarTitleText": "登陆"
 			}
 		},
+		{
+			"path" : "pages/myPage/myPage",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
 		
 		{
 			"path": "pages/messagePage/messagePage",
@@ -95,30 +103,7 @@
 				"navigationStyle": "custom"
 			}
 		},
-		{
-			"path" : "pages/myPage/myPage",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path" : "pages/settingPage/settingPage",
-			"style" : 
-			{
-				"navigationBarTitleText" : "设置",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		},
-		{
-			"path" : "pages/addressManager/addressManager",
-			"style" : 
-			{
-				"navigationBarTitleText" : "收货地址",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		},
+		
 		{
 			"path": "pages/smartBee/smartBee",
 			"style" : 
@@ -131,7 +116,7 @@
 			"path": "pages/surveyList/surveyList",
 			"style" : 
 			{
-				"navigationBarTitleText" : "问卷调查",
+				"navigationBarTitleText" : "问卷列表",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
@@ -178,13 +163,7 @@
 		},
 	
 	
-		{
-			"path" : "pages/addressManager/editAddress",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
-			}
-		},
+		
 		{
 			"path" : "pages/beeFarmerJion/beeFarmerJion",
 			"style" : 

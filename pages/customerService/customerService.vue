@@ -27,7 +27,7 @@
     </view>
   </template>
   
-  <script setup>
+  <!-- <script setup>
   import { onMounted } from 'vue'
   import { showToast } from '@dcloudio/uni-app'
   
@@ -86,7 +86,7 @@
     }, 1500)
   }
   </script>
-  
+   -->
   <style lang="scss" scoped>
   .container {
     height: 100vh;
