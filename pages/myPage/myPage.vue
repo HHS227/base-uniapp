@@ -36,7 +36,13 @@
 						<text class="name-text">蜜友汇</text>
 						<text class="id">{{ userInfo.weId }}</text>
 					</view>
-					<button class="share-btn" open-type="share"><image  src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image></button>
+					<button 
+          class="share-btn" 
+          open-type="share" 
+          @click="handleShare"
+        >
+          <image src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image>
+        </button>
 				</view>
 			</view>
 			<view class="commission-card">
@@ -115,13 +121,14 @@
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
 				</view>
-				<button open-type="contact" class="list-item contact-btn">
+			
+				<view @click="gotoCustomerService"  class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(5).png" mode=""></image>
 						<text class="text">联系客服</text>
 					</view>
 					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
-				</button>
+				</view>
 				<view @click="gotoUserInfo"  class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(6).png" mode=""></image>
@@ -148,6 +155,55 @@ import { request } from '@/utils/request'
 const userInfo = ref({})
 const walletData = ref({})
 const commissionData = ref({})
+const shareConfig = ref({
+  title: '智慧养蜂，快来领养吧', 
+  imageUrl: '/static/images/logo.png', 
+  path: '/pages/homePage/homePage.vue' 
+})
+
+
+const handleShare = (e) => {
+  e.preventDefault()
+  if (!getAccessToken()) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录再分享',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({ url: '/pages/login/login' })
+        }
+      }
+    })
+    return
+  }
+
+  uni.share({
+    provider: 'weixin',
+    type: 2, // 分享到微信好友（2为好友，3为朋友圈）
+    title: shareConfig.value.title,
+    imageUrl: shareConfig.value.imageUrl,
+    path: shareConfig.value.path,
+    success: () => {
+      console.log('分享成功')
+      
+    },
+    fail: (err) => {
+      console.error('分享失败:', err)
+      uni.showToast({
+        title: '分享失败',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+
+
+
+
+
+
+
 
 onShow(() => {
   if (getAccessToken()) {
@@ -173,7 +229,24 @@ onMounted(() => {
   } 
 })
 
-
+//跳转到客服服务
+const gotoCustomerService = () => {
+  if (!getAccessToken()) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({ url: '/pages/login/login' })
+        }
+      }
+    })
+  } else {
+    uni.navigateTo({
+      url: '/pages/customerService/customerService'
+    })
+  }
+}
 
 // 跳转佣金详情
 const gotoCommission = () => {
@@ -200,7 +273,7 @@ const gotoWithdraw = () => {
 	if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
-      content: '请先登录',
+	  content: '请先登录',
       success: (res) => {
         if (res.confirm) {
           uni.navigateTo({ url: '/pages/login/login' })

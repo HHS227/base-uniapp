@@ -50,19 +50,19 @@
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<image src="/static/images/commissionDetail/Group 1000009089.png" mode="" class="data-icon"></image>
-						<view class="data-item-title">领养量</view>
+						<view class="data-item-title">蜂群数量</view>
 						<view class="data-item-text">
-							{{infoData.adoptionAmount}}
-							<text>/万箱</text>
+							{{infoData.beeNumber}}
+							<text>/群</text>
 						</view>
 					</view>
 					<view class="data-item">
 						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
 						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
-						<view class="data-item-title">蜜蜂数量</view>
+						<view class="data-item-title">被认养</view>
 						<view class="data-item-text">
-							{{infoData.beeNumber}}
-							<text>/万斤</text>
+							{{infoData.adoptionAmount}}
+							<text>/箱</text>
 						</view>
 					</view>
 				</view>
@@ -76,7 +76,7 @@
 					<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
 				</view>
 				<view class="my-bee-right" @click="collectBee">
-					去领养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images//myPapeImages/向右箭头.png" mode="" ></image>
+					去认养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images//myPapeImages/向右箭头.png" mode="" ></image>
 				</view>
 			</view>
 	
@@ -114,6 +114,7 @@
 						</view>
 					</view>
 				</view>
+				
 			</view>
 			<view v-else class="no-bee">
 				<image src="/static/images/无数据.png" mode=""></image>

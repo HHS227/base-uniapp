@@ -34,13 +34,13 @@ const generateMarkers = (list) => {
       iconPath: '/static/images/marker.png',
       width: 34,
       height: 38,
-      label: {  // 使用label属性在图标上方显示名称
-        content: item.name,
-        color: '#fff',
-        fontSize: 14,
-        anchorX: -13,
-        anchorY: -35  // 调整位置在图标上方
-      }
+      // label: {  // 使用label属性在图标上方显示名称
+      //   content: 1,
+      //   color: '#fff',
+      //   fontSize: 14,
+      //   anchorX: -13,
+      //   anchorY: -35  // 调整位置在图标上方
+      // }
     }))
 }
 

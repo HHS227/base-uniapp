@@ -143,6 +143,14 @@
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
+		{
+			"path": "pages/customerService/customerService",
+			"style" : 
+			{
+				"navigationBarTitleText" : "联系客服",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
 		
 		{
 			"path": "pages/commissionDetail/commissionDetail",
