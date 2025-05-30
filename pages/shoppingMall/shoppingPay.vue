@@ -3,12 +3,20 @@
 		<TransNavVue title="确认订单"></TransNavVue>
 		<view class="pay-center">
 			<view v-if="addrdessList.consigneeName" class="name-box">
-				<text>{{ addrdessList.consigneeName }}</text>
-				<view class="name">{{ addrdessList.addressDetail }}</view>
+				<view class="address-header">
+					<text>{{ addrdessList.consigneeName }}</text>
+					<text class="change-btn" @click="openAddressPopup">更换地址</text>
+				</view>
+				<view >
+          <text>{{addrdessList.province}} </text>
+          <text>{{addrdessList.city}} </text>
+          <text>{{addrdessList.region}} </text>
+          {{addrdessList.addressDetail}}
+        </view>
 			</view>
 			<view v-else class="empty-address" @click="goToAddAddress">
 				<text>暂无收货地址，去添加</text>
-				<image src="/static/images/right-arrow.png" mode="aspectFit"></image>
+				<image src="/static/images/myPapeImages/向右箭头.png" mode="aspectFit"></image>
 			</view>
 			<view class="pay-details" v-for="(item, index) in selectedItems" :key="index">
 				<view class="details-box">
@@ -66,6 +74,33 @@
 			</view>
 			
 		</view>
+
+		<!-- 地址选择弹窗 -->
+		<uni-popup ref="addressPopup" type="bottom">
+			<view class="address-popup">
+				<view class="popup-header">
+					<text class="popup-title">选择收货地址</text>
+					<text class="popup-close" @click="addressPopupClose">×</text>
+				</view>
+				<scroll-view scroll-y class="address-list">
+					<view 
+						v-for="(item, index) in addressList" 
+						:key="index" 
+						class="address-item"
+						@click="selectAddress(item)"
+					>
+						<radio :checked="item.isDefault" color="#ff6f0e"></radio>
+						<view class="address-info">
+							<view class="address-name">
+								<text>{{item.consigneeName}}</text>
+								<text>{{item.phoneNumber}}</text>
+							</view>
+							<text class="address-detail">{{item.addressDetail}}</text>
+						</view>
+					</view>
+				</scroll-view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -241,6 +276,71 @@
     height: 40rpx;
   }
 }
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  .change-btn {
+    color: #ff6f0e;
+    font-size: 28rpx;
+  }
+  
+}
+
+.address-popup {
+  background-color: #fff;
+  border-radius: 20rpx 20rpx 0 0;
+  padding: 30rpx;
+  max-height: 70vh;
+  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30rpx;
+    
+    .popup-title {
+      font-size: 32rpx;
+      font-weight: bold;
+    }
+    
+    .popup-close {
+      font-size: 40rpx;
+      color: #999;
+    }
+  }
+  
+  .address-list {
+    max-height: 60vh;
+  }
+  
+  .address-item {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 0;
+    border-bottom: 1rpx solid #eee;
+    
+    .address-info {
+      margin-left: 20rpx;
+      
+      .address-name {
+        display: flex;
+        margin-bottom: 10rpx;
+        
+        text:first-child {
+          margin-right: 20rpx;
+          font-weight: bold;
+        }
+      }
+      
+      .address-detail {
+        color: #666;
+        font-size: 28rpx;
+      }
+    }
+  }
+}
 </style>
 
 <script setup>
@@ -256,11 +356,62 @@ const selectedItems = ref([]);
 const totalPrice = ref(0);
 const addrdessList = ref({});
 
+const addressList = ref([]); // 存储所有地址列表
+const addressPopup = ref(null);
 
+// 获取地址列表
+const getAddressList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/shipping-address/list',
+      showLoading: true,
+    });
+    
+    if (res.code === 0 || res.code === 200) {
+      addressList.value = res.data;
+      // 设置默认地址
+      const defaultAddress = res.data.find(item => item.isDefault) || res.data[0];
+      if(defaultAddress) {
+        addrdessList.value = defaultAddress;
+      }
+    }
+  } catch (err) {
+    console.error('获取地址列表失败:', err);
+  }
+};
+
+// 选择地址
+const selectAddress = (item) => {
+  // 取消所有地址的选中状态
+  addressList.value.forEach(addr => {
+    addr.isDefault = false;
+  });
+  // 设置当前选中地址
+  item.isDefault = true;
+  addrdessList.value = item;
+  addressPopup.value.close();
+};
+
+const openAddressPopup = () => {
+  // 打开弹窗前确保当前地址被选中
+  if (addrdessList.value.id) {
+    addressList.value.forEach(addr => {
+      addr.isDefault = addr.id === addrdessList.value.id;
+    });
+  }
+  addressPopup.value.open();
+};
+const addressPopupClose = () => {
+  
+  addressPopup.value.close();
+};
+
+
+// 修改onShow方法
 onShow(() => {
-  // 每次页面显示时刷新数据
-  getShoppingList()
-})
+  getAddressList();
+  getShoppingList();
+});
 
 const getShoppingList = async () => {
   try {
@@ -368,4 +519,5 @@ const goToAddAddress = () => {
     url: '/pages/userInfo/addressEdit'
   })
 }
+
 </script>

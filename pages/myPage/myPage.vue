@@ -2,7 +2,7 @@
 	<view>
 		<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
 	<view class="container">
-		<image src="/static/images/myPapeImages/Rectangle 34625693@2x.png" mode="" class="bg-image"></image>
+		<image src="/static/images/Rectangle 34625693@2x.png" mode="" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
 		<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
 			<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>

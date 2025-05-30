@@ -6,6 +6,10 @@
 		</view>
 		<!-- 商品列表 -->
 		<scroll-view scroll-y class="goods-list">
+			<view v-if="cartList.length === 0" class="empty-cart">
+				
+				<text class="empty-text">购物车暂无商品</text>
+			</view>
 			<view class="goods-item" v-for="item in cartList" :key="item.id">
 				<view class="item-left">
 					<checkbox-group style="transform: scale(0.7)" @change="toggleSelect(item)">
@@ -19,6 +23,7 @@
 					</view>
 				</view>
 				<view class="item-right">
+					<view class="delete-btn" @click.stop="deleteItem(item)" v-if="isEdit">删除</view>
 					<view class="goods-actions">
 						<view class="goods-count" v-if="!isEdit">x{{ item.count }}</view>
 						<view class="actions-btn" v-if="isEdit">
@@ -216,6 +221,34 @@ const increaseCount = async (item) => {
   await updateCount(item, item.count + 1);
 };
 
+// 删除单个商品
+const deleteItem = async (item) => {
+	const ids=[item.sku.id]
+  try {
+    const res = await request({
+      url: `/app-api/trade/cart/delete?ids=${ids}`,
+      method: 'delete',
+     
+      showLoading: true
+    });
+    
+    if (res.code === 0 || res.code === 200) {
+      uni.showToast({
+        title: '删除成功',
+        icon: 'success'
+      });
+      getCartList();
+    } else {
+      throw new Error(res.msg || '删除失败');
+    }
+  } catch (err) {
+    console.error('删除商品失败:', err);
+    uni.showToast({
+      title: err.message || '删除失败',
+      icon: 'none'
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -416,5 +449,42 @@ const increaseCount = async (item) => {
 			}
 		}
 	}
+}
+.item-right {
+  position: relative;
+  
+  .delete-btn {
+    position: absolute;
+    top: 0rpx;
+    right: 0rpx;
+    width: 80rpx;
+    height: 40rpx;
+    background: transparent;
+    color: #999;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+    z-index: 1;
+  }
+}
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  
+  .empty-image {
+    width: 300rpx;
+    height: 300rpx;
+    margin-bottom: 40rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
+  }
 }
 </style>

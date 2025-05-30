@@ -140,7 +140,7 @@ const {  getAccessToken } = useTokenStorage()
 // 使用uniapp的onShow生命周期
 onShow(() => {
   if (getAccessToken()) {
-    console.log('页面显示，检测到token')
+    
     getInfoDataList()
   }
 })
@@ -271,11 +271,24 @@ const scanCode = () => {
   uni.scanCode({
     success: (res) => {
       console.log('扫码结果:', res.result)
-      uni.showToast({
-        title: '扫码成功',
-        icon: 'success'
-      })
-      // 这里可以处理扫码结果
+      // 假设扫码结果是商品ID
+      const productId = res.result
+      if (productId) {
+        uni.navigateTo({
+          url: `/pages/shopDetails/shopDetails?id=${productId}`,
+          success: () => {
+            uni.showToast({
+              title: '跳转成功',
+              icon: 'success'
+            })
+          }
+        })
+      } else {
+        uni.showToast({
+          title: '未识别到商品ID',
+          icon: 'none'
+        })
+      }
     },
     fail: (err) => {
       console.error('扫码失败:', err)
