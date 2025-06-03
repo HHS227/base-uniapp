@@ -37,12 +37,12 @@
 						<text class="id">{{ userInfo.weId }}</text>
 					</view>
 					<button 
-          class="share-btn" 
-          open-type="share" 
-          @click="handleShare"
-        >
-          <image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
-        </button>
+                            class="share-btn" 
+                            open-type="share" 
+                            @click="handleClickShare"
+                        >
+                            <image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
+                        </button>
 				</view>
 			</view>
 			<view class="commission-card">
@@ -155,7 +155,7 @@ import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
 import { useTokenStorage } from '../../utils/storage'
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
 import {ref,onMounted,} from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow ,onShareAppMessage} from '@dcloudio/uni-app'
 const {  getAccessToken } = useTokenStorage()
 import { request } from '@/utils/request'
 
@@ -165,13 +165,17 @@ const commissionData = ref({})
 const shareConfig = ref({
   title: '智慧养蜂，快来领养吧', 
   imageUrl: '/static/images/myPage/Invitation.png', 
-  path: '/pages/myPage/myPage.vue' 
+  path: '/pages/myPage/myPage' 
 })
 
-
-const handleShare = (e) => {
-  e.preventDefault()
+// 点击分享按钮时执行的函数
+const handleClickShare = (e) => {
+  // 可以在这里添加点击按钮后的额外逻辑，如记录点击事件
+  console.log('分享按钮被点击')
+  
+  // 如果用户未登录，可以在这里处理登录逻辑
   if (!getAccessToken()) {
+    e.stopPropagation() // 阻止默认分享行为
     uni.showModal({
       title: '提示',
       content: '请先登录再分享',
@@ -181,18 +185,27 @@ const handleShare = (e) => {
         }
       }
     })
-    return
   }
+  // 如果已登录，则不阻止，让 onShareAppMessage 处理实际分享逻辑
+}
 
-  uni.share({
-    provider: 'weixin',
-    type: 2, // 分享到微信好友（2为好友，3为朋友圈）
+// 注册全局分享钩子
+onShareAppMessage(() => {
+  // 这里只处理已登录用户的分享配置
+  if (!getAccessToken()) {
+    return false // 阻止未登录用户的分享
+  }
+  
+  return {
     title: shareConfig.value.title,
     imageUrl: shareConfig.value.imageUrl,
     path: shareConfig.value.path,
     success: () => {
       console.log('分享成功')
-      
+      uni.showToast({
+        title: '分享成功',
+        icon: 'success'
+      })
     },
     fail: (err) => {
       console.error('分享失败:', err)
@@ -201,8 +214,11 @@ const handleShare = (e) => {
         icon: 'none'
       })
     }
-  })
-}
+  }
+})
+
+
+
 
 
 
