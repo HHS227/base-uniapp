@@ -82,7 +82,7 @@
 	
 			<view v-if="dataList.length>0">
 				<view class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
-					<image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image>
+					<!-- <image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image> -->
 					<view class="card-content">
 						<view class="card-top">
 							<view>
@@ -405,10 +405,10 @@ const scanCode = () => {
 					}
 					.data-icon {
 						position: absolute;
-						right: 22rpx;
-						top: 1rpx;
-						width: 97rpx;
-						height: 97rpx;
+						right: 35rpx;
+						top: 18rpx;
+						width: 70rpx;
+						height: 70rpx;
 						z-index: 1;
 					}
 					.six-imge {

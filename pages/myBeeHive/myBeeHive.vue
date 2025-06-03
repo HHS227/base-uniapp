@@ -12,7 +12,7 @@
 		</view>
 		<scroll-view scroll-y="true" class="scroll-content">
 			<view class="goods-info">
-				<image src="/static/images/商品背景.png" mode=""></image>
+				<image src="/static/images/homePage/shoppingBg.png" mode=""></image>
 				<view class="info-left">
 					<view class="info-content">
 						<view class="goods-price">
