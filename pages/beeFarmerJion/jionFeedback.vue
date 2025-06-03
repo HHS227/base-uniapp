@@ -1,12 +1,12 @@
 <template>
 	<view class="container">
-		<image src="/static/images/beeFarmerImages/Group 1000008586.png" class="feedback-image" mode=""></image>
+		<image src="/static/images/myPage/waitIcon.png" class="feedback-image" mode=""></image>
 		<view class="text-content">
 			<text class="title">提交成功</text>
 			<text class="info">请等待工作人员审核</text>
 		</view>
 		<view class="info-content">
-			<image src="/static/images/beeFarmerImages/Group 1000008596.png" class="info-image" mode=""></image>
+			<image src="/static/images/myPage/waitIcon.png" class="info-image" mode=""></image>
 			审核时间大约1-3个工作日
 		</view>
 		<button class="back-btn" @click="backHomeBtn">返回首页</button>

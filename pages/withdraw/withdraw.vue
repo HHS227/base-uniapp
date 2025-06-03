@@ -7,9 +7,9 @@
         <view class="card-content">
           <text class="label">账号余额</text>
           <view class="right-content" @click="showCashWithdraw">
-          <image src="/static/images/myPapeImages/Frame (1).png" class="arrow-icon"></image>
+          <image src="/static/images/myPapes/crownIcon.png" class="arrow-icon"></image>
           <text class="withdraw-text">余额提现</text>
-          <image src="/static/images/myPapeImages/向右箭头.png" class="arrow-icon"></image>
+          <image src="/static/images/rightBtn.png" class="arrow-icon"></image>
         </view>
         </view>
    
@@ -23,11 +23,11 @@
         <view class="left-content">
           <text class="amount">{{ walletData.coin || 0 }}</text>
           <view class="label">M币使用
-            <image  style="width:24rpx;height:24rpx;display:inline-block" src="/static/images/myPapeImages/向右箭头.png" ></image>
+            <image  style="width:24rpx;height:24rpx;display:inline-block" src="/static/images/rightBtn.png" ></image>
           </view>
         
         </view>
-        <image style="width: 150rpx; height:150rpx" src="/static/images/myPapeImages/Group 1000009076.png" class="honey-icon"></image>
+        <image style="width: 150rpx; height:150rpx" src="/static/images/myPape/Mbg.png" class="honey-icon"></image>
       </view>
     </view>
     

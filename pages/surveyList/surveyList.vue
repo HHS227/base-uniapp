@@ -14,7 +14,7 @@
           </view>
           <view class="survey-action">
             <text class="action-text">立即参与</text>
-            <image class="arrow" src="/static/images/myPapeImages/向右箭头.png"></image>
+            <image class="arrow" src="/static/images/rightBtn.png"></image>
           </view>
         </view>
       </view>

@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<image src="/static/images/beeFarmerImages/Group 1000008996.png" class="container-bg" mode=""></image>
+		<image src="/static/images/myPage/BeeEnterInfoBg.png" class="container-bg" mode=""></image>
 		<TransNavVue title="入驻"></TransNavVue>
 		<view class="title-content">
 			填写信息

@@ -16,7 +16,7 @@
 			</view>
 			<view v-else class="empty-address" @click="goToAddAddress">
 				<text>暂无收货地址，去添加</text>
-				<image src="/static/images/myPapeImages/向右箭头.png" mode="aspectFit"></image>
+				<image src="/static/images/rightBtn.png" mode="aspectFit"></image>
 			</view>
 			<view class="pay-details" v-for="(item, index) in selectedItems" :key="index">
 				<view class="details-box">

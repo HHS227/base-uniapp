@@ -2,10 +2,10 @@
 	<view>
 		<BeeTabbarVue></BeeTabbarVue>
 	<view class="container">
-		<image src="/static/images/背景.png" mode="aspectFill" class="bg-image"></image>
+		<image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
 		<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-			<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
+			<image src="/static/images/homePage/logo.png" class="logo-image" mode="aspectFill"></image>
 		</view>
 		<scroll-view scroll-y="true" class="scroll-view">
 			<view class="swiper-content">
@@ -17,20 +17,20 @@
 				</swiper>
 			</view>
 			<view class="bee-farm-data">
-				<image src="/static/images/数据面板背景.png" class="bee-farm-image" mode="aspectFill"></image>
+				<image src="/static/images/homePage/dataBg.png" class="bee-farm-image" mode="aspectFill"></image>
 				<view class="data-title">
 					<view class="title-right">
 						<view>蜂场数据</view>
-						<image src="/static/images/蜂场数据logo.png" mode="" class="title-image"></image>
+						<image src="/static/images/homePage/beeDataTitle.png" mode="" class="title-image"></image>
 					</view>
 					<view class="title-left">
-						<image src="/static/images/查看更多-btn.png" mode="" class="title-btn" @click="gotoHiveData"></image>
+						<image src="/static/images/homePage/moreBtn.png" mode="" class="title-btn" @click="gotoHiveData"></image>
 					</view>
 				</view>
 				<view class="data-list">
 					<view class="data-item">
-						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009088.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
+						<image src="/static/images/homePage/countryIcon.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">国家</view>
 						
 						<view class="data-item-text">
@@ -39,8 +39,8 @@
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009091.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
+						<image  src="/static/images/homePage/outputIcon.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
 							{{infoData.outputAmount}}
@@ -48,8 +48,8 @@
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009089.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
+						<image src="/static/images/homePage/beeIcon.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">蜂群数量</view>
 						<view class="data-item-text">
 							{{infoData.beeNumber}}
@@ -57,8 +57,8 @@
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/数据背景.png" mode="" class="data-bg"></image>
-						<image src="/static/images/commissionDetail/Group 1000009090.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
+						<image src="/static/images/homePage/adoptIcon.png" mode="" class="data-icon"></image>
 						<view class="data-item-title">被认养</view>
 						<view class="data-item-text">
 							{{infoData.adoptionAmount}}
@@ -68,15 +68,15 @@
 				</view>
 			</view>
 			<view class="scan-content">
-				<image @click="scanCode" src="/static/images/扫码1.png" mode="" class="scan-image"></image>
+				<image @click="scanCode" src="/static/images/homePage/scanBg.png" mode="" class="scan-image"></image>
 			</view>
 			<view class="my-bee-box">
 				<view class="my-bee-title">
 					<view>我的蜂箱</view>
-					<image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
+					<image src="/static/images/homePage/beeDataTitle.png" mode="" class="title-image"></image>
 				</view>
 				<view class="my-bee-right" @click="collectBee">
-					去认养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images//myPapeImages/向右箭头.png" mode="" ></image>
+					去认养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images/rightBtn.png" mode="" ></image>
 				</view>
 			</view>
 	
@@ -86,7 +86,7 @@
 					<view class="card-content">
 						<view class="card-top">
 							<view>
-								<image src="/static/images/蜂箱logo.png" mode="" class="my-bee-icon"></image>
+								<image src="/static/images/homePage/BeehiveLogo.png" mode="" class="my-bee-icon"></image>
 							</view>
 							<view class="top-info">
 								<view class="card-title">{{item.beehiveName}}</view>
@@ -117,7 +117,7 @@
 				
 			</view>
 			<view v-else class="no-bee">
-				<image src="/static/images/无数据.png" mode=""></image>
+				<image src="/static/images/homePage/noData.png" mode=""></image>
 				<view><text>当前暂无蜂箱信息</text></view>
 				<view> <button class="buy-btn" @click='collectBee'>点击领取蜂箱</button></view>
 				

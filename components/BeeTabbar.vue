@@ -2,22 +2,22 @@
 	<view class="tabbar-layout">
 		<view class="tabbar">
 			<view class="tab-item" :class="{ active: activeTab === 'index' }" @click="switchTab('/pages/homePage/homePage')">
-				<image :src="activeTab == 'index' ? '../static/images/底部导航栏@2x(2).png' : '../static/images/底部导航栏@2x(3).png'" class="icon" />
+				<image :src="activeTab == 'index' ? '../static/images/homeActive.png' : '../static/images/home.png'" class="icon" />
 				<text>首页</text>
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'shoppingMall' }" @click="switchTab('/pages/shoppingMall/shoppingMall')">
-				<image :src="activeTab == 'shoppingMall' ? '../static/images/底部导航栏@2x(4).png' : '../static/images/底部导航栏@2x(5).png'" class="icon" />
+				<image :src="activeTab == 'shoppingMall' ? '../static/images/shoppingActive.png' : '../static/images/shopping.png'" class="icon" />
 				<text>商场</text>
 			</view>
 			<view class="tab-item center-button" @click="scanCodeClick">
-				<image src="/static/images/养蜂.png" class="icon-large" />
+				<image src="/static/images/apiculture.png" class="icon-large" />
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'monitorPage' }" @click="switchTab('/pages/honeySource/honeySource')">
-				<image :src="activeTab == 'monitorPage' ? '../static/images/底部导航栏@2x(6).png' : '../static/images/底部导航栏@2x(7).png'" class="icon" />
+				<image :src="activeTab == 'monitorPage' ? '../static/images/honeySourceActive.png' : '../static/images/honeySource.png'" class="icon" />
 				<text>蜜源</text>
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'myPage' }" @click="switchTab('/pages/myPage/myPage')">
-				<image :src="activeTab == 'myPage' ? '../static/images/底部导航栏@2x.png' : '../static/images/底部导航栏@2x(1).png'" class="icon" />
+				<image :src="activeTab == 'myPage' ? '../static/images/mineActive.png' : '../static/images/mine.png'" class="icon" />
 				<text>我的</text>
 			</view>
 		</view>

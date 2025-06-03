@@ -8,14 +8,14 @@
           <button class="avatar-btn" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
               <image :src="userInfo.avatar" class="avatar"></image>
           </button>
-          <image src="/static/images/myPapeImages/向右箭头.png" class="arrow"></image>
+          <image src="/static/images/rightBtn.png" class="arrow"></image>
         </view>
       </view>
       <view class="item" @click="showNicknameDialog">
         <text class="label">用户名</text>
         <view class="right">
           <text class="value">{{userInfo.nickname}}</text>
-          <image src="/static/images/myPapeImages/向右箭头.png" class="arrow"></image>
+          <image src="/static/images/rightBtn.png" class="arrow"></image>
         </view>
       </view>
       
@@ -55,7 +55,7 @@
       <view class="item" @click="handleAddress">
         <text class="label">地址管理</text>
         <view class="right">
-          <image src="/static/images/myPapeImages/向右箭头.png" class="arrow"></image>
+          <image src="/static/images/rightBtn.png" class="arrow"></image>
         </view>
       </view>
     </view>

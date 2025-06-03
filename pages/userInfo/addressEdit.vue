@@ -16,7 +16,7 @@
         <view class="input">
           <text>{{form.province || '请选择'}}{{form.city ? ' ' + form.city : ''}}{{form.region ? ' ' + form.region : ''}}</text>
         </view>
-        <image src="/static/images/myPapeImages/向右箭头.png" class="arrow"></image>
+        <image src="/static/images/rightBtn.png" class="arrow"></image>
       </view>
       
       <view class="form-item">

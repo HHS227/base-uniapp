@@ -1,41 +1,43 @@
 <template>
+<view>
 	<GetHivePupopVue v-model:show="showPopup"  />
 	<view class="container">
-		<image src="/static/images/游戏背景.png" mode="" class="game-bg"></image>
+		<image src="/static/images/game/gameBg.png" mode="" class="game-bg"></image>
 		<view class="right-top-btn">
-			<image src="/static/images/攻略.png" mode="" class="btn-image"></image>
-			<image src="/static/images/蜂场活动.png" mode="" class="btn-image"></image>
-			<image src="/static/images/兑换M币.png" mode="" class="btn-image"></image>
+			<image src="/static/images/game/strategy.png" mode="" class="btn-image"></image>
+			<image src="/static/images/game/activity.png" mode="" class="btn-image"></image>
+			<image src="/static/images/game/exchange.png" mode="" class="btn-image"></image>
 		</view>
 		<view class="broadcast-btn">
-			<image src="/static/images/广播.png" mode="" class="broadcast-image"></image>
+			<image src="/static/images/game/broadcast.png" mode="" class="broadcast-image"></image>
 			收获广播
 		</view>
 		<view class="broadcast-content">
 			<introduction-v3 :items="noticeList" />
 		</view>
 		<view class="road-sign">
-			<image src="/static/images/路标.png" mode="" class="road-sign-image"></image>
+			<image src="/static/images/game/guidepost.png" mode="" class="road-sign-image"></image>
 			<text class="road-sign-text">空地</text>
 		</view>
 		<view class="bee-hive">
-			<image src="/static/images/蜂箱.png" class="bee-hive-image"></image>
+			<image src="/static/images/game/beeHive.png" class="bee-hive-image"></image>
 		</view>
 		<view class="get-task-btn">
-			<image src="/static/images/任务.png" class="task-image"></image>
+			<image src="/static/images/game/task.png" class="task-image"></image>
 			<text class="task-text">获取任务</text>
 		</view>
 		<template v-if="!hasHive">
 			<view class="get-hive" @click="getHive">领取蜜蜂</view>
 			<view class="combine">
 				<view class="combine-left">
-					<image src="/static/images/合养logo.png" class="combine-image"></image>
+					<image src="/static/images/game/cooperation.png" class="combine-image"></image>
 					邀请好友和养，收获平分
 				</view>
 				<button class="combine-btn">开启合养</button>
 			</view>
 		</template>
 	</view>
+</view>
 </template>
 
 <script setup>

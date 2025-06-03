@@ -2,7 +2,7 @@
 	<view>
 		<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
 	<view class="container">
-		<image src="/static/images/Rectangle 34625693@2x.png" mode="" class="bg-image"></image>
+		<image src="/static/images/myPage/myPageTopBg.png" mode="" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
 		<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
 			<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
@@ -14,13 +14,13 @@
 						<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						<image 
 						v-if="userInfo.gender == 1" 
-						src="/static/images/myPapeImages/Group 1000008640@2x.png" 
+						src="/static/images/myPage/manIcon.png" 
 						mode="" 
 						class="sex-image">
 						</image>
 						<image 
 						v-else-if="userInfo.gender == 0" 
-						src="/static/images/myPapeImages/Group 1000009029.png" 
+						src="/static/images/myPape/wamanIcon.png" 
 						mode="" 
 						class="sex-image">
 						</image>
@@ -41,18 +41,18 @@
           open-type="share" 
           @click="handleShare"
         >
-          <image src="/static/images/myPapeImages/Group 1000007328@2x.png" class="btn" mode=""></image>
+          <image src="/static/images/myPape/shareIcon.png" class="btn" mode=""></image>
         </button>
 				</view>
 			</view>
 			<view class="commission-card">
 				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
+					<image class="item-bg" src="/static/images/myPape/commissionBg.png" mode=""></image>
 					<text class="amount">{{ commissionData.todaySEarnings||0 }}</text>
 					<text class="commission-text">今日佣金</text>
 				</view>
 				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPapeImages/Group 1000009077@2x (2).png" mode=""></image>
+					<image class="item-bg" src="/static/images/myPape/commissionBg.png" mode=""></image>
 					<text class="amount">{{ commissionData.cumulativeEarnings||0 }}</text>
 					<text class="commission-text">累计佣金</text>
 				</view>
@@ -64,8 +64,8 @@
 						<text class="text">现金</text>
 					</view>
 					<view class="item-right">
-						<image src="/static/images/myPapeImages/使用工具生成图片 (1) 1@2x.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPapeImages/Ellipse 1836@2x.png" mode="" class="icon"></image>
+						<image src="/static/images/myPape/cashIcon.png" mode="" class="amount-image"></image>
+						<image src="/static/images/myPape/ellipse.png" mode="" class="icon"></image>
 					</view>
 				</view>
 				<view class="assets-item" @click="gotoWithdraw">
@@ -74,27 +74,27 @@
 						<text class="text">M币</text>
 					</view>
 					<view class="item-right">
-						<image src="/static/images/myPapeImages/使用工具生成图片 3@2x.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPapeImages/Ellipse 1836@2x.png" mode="" class="icon"></image>
+						<image src="/static/images/myPape/MIcon.png" mode="" class="amount-image"></image>
+						<image src="/static/images/myPape/ellipse.png" mode="" class="icon"></image>
 					</view>
 				</view>
 			</view>
 			<view class="menu-content">
 				<view @click="gotAdoptionRecords"  class="menu-item">
-					<image src="/static/images/myPapeImages/Frame@2x.png" class="menu-icon" mode=""></image>
+					<image src="/static/images/myPage/adoptIcon.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">认养记录</text>
 				</view>
 				<view @click="gotoOrderList"  class="menu-item">
-					<image src="/static/images/myPapeImages/Frame@2x(1).png" class="menu-icon" mode=""></image>
+					<image src="/static/images/myPage/orderIcon.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">订单列表</text>
 				</view>
 
 				<view @click="gotoBeeFarmerJion"   class="menu-item">
-					<image src="/static/images/myPapeImages/Frame@2x(2).png" class="menu-icon" mode=""></image>
+					<image src="/static/images/myPage/beeEnterIcon.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">蜂农入住</text>
 				</view>
 				<view @click="gotoSmartBee"  class="menu-item">
-					<image src="/static/images/myPapeImages/Frame@2x(3).png" class="menu-icon" mode=""></image>
+					<image src="/static/images/myPage/intelligenceIcon.png" class="menu-icon" mode=""></image>
 					<text class="menu-text">智能养蜂</text>
 				</view>
 			</view>
@@ -102,39 +102,39 @@
 			<view class="list-content">
 				<view @click="gotoCommission"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(4).png" mode=""></image>
+						<image class="item-icon" src="/static/images/myPage/invitationIcon.png" mode=""></image>
 						<text class="text">邀请有礼</text>
 					</view>
-					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
 				<view @click="gotoMessagePage" class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x (2).png" mode=""></image>
+						<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
 						<text class="text">消息</text>
 					</view>
-					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
 				<view @click="gotoSurveyList"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPapeImages/纸飞机_发布.png" mode=""></image>
+						<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
 						<text class="text">问卷调查</text>
 					</view>
-					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
 			
 				<view @click="gotoCustomerService"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(5).png" mode=""></image>
+						<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
 						<text class="text">联系客服</text>
 					</view>
-					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
 				<view @click="gotoUserInfo"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPapeImages/Frame@2x(6).png" mode=""></image>
+						<image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
 						<text class="text" >设置</text>
 					</view>
-					<image class="btn" src="/static/images/myPapeImages/向右箭头.png" mode=""></image>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
 			</view>
 		</scroll-view>

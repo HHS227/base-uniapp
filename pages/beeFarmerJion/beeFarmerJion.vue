@@ -1,17 +1,17 @@
 <template>
     <view class="container">
-		<image class="container-bg" src="/static/images/背景.png" mode=""></image>
+		<image class="container-bg" src="/static/images/homePage/homePageBg.png" mode=""></image>
 		<TransNavVue title="蜂农认证"></TransNavVue>
-		<image class="poster-image" src="/static/images/beeFarmerImages/Group 1000008969.png" mode=""></image>
+		<image class="poster-image" src="/static/images/mypage/beeEnterBg.png" mode=""></image>
 		<text class="jion-text">未入驻平台</text>
 		<view class="tips-content">
-			<image src="/static/images/beeFarmerImages/Group 1000009079.png" class="tips-image" mode=""></image>
+			<image src="/static/images/mypage/beeEnterWarring.png" class="tips-image" mode=""></image>
 			您还没有入驻平台，填写资料入驻
 		</view>
 		<button class="jion-btn" @click="gotoJion" >立即入驻</button>
 		<view class="jion-rules-content">
 			<view class="rules-title">
-				<image src="/static/images/beeFarmerImages/Group 1000008893.png" class="title-icon" mode=""></image>
+				<image src="/static/images/myPage/enterRule.png" class="title-icon" mode=""></image>
 				入驻规则
 			</view>
 			<text class="rules-text">愿你的每一天都充满阳光和欢笑，每一步都走得坚定而有力。在这个多彩的世界里，愿你收获满满的幸福与成功！\n

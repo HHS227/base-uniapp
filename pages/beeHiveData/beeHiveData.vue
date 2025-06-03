@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<image src="/static/images/背景.png" mode="" class="bg-image"></image>
+		<image src="/static/images/homePage/homePageBg.png" mode="" class="bg-image"></image>
 		<TransNavVue title="蜂场数据"></TransNavVue>
 		<view class="data-panel">
 			<image class="panel-bg" src="/static/images/data-bg.png" mode=""></image>
@@ -18,14 +18,14 @@
 			</view>
 		</view>
 		<view class="bee-bar">
-			<image src="/static/images/Group 1000008956.png" class="bar-bg"></image>
+			<image src="/static/images/homePage/honeySourceBg.png" class="bar-bg"></image>
 			<view class="bar-content">
 				<view class="bar-left">
-					<image src="/static/images/bee.png" mode="" class="bee-image"></image>
+					<image src="/static/images/homePage/honeySourceIcon.png" mode="" class="bee-image"></image>
 					<view class="bar-title">
 						<text>蜜源面积</text>
 						<view class="title-bt">
-							<image src="/static/images/砖石.png" mode="" class="icon"></image>
+							<image src="/static/images/homePage/diamond.png" mode="" class="icon"></image>
 							<text class="text" style='font-size: 8px;'>优质蜂源</text>
 						</view>
 					</view>
@@ -54,7 +54,7 @@ const mapMarkers = ref([
 		id: 1,
 		latitude: 30.6667,
 		longitude: 104.0667,
-		iconPath: '/static/images/marker.png',
+		iconPath: '/static/images/homePage/marker.png',
 		width: 34,
 		height: 38,
 		label: {
@@ -68,32 +68,32 @@ const mapMarkers = ref([
 const dataMap = ref({
 	countryNumber: {
 		text: '国家',
-		icon: '/static/images/国家.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '/个'
 	},
 	adoptionAmount: {
 		text: '领养量',
-		icon: '/static/images/领养量.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '/万箱'
 	},
 	outputAmount: {
 		text: '产量',
-		icon: '/static/images/产量.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '/万斤'
 	},
 	beeNumber: {
 		text: '数量',
-		icon: '/static/images/蜜蜂.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '/万只'
 	},
 	attendanceRate: {
 		text: '出勤',
-		icon: '/static/images/蜜蜂.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '%'
 	},
 	userAmount: {
 		text: '用户量',
-		icon: '/static/images/用户量.png',
+		icon: '/static/images/homePage/countryIcon.png',
 		unit: '/万人'
 	}
 });

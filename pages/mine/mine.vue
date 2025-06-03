@@ -1,5 +1,6 @@
 <template>
-	<BeeTabbarVue active-tab="mine"></BeeTabbarVue>
+	<view>
+		<BeeTabbarVue active-tab="mine"></BeeTabbarVue>
 	<view class="container">
 		<view class="swiper-content">
 			<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
@@ -43,7 +44,7 @@
 								<image :src="step.completed ? step.curl : step.curl" class="step-icon"></image>
 								<text :class="['step-text', { 'completed-text': step.completed }]">{{ step.text }}</text>
 							</view>
-							<image v-if="index < steps.length - 1" src="/static/images/下一步.png" class="arrow-icon"></image>
+							<image v-if="index < steps.length - 1" src="/static/images/homePage/next.png" class="arrow-icon"></image>
 						</view>
 					</view>
 				</view>
@@ -82,13 +83,14 @@
 				</view>
 			</view>
 			<view class="message-content">
-				<view class="message-item" v-for="item in 4">
+				<view class="message-item" v-for="(item,index) in 4" :key="index">
 					<text class="message-type">任务描述</text>
 					2025-01-02 14:20:25 完成打扫
 				</view>
 			</view>
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
+	</view>
 	</view>
 </template>
 
@@ -97,13 +99,13 @@ import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import AvatarStackVue from '../../components/AvatarStack.vue';
 import { ref } from 'vue';
 
-const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
+const avatarList = ref(['/static/images/homePage/BeehiveLogo.png', '/static/images/homePage/BeehiveLogo.png']);
 const steps = ref([
-	{ text: '开始', completed: true, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
-	{ text: '采蜜', completed: true, url: '/static/images/采蜜.png', curl: '/static/images/采蜜s.png' },
-	{ text: '分装', completed: false, url: '/static/images/分装.png', curl: '/static/images/分装s.png' },
-	{ text: '完成', completed: false, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
-	{ text: '交付', completed: false, url: '/static/images/交付.png', curl: '/static/images/交付s.png' }
+	{ text: '开始', completed: true, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png' },
+	{ text: '采蜜', completed: true, url: '/static/images/homePage/bee.png', curl: '/static/images/homePage/bees.png' },
+	{ text: '分装', completed: false, url: '/static/images/homePage/classify.png', curl: '/static/images/homePage/classifys.png' },
+	{ text: '完成', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png' },
+	{ text: '交付', completed: false, url: '/static/images/homePage/delivery.png', curl: '/static/images/homePage/deliverys.png' }
 ]);
 </script>
 

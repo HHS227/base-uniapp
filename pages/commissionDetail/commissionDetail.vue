@@ -1,29 +1,29 @@
 <template>
 	<view class="container">
-		<image src="/static/images/commissionDetail/yjng.png" mode="" class="bg-image"></image>
+		<image src="/static/images/myPage/yjng.png" mode="" class="bg-image"></image>
 		<TransNavVue title="推广佣金"></TransNavVue>
 		<view class="top-box">
 			<view>邀好友 得现金</view>
 			<text>邀请越多 奖励越多</text>
 		</view>
 		<view class="data-panel">
-			<image class="panel-bg" src="/static/images/data-bg.png" mode=""></image>
+			<image class="panel-bg" src="/static/images/myPage/data-bg.png" mode=""></image>
 			<view class="data-content">
 				<view class="title">佣金详情</view>
 				<view class="data-row">
 					<view class="data-item">
-						<image class="data-icon" src="/static/images/commissionDetail/Group 1000009065.png"></image>
+						<image class="data-icon" src="/static/images/myPage/todaySEarnings.png"></image>
 						<text class="data-label">今日佣金</text>
 						<text class="data-value">{{ commissionData.todaySEarnings}}</text>
 					</view>
 					<view class="data-item">
-						<image class="data-icon" src="/static/images/commissionDetail/Vector.png"></image>
+						<image class="data-icon" src="/static/images/myPage/cumulativeEarnings.png"></image>
 						<text class="data-label">累计佣金</text>
 	
 						<text class="data-value">{{ commissionData.cumulativeEarnings }}</text>
 					</view>
 					<view class="data-item">
-						<image class="data-icon" src="/static/images/commissionDetail/Frame.png"></image>
+						<image class="data-icon" src="/static/images/myPage/currentEarnings.png"></image>
 						<text class="data-label">当前收益</text>
 						<text class="data-value">{{ commissionData.currentEarnings }}</text>
 					</view>
@@ -34,9 +34,9 @@
         <view class="withdraw-btn" @click="goToWithdraw">提现</view>
 		<view class="withdraw-box">
             <view class="withdraw-header">
-                <image style="width:100rpx;height:20rpx" src="/static/images/commissionDetail/left-icon.png" class="withdraw-icon"></image>
+                <image style="width:100rpx;height:20rpx" src="/static/images/myPage/left-icon.png" class="withdraw-icon"></image>
                 <text>提现佣金</text>
-                <image style="width:100rpx;height:20rpx" src="/static/images/commissionDetail/right-icon.png" class="withdraw-icon"></image>
+                <image style="width:100rpx;height:20rpx" src="/static/images/myPage/right-icon.png" class="withdraw-icon"></image>
             </view>
             <view class="withdraw-record">
                 <view 
