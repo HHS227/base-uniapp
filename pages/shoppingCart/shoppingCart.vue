@@ -476,11 +476,7 @@ const deleteItem = async (item) => {
   justify-content: center;
   height: 60vh;
   
-  .empty-image {
-    width: 300rpx;
-    height: 300rpx;
-    margin-bottom: 40rpx;
-  }
+ 
   
   .empty-text {
     font-size: 28rpx;

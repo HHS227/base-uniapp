@@ -7,7 +7,7 @@
     
     <scroll-view scroll-y="true" class="device-list">
       <view v-if="devices.length === 0" class="empty-container">
-        <image src="/static/images/empty.png" class="empty-image"></image>
+       
         <text class="empty-text">暂无设备数据</text>
       </view>
       <view 
@@ -225,11 +225,7 @@ const handleUnbind = (id) => {
   justify-content: center;
   height: 60vh;
   
-  .empty-image {
-    width: 300rpx;
-    height: 300rpx;
-    margin-bottom: 40rpx;
-  }
+ 
   
   .empty-text {
     font-size: 28rpx;

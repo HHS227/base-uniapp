@@ -35,7 +35,7 @@
       
       <!-- 添加空状态展示 -->
       <view v-if="filteredList.length === 0" class="empty-state">
-        <image src="/static/images/empty.png" class="empty-image"></image>
+        
         <text class="empty-text">暂无认养记录</text>
       </view>
     </scroll-view>
@@ -227,11 +227,7 @@ const formatDateTime = (dateString) => {
   justify-content: center;
   padding: 100rpx 0;
   
-  .empty-image {
-    width: 200rpx;
-    height: 200rpx;
-    margin-bottom: 30rpx;
-  }
+  
   
   .empty-text {
     font-size: 28rpx;

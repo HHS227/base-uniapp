@@ -72,15 +72,15 @@ const switchTab = (url) => {
 				width: 104rpx;
 				height: 104rpx;
 			}
-			text {
+			.tab-text {  // 修改前可能是直接用的 text 选择器
 				font-size: 22rpx;
 				color: #a1a1a1;
 			}
 
 			&.active {
 				.icon,
-				text {
-					color: #07c160; // 激活状态的颜色
+				.tab-text {  // 修改前可能是直接用的 text 选择器
+					color: #07c160;
 				}
 			}
 		}

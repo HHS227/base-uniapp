@@ -16,7 +16,7 @@
       
       <!-- 空状态提示 -->
       <view v-if="smartBeeList.length === 0" class="empty-state">
-        <image src="/static/images/empty.png" class="empty-image"></image>
+       
         <text class="empty-text">暂无相关内容</text>
       </view>
     </scroll-view>
@@ -102,12 +102,7 @@ const getSmartBeeList= async () => {
   justify-content: center;
   padding: 100rpx 0;
   
-  .empty-image {
-    width: 200rpx;
-    height: 200rpx;
-    margin-bottom: 30rpx;
-  }
-  
+ 
   .empty-text {
     font-size: 28rpx;
     color: #999;

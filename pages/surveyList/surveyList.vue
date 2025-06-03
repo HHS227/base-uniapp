@@ -21,7 +21,7 @@
       
       <!-- 空状态提示 -->
       <view v-if="surveyList.length === 0" class="empty-state">
-        <image src="/static/images/empty.png" class="empty-image"></image>
+       
         <text class="empty-text">暂无问卷调查</text>
       </view>
     </scroll-view>
@@ -140,12 +140,6 @@ const getQuestionList = async () => {
   align-items: center;
   justify-content: center;
   padding: 100rpx 0;
-  
-  .empty-image {
-    width: 200rpx;
-    height: 200rpx;
-    margin-bottom: 30rpx;
-  }
   
   .empty-text {
     font-size: 28rpx;
