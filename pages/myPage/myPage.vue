@@ -14,13 +14,13 @@
 						<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						<image 
 						v-if="userInfo.gender == 1" 
-						src="/static/images/myPage/manIcon.png" 
+						src="/static/images/myPage/wamanIcon.png" 
 						mode="" 
 						class="sex-image">
 						</image>
 						<image 
 						v-else-if="userInfo.gender == 0" 
-						src="/static/images/myPape/wamanIcon.png" 
+						src="/static/images/myPage/manIcon.png" 
 						mode="" 
 						class="sex-image">
 						</image>
@@ -41,18 +41,18 @@
           open-type="share" 
           @click="handleShare"
         >
-          <image src="/static/images/myPape/shareIcon.png" class="btn" mode=""></image>
+          <image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
         </button>
 				</view>
 			</view>
 			<view class="commission-card">
 				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPape/commissionBg.png" mode=""></image>
+					<image class="item-bg" src="/static/images/myPage/commissionBg.png" mode=""></image>
 					<text class="amount">{{ commissionData.todaySEarnings||0 }}</text>
 					<text class="commission-text">今日佣金</text>
 				</view>
 				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPape/commissionBg.png" mode=""></image>
+					<image class="item-bg" src="/static/images/myPage/commissionBg.png" mode=""></image>
 					<text class="amount">{{ commissionData.cumulativeEarnings||0 }}</text>
 					<text class="commission-text">累计佣金</text>
 				</view>
@@ -64,8 +64,8 @@
 						<text class="text">现金</text>
 					</view>
 					<view class="item-right">
-						<image src="/static/images/myPape/cashIcon.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPape/ellipse.png" mode="" class="icon"></image>
+						<image src="/static/images/myPage/cashIcon.png" mode="" class="amount-image"></image>
+						<image src="/static/images/myPage/ellipse.png" mode="" class="icon"></image>
 					</view>
 				</view>
 				<view class="assets-item" @click="gotoWithdraw">
@@ -74,8 +74,8 @@
 						<text class="text">M币</text>
 					</view>
 					<view class="item-right">
-						<image src="/static/images/myPape/MIcon.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPape/ellipse.png" mode="" class="icon"></image>
+						<image src="/static/images/myPage/MIcon.png" mode="" class="amount-image"></image>
+						<image src="/static/images/myPage/ellipse.png" mode="" class="icon"></image>
 					</view>
 				</view>
 			</view>

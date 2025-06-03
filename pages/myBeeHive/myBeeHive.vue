@@ -39,7 +39,7 @@
 								<image :src="step.completed ? step.url : step.curl" class="step-icon"></image>
 								<text :class="['step-text', { 'completed-text': step.completed }]">{{ step.text }}</text>
 							</view>
-							<image v-if="index < steps.length - 1" src="/static/images/下一步.png" class="arrow-icon"></image>
+							<image v-if="index < steps.length - 1" src="/static/images/homePage/next.png" class="arrow-icon"></image>
 						</view>
 					</view>
 				</view>
@@ -106,11 +106,11 @@ const MyBeehiveInfo=ref({})
 const MyBeehiveTask=ref([])
 const beeId=ref('')
 const steps = ref([
-	{ text: '开始', completed: false, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
-	{ text: '采蜜', completed: false, url: '/static/images/采蜜.png', curl: '/static/images/采蜜s.png' },
-	{ text: '分装', completed: false, url: '/static/images/分装.png', curl: '/static/images/分装s.png' },
-	{ text: '完成', completed: false, url: '/static/images/完成.png', curl: '/static/images/完成s.png' },
-	{ text: '交付', completed: false, url: '/static/images/交付.png', curl: '/static/images/交付s.png' }
+	{ text: '开始', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png.png' },
+	{ text: '采蜜', completed: false, url: '/static/images/homePage/bee.png', curl: '/static/images/homePage/bees.png.png' },
+	{ text: '分装', completed: false, url: '/static/images/homePage/classify.png', curl: '/static/images/homePage/classifys.png.png' },
+	{ text: '完成', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png' },
+	{ text: '交付', completed: false, url: '/static/images/homePage/delivery.png', curl: '/static/images/homePage/deliverys.png.png' }
 ]);
 
 watch(MyBeehiveInfo, (newVal) => {

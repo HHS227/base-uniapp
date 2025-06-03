@@ -5,7 +5,7 @@
 		<image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
 		<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-			<image src="/static/images/homePage/logo.png" class="logo-image" mode="aspectFill"></image>
+			<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
 		</view>
 		<scroll-view scroll-y="true" class="scroll-view">
 			<view class="swiper-content">
@@ -73,7 +73,7 @@
 			<view class="my-bee-box">
 				<view class="my-bee-title">
 					<view>我的蜂箱</view>
-					<image src="/static/images/homePage/beeDataTitle.png" mode="" class="title-image"></image>
+					<image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
 				</view>
 				<view class="my-bee-right" @click="collectBee">
 					去认养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images/rightBtn.png" mode="" ></image>
@@ -82,7 +82,7 @@
 	
 			<view v-if="dataList.length>0">
 				<view class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
-					<!-- <image src="/static/images/Subtract@2x.png" mode="" class="card-bg"></image> -->
+					<image src="/static/images/homePage/myBeeHiveListBg.png" mode="" class="card-bg"></image>
 					<view class="card-content">
 						<view class="card-top">
 							<view>
@@ -156,7 +156,7 @@ const dataList=ref([
 
 ])
 const percent = ref(45);
-const avatarList = ref(['/static/images/蜂箱logo.png', '/static/images/蜂箱logo.png']);
+const avatarList = ref(['/static/images/apiculture.png', '/static/images/apiculture.png']);
 // 获取轮播图数据
 const getSwiperList = async () => {
   try {

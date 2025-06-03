@@ -13,7 +13,7 @@ const markers = ref([
 		id: 1,
 		latitude: 30.6667,
 		longitude: 104.0667,
-		iconPath: '/static/images/marker.png',
+		iconPath: '/static/images/homePage/marker.png',
 		width: 34,
 		height: 38,
 		label: {
@@ -31,7 +31,7 @@ const generateMarkers = (list) => {
       id: index,
       latitude: item.latitude,
       longitude: item.longitude,
-      iconPath: '/static/images/marker.png',
+      iconPath: '/static/images/homePage/marker.png',
       width: 34,
       height: 38,
       // label: {  // 使用label属性在图标上方显示名称
@@ -73,7 +73,7 @@ onMounted(() => {
 <template>
  <view> <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
   <view class="container">
-    <image src="/static/images/背景.png" mode="aspectFill" class="bg-image"></image>
+    <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
     <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
     <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
       <view>蜜源</view>
@@ -93,7 +93,7 @@ onMounted(() => {
     
     <view class="my-bee-title">
       <view>推荐蜜源</view>
-      <image src="/static/images/我的蜂箱logo.png" mode="" class="title-image"></image>
+      <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
     </view>
     <view class="bee-list-center">
       <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index">

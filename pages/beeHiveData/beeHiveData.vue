@@ -3,7 +3,7 @@
 		<image src="/static/images/homePage/homePageBg.png" mode="" class="bg-image"></image>
 		<TransNavVue title="蜂场数据"></TransNavVue>
 		<view class="data-panel">
-			<image class="panel-bg" src="/static/images/data-bg.png" mode=""></image>
+			<image class="panel-bg" src="/static/images/homePage/data-bg" mode=""></image>
 			<view class="data-content">
 				<view class="data-item" v-for="(value, key) in dataList"  :key="key">
 					<view class="title" v-if="key!= 'nectarSourceArea'">
