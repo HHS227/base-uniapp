@@ -7,7 +7,7 @@
         <view class="card-content">
           <text class="label">账号余额</text>
           <view class="right-content" @click="showCashWithdraw">
-          <image src="/static/images/myPapes/crownIcon.png" class="arrow-icon"></image>
+          <image src="/static/images/myPage/crownIcon.png" class="arrow-icon"></image>
           <text class="withdraw-text">余额提现</text>
           <image src="/static/images/rightBtn.png" class="arrow-icon"></image>
         </view>
@@ -27,7 +27,7 @@
           </view>
         
         </view>
-        <image style="width: 150rpx; height:150rpx" src="/static/images/myPape/Mbg.png" class="honey-icon"></image>
+        <image style="width: 150rpx; height:150rpx" src="/static/images/myPage/Mbg.png" class="honey-icon"></image>
       </view>
     </view>
     

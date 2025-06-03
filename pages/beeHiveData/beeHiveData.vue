@@ -3,7 +3,7 @@
 		<image src="/static/images/homePage/homePageBg.png" mode="" class="bg-image"></image>
 		<TransNavVue title="蜂场数据"></TransNavVue>
 		<view class="data-panel">
-			<image class="panel-bg" src="/static/images/homePage/data-bg" mode=""></image>
+			<image class="panel-bg" src="/static/images/homePage/data-bg.png" mode=""></image>
 			<view class="data-content">
 				<view class="data-item" v-for="(value, key) in dataList"  :key="key">
 					<view class="title" v-if="key!= 'nectarSourceArea'">
@@ -73,27 +73,27 @@ const dataMap = ref({
 	},
 	adoptionAmount: {
 		text: '领养量',
-		icon: '/static/images/homePage/countryIcon.png',
+		icon: '/static/images/homePage/outputIcon.png',
 		unit: '/万箱'
 	},
 	outputAmount: {
 		text: '产量',
-		icon: '/static/images/homePage/countryIcon.png',
+		icon: '/static/images/homePage/adoptIcon.png',
 		unit: '/万斤'
 	},
 	beeNumber: {
 		text: '数量',
-		icon: '/static/images/homePage/countryIcon.png',
+		icon: '/static/images/homePage/beeIcon.png',
 		unit: '/万只'
 	},
 	attendanceRate: {
 		text: '出勤',
-		icon: '/static/images/homePage/countryIcon.png',
+		icon: '/static/images/homePage/beeIcon.png',
 		unit: '%'
 	},
 	userAmount: {
 		text: '用户量',
-		icon: '/static/images/homePage/countryIcon.png',
+		icon: '/static/images/homePage/uesrIcon.png',
 		unit: '/万人'
 	}
 });

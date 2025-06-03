@@ -12,7 +12,7 @@
 		</view>
 		<scroll-view scroll-y="true" class="scroll-content">
 			<view class="goods-info">
-				<image src="/static/images/homePage/shoppingBg.png" mode=""></image>
+				<image src="/static/images/shoppingBg.png" mode=""></image>
 				<view class="info-left">
 					<view class="info-content">
 						<view class="goods-price">
@@ -106,11 +106,11 @@ const MyBeehiveInfo=ref({})
 const MyBeehiveTask=ref([])
 const beeId=ref('')
 const steps = ref([
-	{ text: '开始', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png.png' },
-	{ text: '采蜜', completed: false, url: '/static/images/homePage/bee.png', curl: '/static/images/homePage/bees.png.png' },
-	{ text: '分装', completed: false, url: '/static/images/homePage/classify.png', curl: '/static/images/homePage/classifys.png.png' },
+	{ text: '开始', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png' },
+	{ text: '采蜜', completed: false, url: '/static/images/homePage/bee.png', curl: '/static/images/homePage/bees.png' },
+	{ text: '分装', completed: false, url: '/static/images/homePage/classify.png', curl: '/static/images/homePage/classifys.png' },
 	{ text: '完成', completed: false, url: '/static/images/homePage/accomplish.png', curl: '/static/images/homePage/accomplishs.png' },
-	{ text: '交付', completed: false, url: '/static/images/homePage/delivery.png', curl: '/static/images/homePage/deliverys.png.png' }
+	{ text: '交付', completed: false, url: '/static/images/homePage/delivery.png', curl: '/static/images/homePage/deliverys.png' }
 ]);
 
 watch(MyBeehiveInfo, (newVal) => {
@@ -121,7 +121,7 @@ watch(MyBeehiveInfo, (newVal) => {
             completed: index < processValue
         }));
     }
-	console.log(steps.value)
+	
 }, { immediate: true });
 onMounted(() => {
   const pages = getCurrentPages();
@@ -180,10 +180,11 @@ const getBeeHiveTask = async () => {
 
 <style lang="scss" scoped>
 .container {
-	height: 100vh;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	background: #efefef;
+	
 	.swiper-content {
 		height: 380rpx;
 		width: 100%;

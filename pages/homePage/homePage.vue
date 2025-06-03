@@ -501,7 +501,7 @@ const scanCode = () => {
 				.card-top {
 					width: 100%;
 					height: 188rpx;
-					border-bottom: 2rpx solid #ebebeb;
+					border-bottom: 2rpx dashed #ebebeb;
 					display: flex;
 					.top-info {
 						margin-left: 24rpx;

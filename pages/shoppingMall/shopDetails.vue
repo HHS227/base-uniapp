@@ -5,7 +5,7 @@
 			<view class="swiper-content">
 				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true"
 					interval="2000" duration="500">
-					<swiper-item class="swiper-item" v-for="item in commodityDetails.imgUrls" :key="item">
+					<swiper-item class="swiper-item" v-for="(item,index) in commodityDetails.imgUrls" :key="index">
 						<image :src="item" class="swiper-image" mode=""></image>
 					</swiper-item>
 				</swiper>
@@ -20,9 +20,10 @@
 		<view class="details-center">
 			<view class="details-title"> 图文详情</view>
 			<view class="details-img">
-				<image v-for="item in commodityDetails.imgUrls" :src="item" class="details-image" mode="" :key="item"></image>
+				<image v-for="(item,index) in commodityDetails.imgUrls" :src="item" class="details-image" mode="" :key="index"></image>
 
 			</view>
+
 		</view>
 
 		<view class="details-bottom">

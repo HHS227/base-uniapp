@@ -7,7 +7,7 @@
 			<text>邀请越多 奖励越多</text>
 		</view>
 		<view class="data-panel">
-			<image class="panel-bg" src="/static/images/myPage/data-bg.png" mode=""></image>
+			<image class="panel-bg" src="/static/images/homePage/data-bg.png" mode=""></image>
 			<view class="data-content">
 				<view class="title">佣金详情</view>
 				<view class="data-row">

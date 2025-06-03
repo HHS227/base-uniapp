@@ -25,10 +25,10 @@
 						class="sex-image">
 						</image>
 					</view>
-					<view class="name-content"  >
-						<text class="name-text">{{userInfo.nickname||'暂未登陆' }}</text>
-						<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || '' }}</text>
-					</view>
+					<view class="name-content">
+  <text class="name-text" :class="{'unlogin-text': !getAccessToken()}">{{userInfo.nickname||'请先登陆' }}</text>
+  <text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || '' }}</text>
+</view>
 					
 				</view>
 				<view class="app-info">
@@ -60,7 +60,7 @@
 			<view class="assets-total">
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
-						<text class="amount">{{ walletData.balance }}</text>
+						<text class="amount">{{ walletData.balance||0 }}</text>
 						<text class="text">现金</text>
 					</view>
 					<view class="item-right">
@@ -136,6 +136,13 @@
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
+				<view @click="logout" class="list-item">
+				  <view class="item-left">
+				    <image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
+				    <text class="text">注销登录</text>
+				  </view>
+				
+				</view>
 			</view>
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
@@ -157,8 +164,8 @@ const walletData = ref({})
 const commissionData = ref({})
 const shareConfig = ref({
   title: '智慧养蜂，快来领养吧', 
-  imageUrl: '/static/images/logo.png', 
-  path: '/pages/homePage/homePage.vue' 
+  imageUrl: '/static/images/myPage/Invitation.png', 
+  path: '/pages/myPage/myPage.vue' 
 })
 
 
@@ -205,29 +212,28 @@ const handleShare = (e) => {
 
 
 
-onShow(() => {
-  if (getAccessToken()) {
-	console.log('onShow',getAccessToken(),)
-    // 重新获取用户信息和钱包信息
-    getMyInfo()
-	getCommissionDetail()
-	getWalletInfo()
-  }
-})
 
-onMounted(() => {
+onShow(() => {
   if (!getAccessToken()) {
     uni.showModal({
       title: '提示',
-      content: '请先登录',
+      content: '您尚未登录，请先登录',
+      confirmText: '去登录',
+      cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
           uni.navigateTo({ url: '/pages/login/login' })
-        } 
+        }
       }
     })
-  } 
+  } else {
+    getMyInfo()
+    getCommissionDetail()
+    getWalletInfo()
+  }
 })
+
+
 
 //跳转到客服服务
 const gotoCustomerService = () => {
@@ -486,7 +492,26 @@ const getMyInfo = async () => {
    
   }
 }
-
+//退出登录
+const logout = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定要注销登录吗？',
+    success: (res) => {
+      if (res.confirm) {
+        const { clearToken } = useTokenStorage()
+        clearToken()
+        userInfo.value = {}
+        walletData.value = {}
+        commissionData.value = {}
+        uni.showToast({
+          title: '已退出登录',
+          icon: 'success'
+        })
+      }
+    }
+  })
+}
 
 
 </script>
@@ -557,6 +582,10 @@ const getMyInfo = async () => {
 						color: #010022;
 						line-height: 38rpx;
 					}
+					.unlogin-text {
+  color: red;
+  font-size: 12px;
+}
 					.id-text {
 						margin-top: 10rpx;
 						font-size: 24rpx;
@@ -761,3 +790,6 @@ const getMyInfo = async () => {
 	}
 }
 </style>
+
+
+

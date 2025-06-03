@@ -64,6 +64,7 @@ const submitWithdraw = async () => {
         
         // 更新余额
         availableBalance.value = (parseFloat(availableBalance.value) - parseFloat(amount.value)).toFixed(2)
+        
         amount.value = ''
         
     } catch (error) {
