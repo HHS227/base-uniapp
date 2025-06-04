@@ -22,7 +22,7 @@
 				@click="showMessageDetail(item)"
 			>
 				<view class="item-left">
-					<image src="/static/images/message-icon.png" mode=""></image>
+					<image src="/static/images/myPage/message-icon.png" mode=""></image>
 					<view class="item-info">
 						<view class="item-title">{{ item.templateNickname }}</view>
 						<view class="item-time">{{formatDateTime(item.createTime) }}</view>
