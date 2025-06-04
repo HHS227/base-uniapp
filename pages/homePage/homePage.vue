@@ -270,12 +270,11 @@ const formatDateTime = (dateString) => {
 const scanCode = () => {
   uni.scanCode({
     success: (res) => {
-      console.log('扫码结果:', res.result)
-      // 假设扫码结果是商品ID
-      const productId = res.result
+      const productId = JSON.parse(res.result).id
+	  console.log(productId,'121')
       if (productId) {
         uni.navigateTo({
-          url: `/pages/shopDetails/shopDetails?id=${productId}`,
+          url: `/pages/shoppingMall/shopDetails?id=${productId}`,
           success: () => {
             uni.showToast({
               title: '跳转成功',
@@ -405,8 +404,8 @@ const scanCode = () => {
 					}
 					.data-icon {
 						position: absolute;
-						right: 35rpx;
-						top: 18rpx;
+						right: 36rpx;
+						top: 15rpx;
 						width: 70rpx;
 						height: 70rpx;
 						z-index: 1;

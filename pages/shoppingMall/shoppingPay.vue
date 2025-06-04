@@ -2,13 +2,13 @@
     <view class="container">
         <TransNavVue title="确认订单"></TransNavVue>
         <view class="pay-center">
-            <view v-if="addrdessList.consigneeName" class="name-box">
+            <view v-if="currentAddress.consigneeName" class="name-box">
                 <view class="address-header">
-                    <text>{{ addrdessList.consigneeName }}&nbsp;{{ addrdessList.phoneNumber }}</text>
+                    <text>{{ currentAddress.consigneeName }}&nbsp;{{ currentAddress.phoneNumber }}</text>
                     <text class="change-btn" @click="openAddressPopup">更换地址</text>
                 </view>
                 <view class="address-content">
-                    <text>{{addrdessList.province}}{{addrdessList.city}}{{addrdessList.region}}{{addrdessList.addressDetail}}</text>
+                    <text>{{currentAddress.province}}{{currentAddress.city}}{{currentAddress.region}}{{currentAddress.addressDetail}}</text>
                 </view>
             </view>
             <view v-else class="empty-address" @click="goToAddAddress">
@@ -17,7 +17,7 @@
             </view>
             
             <!-- 商品列表 -->
-            <view class="pay-details" v-for="(item, index) in selectedItems" :key="index">
+            <view class="pay-details" v-for="item in selectedItems" :key="item.sku.id">
                 <view class="details-box">
                     <image :src="item.sku.picUrl || '/static/images/default-goods.png'" class="details-img" mode="aspectFill"></image>
                     <view class="info">
@@ -56,22 +56,6 @@
                     <view class="option-radio">
                         <radio :checked="paymentMethod === 'wechatPay'" color="#ff6f0e"></radio>
                     </view>
-                </view>
-            </view>
-            
-            <!-- 订单摘要 -->
-            <view class="order-summary">
-                <view class="summary-item">
-                    <text>商品总价</text>
-                    <text>￥{{(goodsTotalPrice/100).toFixed(2)}}</text>
-                </view>
-                <view class="summary-item" v-if="selectedCoupon">
-                    <text>{{selectedCoupon.name}}</text>
-                    <text class="coupon-discount">-￥{{(selectedCoupon.discountAmount/100).toFixed(2)}}</text>
-                </view>
-                <view class="summary-item">
-                    <text>运费</text>
-                    <text>￥{{(shippingFee/100).toFixed(2)}}</text>
                 </view>
             </view>
         </view>
@@ -130,8 +114,8 @@
                 </view>
                 <scroll-view scroll-y class="coupon-list">
                     <view 
-                        v-for="(item, index) in availableCoupons" 
-                        :key="index" 
+                        v-for="item in availableCoupons" 
+                        :key="item.id" 
                         class="coupon-item"
                         @click="selectCoupon(item)"
                     >
@@ -161,18 +145,6 @@
             <view class="order-confirm-popup">
                 <view class="confirm-title">确认订单</view>
                 <view class="confirm-items">
-                    <view class="confirm-item">
-                        <text>商品总价</text>
-                        <text>￥{{(goodsTotalPrice/100).toFixed(2)}}</text>
-                    </view>
-                    <view class="confirm-item" v-if="selectedCoupon">
-                        <text>{{selectedCoupon.name}}</text>
-                        <text class="coupon-discount">-￥{{(selectedCoupon.discountAmount/100).toFixed(2)}}</text>
-                    </view>
-                    <view class="confirm-item">
-                        <text>运费</text>
-                        <text>￥{{(shippingFee/100).toFixed(2)}}</text>
-                    </view>
                     <view class="confirm-item total">
                         <text>实付款</text>
                         <text class="total-amount">￥{{(totalPrice/100).toFixed(2)}}</text>
@@ -186,6 +158,395 @@
         </uni-popup>
     </view>
 </template>
+
+
+<script setup>
+import { ref, onMounted, computed, watch } from 'vue';
+import { request } from '@/utils/request';
+import { useTokenStorage } from '../../utils/storage';
+import TransNavVue from '../../components/TransNav.vue';
+import { onShow } from '@dcloudio/uni-app';
+
+const { getAccessToken } = useTokenStorage();
+
+// 状态管理
+const selectedItems = ref([]);
+const totalPrice = ref(0);
+const addressList = ref([]);
+const currentAddress = ref({}); // 修正变量名，当前选中的地址
+const addressPopup = ref(null);
+const couponPopup = ref(null);
+const orderConfirmPopup = ref(null);
+const availableCoupons = ref([]);
+const selectedCoupon = ref(null);
+const paymentMethod = ref('wechatPay');
+const isPaying = ref(false);
+const isLoading = ref(false); // 添加加载状态
+
+// 计算商品总价
+const goodsTotalPrice = computed(() => {
+    return selectedItems.value.reduce((total, item) => {
+        return total + (item.sku.price * item.count);
+    }, 0);
+});
+
+
+
+// 获取地址列表
+const getAddressList = async () => {
+    isLoading.value = true;
+    try {
+        const res = await request({
+            url: '/app-api/weixin/shipping-address/list',
+            showLoading: true,
+        });
+        
+        if (res.code === 0 || res.code === 200) {
+            addressList.value = res.data || [];
+            // 设置默认地址
+            const defaultAddress = res.data.find(item => item.isDefault) || res.data[0];
+            if (defaultAddress) {
+                currentAddress.value = defaultAddress;
+            }
+        } else {
+            uni.showToast({
+                title: res.msg || '获取地址列表失败',
+                icon: 'none'
+            });
+        }
+    } catch (err) {
+        console.error('获取地址列表失败:', err);
+        uni.showToast({
+            title: '网络错误，请稍后重试',
+            icon: 'none'
+        });
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// 获取优惠券列表
+const getCouponList = async () => {
+    isLoading.value = true;
+    try {
+        const res = await request({
+            url: '/app-api/weixin/coupon/available',
+            data: {
+                orderAmount: goodsTotalPrice.value
+            },
+            showLoading: true
+        });
+        
+        if (res.code === 0 || res.code === 200) {
+            availableCoupons.value = res.data || [];
+            // 默认不选择优惠券，由用户手动选择
+            selectedCoupon.value = null;
+            calculateTotalPrice();
+        } else {
+            uni.showToast({
+                title: res.msg || '获取优惠券失败',
+                icon: 'none'
+            });
+        }
+    } catch (err) {
+        console.error('获取优惠券失败:', err);
+        uni.showToast({
+            title: '网络错误，请稍后重试',
+            icon: 'none'
+        });
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// 计算最终价格
+const calculateTotalPrice = () => {
+    // 检查优惠券是否满足门槛
+    if (selectedCoupon.value && goodsTotalPrice.value < selectedCoupon.value.threshold) {
+        uni.showToast({
+            title: `未满足${selectedCoupon.value.name}的使用门槛`,
+            icon: 'none'
+        });
+        selectedCoupon.value = null;
+        return;
+    }
+    
+    // 计算总价（包含运费但不在UI显示）
+    let total = goodsTotalPrice.value 
+    if (selectedCoupon.value) {
+        total -= selectedCoupon.value.discountAmount;
+    }
+    totalPrice.value = Math.max(total, 0); // 确保总价不小于0
+};
+
+// 监听商品数量或优惠券变化，重新计算总价
+watch([selectedItems, selectedCoupon], () => {
+    calculateTotalPrice();
+});
+
+// 地址选择相关
+const selectAddress = (item) => {
+    // 校验地址完整性
+    if (!item.consigneeName || !item.phoneNumber || !item.addressDetail) {
+        uni.showToast({
+            title: '请完善地址信息',
+            icon: 'none'
+        });
+        return;
+    }
+    
+    // 更新地址列表选中状态
+    addressList.value = addressList.value.map(addr => ({
+        ...addr,
+        isDefault: addr.id === item.id
+    }));
+    
+    currentAddress.value = item;
+    addressPopup.value.close();
+};
+
+const openAddressPopup = () => {
+    // 打开弹窗前确保当前地址被选中
+    if (currentAddress.value.id) {
+        addressList.value = addressList.value.map(addr => ({
+            ...addr,
+            isDefault: addr.id === currentAddress.value.id
+        }));
+    }
+    addressPopup.value.open();
+};
+
+const addressPopupClose = () => {
+    addressPopup.value.close();
+};
+
+// 优惠券选择相关
+const selectCoupon = (item) => {
+    selectedCoupon.value = item;
+    calculateTotalPrice();
+    couponPopup.value.close();
+};
+
+const openCouponPopup = async () => {
+    // 打开前刷新优惠券列表
+    // await getCouponList();
+    couponPopup.value.open();
+};
+
+const couponPopupClose = () => {
+    couponPopup.value.close();
+};
+
+// 订单确认弹窗相关
+const openOrderConfirmPopup = () => {
+    orderConfirmPopup.value.open();
+};
+
+const orderConfirmPopupClose = () => {
+    orderConfirmPopup.value.close();
+};
+
+// 支付方式选择
+const selectPayment = (method) => {
+    paymentMethod.value = method;
+};
+
+// 页面加载和显示时获取数据
+onShow(() => {
+    getAddressList();
+});
+
+onMounted(() => {
+    // 获取从购物车或商品详情页传递过来的商品信息
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    
+    if (currentPage && currentPage.$vm) {
+        const eventChannel = currentPage.$vm.getOpenerEventChannel();
+        
+        eventChannel.on('acceptSelectedItems', (data) => {
+            if (data?.selectedItems && data.selectedItems.length > 0) {
+                selectedItems.value = data.selectedItems;
+
+                calculateTotalPrice();
+                getAddressList();
+                // 不自动获取优惠券，由用户手动点击选择
+            } else {
+                uni.showToast({ title: '参数错误', icon: 'none' });
+                setTimeout(() => {
+                    uni.navigateBack();
+                }, 1500);
+            }
+        });
+    }
+});
+
+// 跳转到添加地址页面
+const goToAddAddress = () => {
+    uni.navigateTo({
+        url: '/pages/userInfo/addressEdit'
+    });
+};
+
+// 支付流程
+const handlePay = () => {
+    // 检查是否有收货地址
+    if (!currentAddress.value.id) {
+        uni.showToast({
+            title: '请选择收货地址',
+            icon: 'none'
+        });
+        return;
+    }
+    
+    // 检查是否有商品
+    if (selectedItems.value.length === 0) {
+        uni.showToast({
+            title: '购物车为空',
+            icon: 'none'
+        });
+        return;
+    }
+    
+    // 检查支付金额是否大于0
+    if (totalPrice.value <= 0) {
+        uni.showToast({
+            title: '支付金额异常',
+            icon: 'none'
+        });
+        return;
+    }
+    
+    // 打开订单确认弹窗
+    openOrderConfirmPopup();
+};
+
+// 确认支付
+const confirmPay = async () => {
+    orderConfirmPopupClose();
+    
+    if (isPaying.value) return;
+    isPaying.value = true;
+    
+    try {
+        // 1. 先创建订单
+        const orderRes = await request({
+            url: '/app-api/trade/cart/create/cartOrder',
+            data: {
+                items: selectedItems.value.map(item => ({
+                    skuId: item.sku.id,
+                    count: item.count
+                })),
+                receiverName: currentAddress.value.consigneeName,
+                receiverMobile: currentAddress.value.phoneNumber,
+                receiverAddress: `${currentAddress.value.province}${currentAddress.value.city}${currentAddress.value.region}${currentAddress.value.addressDetail}`,
+                deliveryType: 1,
+                couponId: selectedCoupon.value?.id || null // 传递优惠券ID
+            },
+            method: 'post',
+            showLoading: true,
+        });
+
+        if (orderRes.code === 0 ) {
+            const payOrderId = orderRes.data.payOrderId;
+            
+            // 2. 提交支付请求
+            const paylist = await request({
+                url: '/app-api/pay/order/submit',
+                data: {
+                    id: payOrderId,
+                    channelCode: 'wx_lite',
+                    channelExtras: {
+                        openid: 'o_zHs0KUgGP6EbmivsvWcM2EoZiA' // 实际环境应从用户信息中获取
+                    }
+                },
+                method: 'post',
+                showLoading: true,
+            });
+            
+            if (paylist.code === 0 ) {
+                // 解析支付参数
+                const payParams = JSON.parse(paylist.data.displayContent);
+                console.log('支付参数:', payParams);
+                
+                // 3. 调用微信支付API
+                const payRes = await uni.requestPayment({
+                    provider: 'wxpay',
+                    timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
+                    nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
+                    package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
+                    signType: payParams.signType || 'MD5',   // 默认MD5
+                    paySign: String(payParams.paySign),      // 确保为字符串类型
+                    
+                    success: async (res) => {
+                        uni.showToast({
+                            title: '支付成功',
+                            icon: 'success'
+                        });
+                        
+                        // 4. 支付成功后更新订单状态
+                        await request({
+                            url: '/app-api/weixin/order/update-paid',
+                            data: {
+                                payOrderId: payOrderId
+                            },
+                            method: 'post',
+                            showLoading: true,
+                        });
+                        
+                        // 5. 跳转到订单详情页
+                        setTimeout(() => {
+                            uni.navigateTo({
+                                url: '/pages/orderList/orderList'
+                            });
+                        }, 1500);
+                    },
+                    
+                    fail: async (err) => {
+                        console.error('支付失败:', err);
+                        
+                        if (err.errMsg.includes('cancel')) {
+                            uni.showToast({
+                                title: '支付已取消',
+                                icon: 'none'
+                            });
+                        } else {
+                            // 显示支付失败原因
+                            const errorMsg = err.errMsg.includes('fail') 
+                                ? '支付失败，请重试' 
+                                : err.errMsg;
+                            
+                            // 提供重试选项
+                            const { confirm } = await uni.showModal({
+                                title: '支付失败',
+                                content: errorMsg,
+                                confirmText: '重试',
+                                cancelText: '返回'
+                            });
+                            
+                            if (confirm) {
+                                await confirmPay(); // 重试支付
+                            }
+                        }
+                    }
+                });
+            } else {
+                throw new Error(paylist.msg || '支付请求失败');
+            }
+        } else {
+            throw new Error(orderRes.msg || '订单创建失败');
+        }
+    } catch (err) {
+        console.error('支付流程出错:', err);
+        uni.showToast({
+            title: err.message || '支付出错，请重试',
+            icon: 'none'
+        });
+    } finally {
+        isPaying.value = false;
+    }
+};
+</script>    
 
 <style lang="scss" scoped>
 .container {
@@ -344,28 +705,6 @@
                 height: 40rpx;
             }
         }
-        
-        .order-summary {
-            background-color: #fff;
-            border-radius: 20rpx;
-            padding: 20rpx;
-            
-            .summary-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15rpx 0;
-                border-bottom: 1rpx solid #eee;
-                
-                &:last-child {
-                    border-bottom: none;
-                }
-                
-                .coupon-discount {
-                    color: #ff6f0e;
-                }
-            }
-        }
     }
     
     .pay-bottom {
@@ -409,10 +748,6 @@
                     font-weight: bold;
                     font-size: 48rpx;
                     color: #fa4b46;
-                    
-                    text {
-                        font-size: 28rpx;
-                    }
                 }
             }
         }
@@ -616,10 +951,6 @@
         .total-amount {
             font-size: 36rpx;
         }
-        
-        .coupon-discount {
-            color: #ff6f0e;
-        }
     }
     
     .confirm-buttons {
@@ -651,329 +982,3 @@
     }
 }
 </style>
-
-<script setup>
-import { ref, onMounted, computed } from 'vue';
-import { request } from '@/utils/request';
-import { useTokenStorage } from '../../utils/storage';
-import TransNavVue from '../../components/TransNav.vue';
-import { onShow } from '@dcloudio/uni-app';
-import { appendFile } from 'fs';
-
-const { getAccessToken } = useTokenStorage();
-
-// 状态管理
-const selectedItems = ref([]);
-const totalPrice = ref(0);
-const addrdessList = ref({});
-const addressList = ref([]);
-const addressPopup = ref(null);
-const couponPopup = ref(null);
-const orderConfirmPopup = ref(null);
-const availableCoupons = ref([]);
-const selectedCoupon = ref(null);
-const paymentMethod = ref('wechatPay');
-const isPaying = ref(false);
-const goodsTotalPrice = computed(() => {
-    return selectedItems.value.reduce((total, item) => {
-        return total + (item.sku.price * item.count);
-    }, 0);
-});
-const shippingFee = ref(0);
-
-// 获取地址列表
-const getAddressList = async () => {
-    try {
-        const res = await request({
-            url: '/app-api/weixin/shipping-address/list',
-            showLoading: true,
-        });
-        
-        if (res.code === 0 || res.code === 200) {
-            addressList.value = res.data || [];
-            // 设置默认地址
-            const defaultAddress = res.data.find(item => item.isDefault) || res.data[0];
-            if (defaultAddress) {
-                addrdessList.value = defaultAddress;
-            }
-        } else {
-            uni.showToast({
-                title: res.msg || '获取地址列表失败',
-                icon: 'none'
-            });
-        }
-    } catch (err) {
-        console.error('获取地址列表失败:', err);
-        uni.showToast({
-            title: '网络错误，请稍后重试',
-            icon: 'none'
-        });
-    }
-};
-
-// 获取优惠券列表
-const getCouponList = async () => {
-    try {
-        const res = await request({
-            url: '/app-api/weixin/coupon/available',
-            data: {
-                orderAmount: goodsTotalPrice.value
-            },
-            showLoading: true
-        });
-        
-        if (res.code === 0 || res.code === 200) {
-            availableCoupons.value = res.data || [];
-            // 默认选择第一张优惠券
-            if (availableCoupons.value.length > 0) {
-                selectedCoupon.value = availableCoupons.value[0];
-                calculateTotalPrice();
-            }
-        } else {
-            uni.showToast({
-                title: res.msg || '获取优惠券失败',
-                icon: 'none'
-            });
-        }
-    } catch (err) {
-        console.error('获取优惠券失败:', err);
-        uni.showToast({
-            title: '网络错误，请稍后重试',
-            icon: 'none'
-        });
-    }
-};
-
-// 计算最终价格
-const calculateTotalPrice = () => {
-    let total = goodsTotalPrice.value + shippingFee.value;
-    if (selectedCoupon.value) {
-        total -= selectedCoupon.value.discountAmount;
-    }
-    totalPrice.value = total < 0 ? 0 : total;
-};
-
-// 地址选择相关
-const selectAddress = (item) => {
-    // 取消所有地址的选中状态
-    addressList.value.forEach(addr => {
-        addr.isDefault = false;
-    });
-    // 设置当前选中地址
-    item.isDefault = true;
-    addrdessList.value = item;
-    addressPopup.value.close();
-};
-
-const openAddressPopup = () => {
-    // 打开弹窗前确保当前地址被选中
-    if (addrdessList.value.id) {
-        addressList.value.forEach(addr => {
-            addr.isDefault = addr.id === addrdessList.value.id;
-        });
-    }
-    addressPopup.value.open();
-};
-
-const addressPopupClose = () => {
-    addressPopup.value.close();
-};
-
-// 优惠券选择相关
-const selectCoupon = (item) => {
-    selectedCoupon.value = item;
-    calculateTotalPrice();
-    couponPopup.value.close();
-};
-
-const openCouponPopup = () => {
-    couponPopup.value.open();
-};
-
-const couponPopupClose = () => {
-    couponPopup.value.close();
-};
-
-// 订单确认弹窗相关
-const openOrderConfirmPopup = () => {
-    orderConfirmPopup.value.open();
-};
-
-const orderConfirmPopupClose = () => {
-    orderConfirmPopup.value.close();
-};
-
-// 支付方式选择
-const selectPayment = (method) => {
-    paymentMethod.value = method;
-};
-
-// 页面加载和显示时获取数据
-onShow(() => {
-    getAddressList();
-});
-
-onMounted(() => {
-    // 获取从购物车或商品详情页传递过来的商品信息
-    const pages = getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    
-    if (currentPage && currentPage.$vm) {
-        const eventChannel = currentPage.$vm.getOpenerEventChannel();
-        
-        eventChannel.on('acceptSelectedItems', (data) => {
-            if (data?.selectedItems && data.selectedItems.length > 0) {
-                selectedItems.value = data.selectedItems;
-                shippingFee.value = data.shippingFee || 0;
-                calculateTotalPrice();
-                getAddressList();
-                // getCouponList();
-            } else {
-                uni.showToast({ title: '参数错误', icon: 'none' });
-                setTimeout(() => {
-                    uni.navigateBack();
-                }, 1500);
-            }
-        });
-    }
-});
-
-// 跳转到添加地址页面
-const goToAddAddress = () => {
-    uni.navigateTo({
-        url: '/pages/userInfo/addressEdit'
-    });
-};
-
-// 支付流程
-const handlePay = () => {
-    // 检查是否有收货地址
-    if (!addrdessList.value.id) {
-        uni.showToast({
-            title: '请选择收货地址',
-            icon: 'none'
-        });
-        return;
-    }
-    
-    // 检查是否有商品
-    if (selectedItems.value.length === 0) {
-        uni.showToast({
-            title: '购物车为空',
-            icon: 'none'
-        });
-        return;
-    }
-    
-    // 打开订单确认弹窗
-    openOrderConfirmPopup();
-};
-
-// 确认支付
-const confirmPay = async () => {
-    orderConfirmPopupClose();
-    
-    if (isPaying.value) return;
-    isPaying.value = true;
-    
-    try {
-        // 1. 先创建订单
-        const orderRes = await request({
-            url: '/app-api/trade/cart/create/cartOrder',
-            data: {
-                items: selectedItems.value.map(item => ({
-                    skuId: item.sku.id,
-                    count: item.count
-                })),
-                receiverName: addrdessList.value.consigneeName,
-                receiverMobile: addrdessList.value.phoneNumber,
-                receiverAddress: `${addrdessList.value.province}${addrdessList.value.city}${addrdessList.value.region}${addrdessList.value.addressDetail}`,
-                deliveryType: 1,
-                // couponId: selectedCoupon.value?.id || null
-            },
-            method: 'post',
-            showLoading: true,
-        });
-
-        if (orderRes.code === 0 ) {
-            const payOrderId = orderRes.data.payOrderId;
-			const paylist = await request({
-            url: '/app-api/pay/order/submit',
-            data: {
-                id: payOrderId,
-				channelCode: 'wx_lite',
-				channelExtras:{
-					openid: 'o_zHs0KUgGP6EbmivsvWcM2EoZiA'
-				}
-            },
-            method: 'post',
-            showLoading: true,
-        });
-		if (paylist.code === 0 ) {
-			const payParams = JSON.parse(paylist.data.displayContent)
-			const orderInfoList= {
-				appid: String(payParams.appId),         // 确保是字符串
-				timeStamp: String(payParams.timeStamp),  // 确保是字符串
-                nonceStr: String(payParams.nonceStr),    // 确保是字符串
-                package: payParams.packageValue,         // 注意参数名可能是packageValue
-                signType: payParams.signType,
-                paySign: String(payParams.paySign),
-				}
-				console.log('订单信息:', orderInfoList);
-			 // 2. 调用微信支付API
-			 const payRes = await uni.requestPayment({
-                provider: 'wxpay',
-                orderInfo: orderInfoList,
-                success: (res) => {
-                    uni.showToast({
-                        title: '支付成功',
-                        icon: 'success'
-                    });
-                    console.log('支付成功:', res);
-                     // 3. 支付成功后跳转到订单详情页
-                    // setTimeout(() => {
-                    //     uni.redirectTo({
-                    //         url: `/pages/order/orderDetail?orderId=${orderId}`
-                    //     });
-                    // }, 1500);
-                },
-                fail: (err) => {
-                    console.error('支付失败:', err);
-                    
-                    if (err.errMsg.includes('cancel')) {
-                        uni.showToast({
-                            title: '支付已取消',
-                            icon: 'none'
-                        });
-                    } else {
-                        uni.showToast({
-                            title: '支付失败，请重试',
-                            icon: 'none'
-                        });
-                    }
-                    
-                    // 4. 支付失败后跳转到订单列表页
-                    setTimeout(() => {
-                        uni.redirectTo({
-                            url: '/pages/order/orderList'
-                        });
-                    }, 1500);
-                }
-            });
-		}
-            
-          
-        } else {
-            throw new Error(orderRes.msg || '订单创建失败');
-        }
-    } catch (err) {
-        console.error('支付流程出错:', err);
-        uni.showToast({
-            title: err.message || '支付出错，请重试',
-            icon: 'none'
-        });
-    } finally {
-        isPaying.value = false;
-    }
-};
-</script>    

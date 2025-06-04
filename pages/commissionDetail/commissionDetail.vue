@@ -44,10 +44,10 @@
                     v-for="(item, index) in records" 
                     :key="index"
                 >
-                    <text class="record-time">{{ item.time }}</text>
+                    <text class="record-time">{{ item.createTime }}</text>
                     <view>
                         <text>收益</text> 
-                        <text class="record-amount">{{ item.amount }}</text>
+                        <text class="record-amount">+{{ item.amount }}</text>
                     </view>   
                 </view>
             </view>
@@ -64,11 +64,8 @@ import { request } from '@/utils/request'
 const { getAccessToken } = useTokenStorage()
 
 const records = ref([
-    { time: '2023-10-15 14:30', amount: '+0' },
-    { time: '2023-10-14 09:15', amount: '+0' },
-	{ time: '2023-10-14 09:15', amount: '+0' },
-	{ time: '2023-10-14 09:15', amount: '+0' },
-	{ time: '2023-10-14 09:15', amount: '+0' },
+    { createTime: '2023-10-15 14:30', amount: '0' },
+
     // 可以添加更多记录数据
 ])
 const commissionData = ref({
@@ -92,10 +89,8 @@ const getCommissionDetail = async () => {
     const res = await request({
       url: '/app-api/weixin/distribution/get/commission/info',
       showLoading: true, 
-     
     })
-    
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0 ) {
      commissionData.value=res.data || {};
       
     } else {
@@ -106,11 +101,27 @@ const getCommissionDetail = async () => {
    
   }
 }
-
-
+// 获取佣金记录
+const getCommissionDetailList = async () => {
+	try {
+    const res = await request({
+      url: '/app-api/weixin/commission-records/get/list',
+      showLoading: true, 
+    })
+    if (res.code === 0 ) {
+		records.value=res.data||{}
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取分佣记录失败:', err)
+   
+  }
+}
 onMounted(() => {
-    // 这里可以添加获取收益记录的API调用
 	getCommissionDetail()
+	getCommissionDetailList()
 })
 </script>
 

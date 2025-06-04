@@ -74,12 +74,22 @@ const shopDetails = (item)=>{
         url:`/pages/shoppingMall/shopDetails?id=${item.id}`
     })
 }
-const shoppingBuy = (item)=>{
-    
-const selectedItems = [
+const shoppingBuy = async (item)=>{
+    const res = await request({
+	      url: '/app-api/trade/cart/add',
+	      showLoading: true, 
+	      method:'post',
+	      data:{
+	        skuId:item.id,
+	        count:'1'
+	      },
+	    
+ })
+ if (res.code === 0 ){
+    const selectedItems = [
     {
-        count: 1,
-sku: {
+     count: 1,
+    sku: {
     id:item.id, 
     picUrl: item.imgUrl,
     name: item.name,
@@ -98,6 +108,9 @@ sku: {
       });
     }
     })
+ }
+    
+
 }
 
 //获取商场列表

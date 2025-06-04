@@ -105,7 +105,7 @@
 	      },
 	    
 	    })
-	    if (res.code === 0 || res.code === 200) {
+	    if (res.code === 0 ) {
 	      uni.navigateTo({
 	        url: '/pages/shoppingCart/shoppingCart'
 	      })
