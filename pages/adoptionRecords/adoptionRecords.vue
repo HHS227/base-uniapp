@@ -1,4 +1,6 @@
 <template>
+    <view>
+    <TransNavVue title="认养记录" />
   <view class="container">
     <!-- 导航栏 -->
     <view class="nav-tabs">
@@ -40,12 +42,14 @@
       </view>
     </scroll-view>
   </view>
+    </view>
 </template>
 
 <script setup>
 import { ref, computed , onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+import TransNavVue from '../../components/TransNav.vue';
 const { getAccessToken } = useTokenStorage()
 
 const tabs = [

@@ -143,10 +143,13 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .container {
-    padding-bottom: 120rpx;
-    display: flex;
-    flex-direction: column;
-    background: #f7f7f7;
+    background-color: #f7f7f7;
+	padding-bottom: 120rpx;
+	
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;  // 新增：设置容器高度为视窗高度
 
     .cart-btn {
         bottom: 384rpx;

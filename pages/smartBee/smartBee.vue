@@ -1,4 +1,6 @@
 <template>
+  <view>
+    <TransNavVue title="认养记录" />
   <view class="container">
     <scroll-view scroll-y class="content">
       <!-- 使用v-for遍历后端数据 -->
@@ -21,12 +23,13 @@
       </view>
     </scroll-view>
   </view>
+  </view>
 </template>
 
 <script setup>
 import { ref,  onMounted} from 'vue';
 import { request } from '@/utils/request'
-
+import TransNavVue from '../../components/TransNav.vue'
 const smartBeeList=ref([])
 
 onMounted(() => {

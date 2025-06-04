@@ -1,4 +1,6 @@
 <template>
+   <view>
+    <TransNavVue title="问卷列表" />
   <view class="container">
     <scroll-view scroll-y class="content">
       <view class="survey-list">
@@ -26,11 +28,13 @@
       </view>
     </scroll-view>
   </view>
+   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
+import TransNavVue from '../../components/TransNav.vue';
 
 
 const surveyList = ref([

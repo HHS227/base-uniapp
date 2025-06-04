@@ -1,4 +1,6 @@
 <template>
+<view>
+  <TransNavVue title="编辑地址" />
   <view class="container">
     <view class="form">
       <view class="form-item">
@@ -58,11 +60,13 @@
       </view>
     </view>
   </view>
+</view>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { request } from '@/utils/request'
+import TransNavVue from '../../components/TransNav.vue'
 
 const areaList = ref([])
 const regionPickerVisible = ref(false)

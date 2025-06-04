@@ -1,6 +1,8 @@
 <template>
+	<view>
+		<TransNavVue title="认养一箱蜂"></TransNavVue>
   <view class="container">
-    <TransNavVue title="认养一箱蜂"></TransNavVue>
+    
     <view class="collect-box" v-for="item in beehiveList" :key="item.id">
       <view class="collect-img"></view>
       <view class="collect-info">
@@ -13,6 +15,7 @@
       </view>
     </view>
   </view>
+	</view>
 </template>
 
 <script setup>

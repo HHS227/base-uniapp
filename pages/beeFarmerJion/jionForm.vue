@@ -1,7 +1,9 @@
 <template>
+	<view>
+		<TransNavVue title="入驻"/>
 	<view class="container">
 		<image src="/static/images/myPage/BeeEnterInfoBg.png" class="container-bg" mode=""></image>
-		<TransNavVue title="入驻"></TransNavVue>
+		
 		<view class="title-content">
 			填写信息
 			<text class="tips">填写相关信息，完成入驻</text>
@@ -16,6 +18,7 @@
 			<input :inputBorder="false" placeholder-class="place" v-model="formData.deviceNumber" placeholder="设备编号" class="form-item form-input" />
 			<button class="submit-btn" @click="enterBtn">入驻</button>
 		</view>
+	</view>
 	</view>
 </template>
 

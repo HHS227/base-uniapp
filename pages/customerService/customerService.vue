@@ -1,4 +1,6 @@
 <template>
+   <view>
+    <TransNavVue title="联系客服"/>
     <view class="container">
       <view class="content">
         <view class="qr-code-section">
@@ -22,11 +24,13 @@
         </view>
       </view>
     </view>
+   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request';
+import TransNavVue from '../../components/TransNav.vue';
 
 const qrCodeUrl = ref('/static/images/logo.png'); // 默认图片
 

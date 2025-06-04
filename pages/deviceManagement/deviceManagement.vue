@@ -1,6 +1,8 @@
 <template>
-  <view class="container">
+   <view>
     <TransNavVue title="设备管理"></TransNavVue>
+  <view class="container">
+   
     <view class="header">
       <text class="title">总设备:{{devices.length}}台</text>
     </view>
@@ -39,6 +41,7 @@
       </view>
     </scroll-view>
   </view>
+   </view>
 </template>
 
 <script setup>

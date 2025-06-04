@@ -1,4 +1,6 @@
 <template>
+		<view>
+			<TransNavVue title="我的消息"/>
 	<view>
 		<uni-popup ref="popup" type="center">
 		<view class="popup-content">
@@ -35,11 +37,13 @@
 		<view class="safe-view"></view>
 	</view>
 	</view>
+		</view>
 </template>
 
 <script setup>
 import { ref ,onMounted} from 'vue';
 import { request } from '@/utils/request'
+import TransNavVue from '../../components/TransNav.vue';
 
 
 

@@ -537,6 +537,7 @@ const logout = () => {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
+	padding-bottom: 35rpx;
 	position: relative;
 	.bg-image {
 		position: absolute;

@@ -1,4 +1,6 @@
 <template>
+ <view>
+  <TransNavVue title="问卷详情" />
   <view class="container">
     <scroll-view scroll-y class="content">
       <!-- 问卷标题 -->
@@ -58,12 +60,14 @@
       <button class="submit-btn" @click="submitSurvey">提交问卷</button>
     </scroll-view>
   </view>
+ </view>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { request } from '@/utils/request'
 import { onLoad } from '@dcloudio/uni-app'
+import TransNavVue from '../../components/TransNav.vue'
 
 const surveyId = ref('')
 const surveyData = ref({

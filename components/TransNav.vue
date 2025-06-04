@@ -59,6 +59,8 @@ defineProps({
 		left: 0;
 		width: 100%;
 		z-index: 10;
+		background-color: #fff;
+		
 
 		.titleBar {
 			display: flex;
@@ -84,7 +86,6 @@ defineProps({
 		}
 	}
 
-	.fill {
-	}
+	
 }
 </style>

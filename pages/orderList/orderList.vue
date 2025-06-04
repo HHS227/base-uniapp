@@ -1,4 +1,6 @@
 <template>
+ <view>
+  <TransNavVue title="订单列表" />
   <view class="container">
     <!-- 导航栏 -->
     <view class="nav-tabs">
@@ -40,12 +42,14 @@
       </view>
     </scroll-view>
   </view>
+ </view>
 </template>
 
 <script setup>
 import { ref, computed , onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+import TransNavVue from '../../components/TransNav.vue';
 const { getAccessToken} = useTokenStorage()
 
 const tabs = [
@@ -166,7 +170,7 @@ const formatDateTime = (dateString) => {
   .list-container {
     height: calc(100vh - 100rpx);
     background-color: #f7f7f7; // 整体背景色
-    // padding: 20rpx; // 添加内边距
+    padding-bottom: 20rpx; // 添加内边距
 	
     
     .record-item {

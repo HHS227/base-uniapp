@@ -1,37 +1,72 @@
 <template>
-	<view class="container">
-		<TransNavVue title="商品详情"></TransNavVue>
-		<view class="details-top">
-			<view class="swiper-content">
-				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true"
-					interval="2000" duration="500">
-					<swiper-item class="swiper-item" v-for="(item,index) in commodityDetails.imgUrls" :key="index">
-						<image :src="item" class="swiper-image" mode=""></image>
-					</swiper-item>
-				</swiper>
+  <view class="container">
+    <TransNavVue title="商品详情" />
+    <scroll-view class="scroll-content" scroll-y>
+      <view class="details-top">
+        <view class="swiper-content">
+          <swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true"
+            interval="2000" duration="500">
+            <swiper-item class="swiper-item" v-for="(item,index) in commodityDetails.imgUrls" :key="index">
+              <image :src="item" class="swiper-image" mode=""></image>
+            </swiper-item>
+          </swiper>
 
-			</view>
-			<view class="swiper-title">
-				<view><text class="money">￥{{commodityDetails.price}}</text> <text class="discounts">优惠券</text><text
-						class="sale">满50-20</text> </view>
-				<view class="kg">净重 {{commodityDetails.weight}}克</view>
-			</view>
-		</view>
-		<view class="details-center">
-			<view class="details-title"> 图文详情</view>
-			<view class="details-img">
-				<image v-for="(item,index) in commodityDetails.imgUrls" :src="item" class="details-image" mode="" :key="index"></image>
+        </view>
+        <view class="swiper-title">
+          <view><text class="money">￥{{commodityDetails.price}}</text> <text class="discounts">优惠券</text><text
+                class="sale">满50-20</text> </view>
+          <view class="kg">净重 {{commodityDetails.weight}}克</view>
+        </view>
+      </view>
+      <view class="details-center">
+        <view class="details-title"> 图文详情</view>
+        <view class="details-img">
+          <image v-for="(item,index) in commodityDetails.imgUrls" :src="item" class="details-image" mode="" :key="index"></image>
 
-			</view>
+        </view>
 
-		</view>
+      </view>
 
-		<view class="details-bottom">
-			<button class="settle-btn" @click="buyBtn">加入购物车</button>
-		</view>
-
-	</view>
+      <view class="details-bottom">
+        <button class="settle-btn" @click="buyBtn">加入购物车</button>
+      </view>
+    </scroll-view>
+  </view>
 </template>
+
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 120rpx; /* 为底部按钮留出空间 */
+  }
+  
+  .details-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100rpx;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 -2rpx 10rpx rgba(0,0,0,0.1);
+    
+    .settle-btn {
+      width: 90%;
+      height: 80rpx;
+      line-height: 80rpx;
+    }
+  }
+}
+</style>
 
 <script setup>
 	import {
@@ -154,7 +189,7 @@
 		flex-direction: column;
 
 		.swiper-content {
-			height: 380rpx;
+			height: 580rpx;
 			width: 100%;
 			overflow: hidden;
 			margin: auto;
@@ -218,10 +253,7 @@
 			}
 
 			.details-img {
-				height: 500rpx;
 				width: 100%;
-				overflow: auto;
-
 				.details-image {
 					width: 100%;
 				}

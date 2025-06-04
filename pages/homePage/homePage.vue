@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<BeeTabbarVue></BeeTabbarVue>
+	<BeeTabbarVue></BeeTabbarVue>
 	<view class="container">
 		<image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
 		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
@@ -114,6 +114,8 @@
 						</view>
 					</view>
 				</view>
+			
+				
 				
 			</view>
 			<view v-else class="no-bee">
@@ -303,19 +305,24 @@ const scanCode = () => {
 <style lang="scss" scoped>
 .container {
 	background-color: #f7f7f7;
-	padding-bottom: 40rpx;
+	padding-bottom: 35rpx;
 	position: relative;
 	z-index: 1;
 	display: flex;
 	flex-direction: column;
+	height: 100vh;  // 新增：设置容器高度为视窗高度
 
 	.bg-image {
 		width: 100%;
 		height: 374rpx;
-		position: absolute;
+		position: fixed;  // 修改：改为fixed定位
 		z-index: -1;
 	}
 	.title-bar {
+		position: sticky;  // 新增：标题栏固定
+		top: 0;
+		z-index: 10;
+		background-color: transparent;
 		.logo-image {
 			width: 205rpx;
 			height: 70rpx;
@@ -324,6 +331,8 @@ const scanCode = () => {
 	}
 	.scroll-view {
 		flex: 1;
+		overflow-y: auto;  // 确保可滚动
+		
 		height: 300rpx;
 		.swiper-content {
 			height: 340rpx;

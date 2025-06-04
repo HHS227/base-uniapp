@@ -1,4 +1,6 @@
 <template>
+   <view>
+    <TransNavVue title="收获地址" />
   <view class="container">
     <scroll-view scroll-y class="list">
       <view class="item" v-for="item in addressList" :key="item.id">
@@ -10,7 +12,7 @@
           <view>
             <image 
               style="width:25rpx ; height: 25rpx;"  
-              src="/static/images/myPapeImages/edit.png" 
+              src="/static/images/myPage/edit.png" 
              
               @click="editAddress(item)"></image>
           </view>
@@ -26,12 +28,12 @@
             <image 
               v-if="item.isDefault"
               style="width:25rpx; height:25rpx;"  
-              src="/static/images/myPapeImages/changeActive.png"
+              src="/static/images/myPage/changeActive.png"
             ></image>
             <image 
               v-else
               style="width:25rpx; height:25rpx;"  
-              src="/static/images/myPapeImages/change.png"
+              src="/static/images/myPage/change.png"
             ></image>
             <text>设为默认地址</text>
           </view>
@@ -44,12 +46,14 @@
       <button class="add-btn" @click="addAddress">新增收货地址</button>
     </view>
   </view>
+   </view>
 </template>
 
 <script setup>
 import { ref, onMounted, } from 'vue'
 import { request } from '@/utils/request'
 import { onShow } from '@dcloudio/uni-app';
+import TransNavVue from '../../components/TransNav.vue'
 
 const addressList = ref([])
 const refreshing = ref(false)

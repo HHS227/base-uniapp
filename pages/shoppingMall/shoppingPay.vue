@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <TransNavVue title="确认订单"></TransNavVue>
+        <TransNavVue title="订单确认"></TransNavVue>
         <view class="pay-center">
             <view v-if="currentAddress.consigneeName" class="name-box">
                 <view class="address-header">

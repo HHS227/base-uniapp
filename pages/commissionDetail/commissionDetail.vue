@@ -1,7 +1,9 @@
 <template>
+	<view>
+		<TransNavVue title="推广佣金"></TransNavVue>
 	<view class="container">
 		<image src="/static/images/myPage/yjng.png" mode="" class="bg-image"></image>
-		<TransNavVue title="推广佣金"></TransNavVue>
+		
 		<view class="top-box">
 			<view>邀好友 得现金</view>
 			<text>邀请越多 奖励越多</text>
@@ -53,6 +55,7 @@
             </view>
 		</view>
 		
+	</view>
 	</view>
 </template>
 
@@ -128,7 +131,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .container {
 	background-color: #f7f7f7;
-	
+	height: 100vh;
 	position: relative;
 	z-index: 1;
 	display: flex;

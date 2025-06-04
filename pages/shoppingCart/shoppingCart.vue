@@ -1,4 +1,6 @@
 <template>
+	<view>
+		<TransNavVue title="购物车" />
 	<view class="container">
 		<!-- 购物车头部 -->
 		<view class="cart-header">
@@ -34,6 +36,7 @@
 					</view>
 				</view>
 			</view>
+			
 		</scroll-view>
 
 		<!-- 结算区域 -->
@@ -61,12 +64,14 @@
 		</view>
 		<view class="safe-view" style="background: #ffffff"></view>
 	</view>
+	</view>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'  // 新增导入
+import TransNavVue from '../../components/TransNav.vue';
 
 	const { getAccessToken } = useTokenStorage()  // 新增获取token方法
 

@@ -1,7 +1,9 @@
 <template>
+<view>
+	<TransNavVue title="蜂农认证"/>
     <view class="container">
 		<image class="container-bg" src="/static/images/homePage/homePageBg.png" mode=""></image>
-		<TransNavVue title="蜂农认证"></TransNavVue>
+		
 		<image class="poster-image" src="/static/images/mypage/beeEnterBg.png" mode=""></image>
 		<text class="jion-text">未入驻平台</text>
 		<view class="tips-content">
@@ -18,6 +20,7 @@
 祝福如春风般温暖，如夏雨般滋润，如秋月般皎洁，如冬雪般纯净。愿你的每一天都充满阳光和欢笑，每一步都走向成功和幸福。</text>
 		</view>
     </view>
+</view>
 </template>
 
 <script setup>

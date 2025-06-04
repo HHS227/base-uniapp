@@ -1,7 +1,9 @@
 <template>
+	<view>
+		<TransNavVue title="蜂场数据"/>
 	<view class="container">
 		<image src="/static/images/homePage/homePageBg.png" mode="" class="bg-image"></image>
-		<TransNavVue title="蜂场数据"></TransNavVue>
+		
 		<view class="data-panel">
 			<image class="panel-bg" src="/static/images/homePage/data-bg.png" mode=""></image>
 			<view class="data-content">
@@ -40,6 +42,7 @@
 			<map :latitude="30.6667" :longitude="104.0667" class="map-view" :markers="mapMarkers"></map>
 		</view>
 		<view class="safe-view"></view>
+	</view>
 	</view>
 </template>
 

@@ -1,4 +1,6 @@
 <template>
+	<view>
+		<TransNavVue title="采蜂蜜"/>
 <view>
 	<GetHivePupopVue v-model:show="showPopup"  />
 	<view class="container">
@@ -38,12 +40,14 @@
 		</template>
 	</view>
 </view>
+	</view>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import introductionV3 from '@/components/Introduction.vue';
 import GetHivePupopVue from '../../components/GetHivePupop.vue';
+import TransNavVue from '../../components/TransNav.vue';
 
 const showPopup = ref(false)
 const hasHive = ref(false);

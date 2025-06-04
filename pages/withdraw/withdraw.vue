@@ -1,4 +1,6 @@
 <template>
+  <view>
+    <TransNavVue title="推广佣金"></TransNavVue>
   <view class="container">
     <!-- 修改顶部黑色区域显示现金余额 -->
     <view class="top-card black-bg">
@@ -41,12 +43,14 @@
       </view>
     </uni-popup>
   </view>
+  </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+import TransNavVue from '../../components/TransNav.vue'
 const { getAccessToken } = useTokenStorage()
 
 const popup = ref(null)

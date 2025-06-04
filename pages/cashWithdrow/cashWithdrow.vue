@@ -1,6 +1,8 @@
 <template>
+     <view>
+        <TransNavVue title="微信提现"/>
     <view class="container">
-        <TransNavVue title="微信提现"></TransNavVue>
+     
         
         
         <view class="withdraw-card">
@@ -23,6 +25,7 @@
         
         <view class="withdraw-btn" @click="submitWithdraw">申请提现</view>
     </view>
+     </view>
 </template>
 
 <script setup>

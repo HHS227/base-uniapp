@@ -9,9 +9,17 @@
 			}
 		},
 		{
-			"path": "pages/login/login",
+			"path": "pages/shoppingMall/shoppingMall",
 			"style": {
-				"navigationBarTitleText": "登陆"
+				"navigationBarTitleText": "",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/honeySource/honeySource",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -22,35 +30,30 @@
 				"navigationStyle": "custom"
 			}
 		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登陆"
+			}
+		},
+		
 		
 		{
 			"path": "pages/messagePage/messagePage",
 			"style": {
-				"navigationBarTitleText": "消息",
-				"navigationBarBackgroundColor": "#FFFFFF"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
-		{
-			"path": "pages/shoppingMall/shoppingMall",
-			"style": {
-				"navigationBarTitleText": "商场",
-				"navigationBarBackgroundColor": "#FFFFFF"
-			}
-		},
+	
 		{
 			"path": "pages/shoppingCart/shoppingCart",
 			"style": {
-				"navigationBarTitleText": "购物车",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
-		{
-			"path": "pages/mine/mine",
-			"style": {
-				"navigationBarTitleText": "我的蜂箱",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		},
+		
 		{
 			"path": "pages/beeHiveData/beeHiveData",
 			"style": {
@@ -69,7 +72,7 @@
 		{
 			"path": "pages/shoppingMall/shopDetails",
 			"style": {
-				"navigationBarTitleText": "商品详情",
+				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
 				
 			}
@@ -77,18 +80,12 @@
 		{
 			"path": "pages/shoppingMall/shoppingPay",
 			"style": {
-				"navigationBarTitleText": "购物支付",
+				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
 				
 			}
 		},
-		{
-			"path": "pages/honeySource/honeySource",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
+		
 		{
 			"path": "pages/homePage/collectBee",
 			"style": {
@@ -108,32 +105,32 @@
 			"path": "pages/smartBee/smartBee",
 			"style" : 
 			{
-				"navigationBarTitleText" : "智能养蜂",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/surveyList/surveyList",
 			"style" : 
 			{
-				"navigationBarTitleText" : "问卷列表",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/surveyList/surveyDetail",
 			"style" : 
 			{
-				"navigationBarTitleText" : "问卷调查",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/customerService/customerService",
 			"style" : 
 			{
-				"navigationBarTitleText" : "联系客服",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
 		
@@ -175,43 +172,43 @@
 		{
 			"path": "pages/userInfo/userInfo",
 			"style": {
-				"navigationBarTitleText": "编辑信息",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/withdraw/withdraw",
 			"style": {
-				"navigationBarTitleText": "我的钱包",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/adoptionRecords/adoptionRecords",
 			"style": {
-				"navigationBarTitleText": "认养记录",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/orderList/orderList",
 			"style": {
-				"navigationBarTitleText": "订单列表",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/userInfo/addressList", 
 			"style": {
-				"navigationBarTitleText": "地址列表",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/userInfo/addressEdit",
 			"style": {
-				"navigationBarTitleText": "编辑地址",
-				"navigationBarBackgroundColor": "#ffffff"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{

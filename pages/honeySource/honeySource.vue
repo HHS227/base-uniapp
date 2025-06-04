@@ -1,4 +1,42 @@
 
+<template>
+  <view> <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
+   <view class="container">
+     <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
+     <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
+     <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
+     
+     
+     <view class="map-container">
+       <map 
+         id="map" 
+         style="width: 100%; height: 500rpx;"
+         :latitude="30.5728"
+         :longitude="104.0668"
+         :markers="markers"
+         show-location
+       ></map>
+     </view>
+     
+     <view class="my-bee-title">
+       <view>推荐蜜源</view>
+       <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
+     </view>
+     <view class="bee-list-center">
+       <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index">
+       <view class="bee-item-img">
+       <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
+     </view>
+       <view class="bee-item-title">
+         <text>{{item.name}}</text>
+         <view class="bee-item-address">{{item.address}}</view>
+       </view>
+     </view>
+     </view>
+   
+   </view>
+   </view>
+</template>
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
@@ -70,46 +108,6 @@ onMounted(() => {
 });
 </script>
 
-<template>
- <view> <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
-  <view class="container">
-    <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
-    <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
-    <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-      <view>蜜源</view>
-    </view>
-    
-    
-    <view class="map-container">
-      <map 
-        id="map" 
-        style="width: 100%; height: 500rpx;"
-        :latitude="30.5728"
-        :longitude="104.0668"
-        :markers="markers"
-        show-location
-      ></map>
-    </view>
-    
-    <view class="my-bee-title">
-      <view>推荐蜜源</view>
-      <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
-    </view>
-    <view class="bee-list-center">
-      <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index">
-      <view class="bee-item-img">
-		  <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
-	  </view>
-      <view class="bee-item-title">
-        <text>{{item.name}}</text>
-        <view class="bee-item-address">{{item.address}}</view>
-      </view>
-    </view>
-    </view>
-  
-  </view>
-  </view>
-</template>
 
 <style lang="scss" scoped>
 .container {
@@ -119,6 +117,7 @@ onMounted(() => {
   z-index: 1;
   display: flex;
   flex-direction: column;
+  padding-bottom: 35rpx;
 
   .bg-image {
     width: 100%;

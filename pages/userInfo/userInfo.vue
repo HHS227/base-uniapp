@@ -1,4 +1,6 @@
 <template>
+ <view>
+  <TransNavVue title="设置" />
   <view class="container">
     
     <view class="content">
@@ -60,6 +62,7 @@
       </view>
     </view>
   </view>
+ </view>
 </template>
 
 <script setup>
@@ -67,6 +70,7 @@ import { ref } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import { onMounted } from 'vue'
+import TransNavVue from '../../components/TransNav.vue'
 
 const { getAccessToken} = useTokenStorage()
 
