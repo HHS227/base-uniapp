@@ -52,6 +52,7 @@ import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue'
 import { opendir } from 'fs'
+import { transferableAbortController } from 'util'
 const { getAccessToken,getOpenId } = useTokenStorage()
 
 const popup = ref(null)
@@ -95,9 +96,20 @@ const handleWithdraw = async () => {
       const res = await request({
         url: '/app-api/weixin/pay/initiate/payout',
         method: 'POST',
-        data: { transferAmount: walletData.value.balance ,
+        data: { transferAmount: walletData.value.balance,
                 openid: getOpenId(),
-                 transferRemark: '极蜜部落提现'
+                 transferRemark: '极蜜部落提现',
+                 transferSceneId: '1000',
+                 transferSceneReportInfos: [
+                  {
+                    infoType: '活动名称',
+                    infoContent: '极蜜部落提现'
+                  },
+                  {
+                    infoType: '奖励说明',
+                    infoContent: '提现奖励'
+                  }
+                ]
         },
         showLoading: true,
        

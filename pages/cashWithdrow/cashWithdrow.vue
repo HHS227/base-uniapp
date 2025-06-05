@@ -57,9 +57,20 @@ const submitWithdraw = async () => {
         const res = await request({
         url: '/app-api/weixin/pay/initiate/payout',
         method: 'POST',
-        data: { transferAmount: walletData.value.balance ,
-              openid: getOpenId(),
-              transferRemark: '极蜜部落提现'
+        data: { transferAmount: amount.value ,
+                openid: getOpenId(),
+                 transferRemark: '极蜜部落提现',
+                 transferSceneId: '1000',
+                 transferSceneReportInfos: [
+                  {
+                    infoType: '活动名称',
+                    infoContent: '极蜜部落提现'
+                  },
+                  {
+                    infoType: '奖励说明',
+                    infoContent: '提现奖励'
+                  }
+                ]
         },
         showLoading: true,
        
