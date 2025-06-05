@@ -1,6 +1,6 @@
 <template>
   <view>
-    <TransNavVue title="推广佣金"></TransNavVue>
+    <TransNavVue title="我的钱包"/>
   <view class="container">
     <!-- 修改顶部黑色区域显示现金余额 -->
     <view class="top-card black-bg">
@@ -36,7 +36,14 @@
     <!-- 修改弹窗中的余额显示 -->
     <uni-popup ref="popup" type="center">
       <view class="popup-content center-popup">
-        <text class="title">现金提现</text>
+        <view class="popup-header">
+         <text></text>
+          <image 
+            src="/static/images/back(b).png" 
+            class="close-icon" 
+            @click="popup.close()"
+          />
+        </view>
         <text class="balance">当前有<text class="amount-highlight">{{ walletData.balance || 0 }}</text>可提现</text>
         <text class="notice">提现3-5分钟到账</text>
         <button class="confirm-btn" @click="handleWithdraw">立即提现</button>
@@ -51,7 +58,8 @@ import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue'
-const { getAccessToken } = useTokenStorage()
+import { opendir } from 'fs'
+const { getAccessToken,getOpenId } = useTokenStorage()
 
 const popup = ref(null)
 const walletData = ref({
@@ -92,9 +100,12 @@ const handleWithdraw = async () => {
       throw new Error('账号余额不足')
     } else {
       const res = await request({
-        url: '/app-api/weixin/pay/payouts',
+        url: '/app-api/weixin/pay/initiate/payout',
         method: 'POST',
-        data: { amount: walletData.value.balance },
+        data: { transferAmount: walletData.value.balance ,
+                openid: getOpenId(),
+                 transferRemark: '极蜜部落提现'
+        },
         showLoading: true,
        
       })
@@ -242,7 +253,16 @@ const showCashWithdraw = () => {
   padding: 50rpx;
   background: linear-gradient(180deg #fff2da, #ffffff 57%);
   
-  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
+    
+    .close-icon {
+      width: 32rpx;
+      height: 32rpx;
+    }
+  }
   .title {
     font-size: 40rpx;
     font-weight: bold;

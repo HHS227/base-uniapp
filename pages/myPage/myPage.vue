@@ -152,11 +152,12 @@
 
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
-import { useTokenStorage } from '../../utils/storage'
+
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
 import {ref,onMounted,} from 'vue'
 import { onShow ,onShareAppMessage} from '@dcloudio/uni-app'
-const {  getAccessToken } = useTokenStorage()
+import { useTokenStorage } from '../../utils/storage'
+const {  getAccessToken ,getOpenId} = useTokenStorage()
 import { request } from '@/utils/request'
 
 const userInfo = ref({})
@@ -243,6 +244,7 @@ onShow(() => {
       }
     })
   } else {
+	
     getMyInfo()
     getCommissionDetail()
     getWalletInfo()

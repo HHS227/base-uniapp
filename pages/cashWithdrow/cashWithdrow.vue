@@ -34,6 +34,8 @@ import { ref ,onMounted} from 'vue'
 import { request } from '@/utils/request'
 
 import TransNavVue from '../../components/TransNav.vue'
+import { useTokenStorage } from '../../utils/storage'
+const {  getAccessToken ,getOpenId} = useTokenStorage()
 
 const amount = ref('')
 const availableBalance = ref('0')
@@ -53,12 +55,15 @@ const submitWithdraw = async () => {
     
     try {
         const res = await request({
-            url: '/api/withdraw',
-            method: 'POST',
-            data: {
-                amount: amount.value
-            }
-        })
+        url: '/app-api/weixin/pay/initiate/payout',
+        method: 'POST',
+        data: { transferAmount: walletData.value.balance ,
+              openid: getOpenId(),
+              transferRemark: '极蜜部落提现'
+        },
+        showLoading: true,
+       
+      })
         
         uni.showToast({
             title: '提现申请已提交',

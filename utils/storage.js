@@ -28,6 +28,12 @@ export const useTokenStorage = () => {
     const tokenData = getToken()
     return tokenData?.refreshToken || null
   }
+   //获取openid
+   const getOpenId = () => {
+    const tokenData = getToken()
+    return tokenData?.openId || null
+   }
+  
   
   return {
     token,
@@ -35,6 +41,7 @@ export const useTokenStorage = () => {
     setToken,
     clearToken,
     getAccessToken,
-    getRefreshToken
+    getRefreshToken,
+    getOpenId
   }
 }

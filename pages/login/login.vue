@@ -76,7 +76,8 @@ const handleWechatLogin = async (e) => {
     if(res.code === 0 || res.code === 200) {
       setToken({
         accessToken: res.data.accessToken,
-        refreshToken: res.data.refreshToken
+        refreshToken: res.data.refreshToken,
+        openId: res.data.openid
       })
       uni.switchTab({ url: '/pages/myPage/myPage' })
     } else {
