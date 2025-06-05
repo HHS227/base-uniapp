@@ -62,6 +62,20 @@
 			}
 		},
 		{
+			"path": "pages/traceabilityManagement/traceabilityManagement",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/traceabilityManagement/addProduct",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/myBeeHive/myBeeHive",
 			"style": {
 				"navigationBarTitleText": "我的蜂箱",

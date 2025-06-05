@@ -51,8 +51,6 @@ import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue'
-import { opendir } from 'fs'
-import { transferableAbortController } from 'util'
 const { getAccessToken,getOpenId } = useTokenStorage()
 
 const popup = ref(null)

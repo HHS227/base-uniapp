@@ -369,6 +369,7 @@ const gotoBeeFarmerJion = () => {
         if (userInfo.value.isBeefarmer) {
             uni.navigateTo({
                 url: '/pages/deviceManagement/deviceManagement'
+				//  url: '/pages/traceabilityManagement/traceabilityManagement'
             })
         } else {
             uni.navigateTo({
