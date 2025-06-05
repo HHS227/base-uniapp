@@ -1,7 +1,7 @@
 <template>
 		<view>
 			<TransNavVue title="我的消息"/>
-	<view>
+
 		<uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">{{ currentMessage.templateNickname }}</view>
@@ -36,7 +36,7 @@
 		</scroll-view>
 		<view class="safe-view"></view>
 	</view>
-	</view>
+	
 		</view>
 </template>
 

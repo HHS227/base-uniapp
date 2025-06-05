@@ -10,7 +10,12 @@
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
             <view class="scroll-content">
                 <view class="goods-item" v-for="(item,index) in shoppingList" :key="index" @click="shopDetails(item)">
-                    <image :src="item.imgUrl" mode="" class="goods-image"></image>
+                    <image 
+              :src="item.imgUrl" 
+              mode="aspectFill" 
+              class="goods-image"
+              lazy-load="true"
+            ></image>
                     <view class="goods-title" >{{item.name}}</view>
                     <view class="goods-info">
                         <view class="goods-weight">

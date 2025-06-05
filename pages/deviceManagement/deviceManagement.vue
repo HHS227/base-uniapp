@@ -19,23 +19,23 @@
         class="device-item"
       >
         <view class="device-header">
-          <text class="device-name">{{ device.name }}</text>
+          <text class="device-name">{{ device.facilityName }}</text>
           <button class="unbind-btn" @click="handleUnbind(device.id)">解绑</button>
         </view>
         
         <view class="device-status">
           <text class="info-tag">普通信息</text>
           <text class="online-tag">在线</text>
-          <text class="device-model">{{ device.model }}</text>
+          <text class="device-model">{{ device.facilityType }}</text>
         </view>
         
         <view class="divider"></view>
         
         <view class="device-detail">
-          <image class="device-image" :src="device.image" mode="aspectFit"></image>
+          <image class="device-image" src="/static/images/apiculture.png" mode="aspectFit"></image>
           <view class="device-info">
-            <text class="info-text">型号：{{ device.model }}</text>
-            <text class="info-text">绑定日期：{{ device.bindDate }}</text>
+            <text class="info-text">型号：{{ device.no }}</text>
+            <text class="info-text">绑定日期：{{ device.bindingTime }}</text>
           </view>
         </view>
       </view>
@@ -45,8 +45,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
+import { request } from '../../utils/request.js'
+
 
 const devices = ref([
   {
@@ -54,7 +56,7 @@ const devices = ref([
     name: '智能蜂箱001',
     model: 'X-1000',
     status: 'online',
-    image: '/static/images/养蜂.png',
+    image: '/static/images/apiculture.png',
     bindDate: '2023-10-15'
   },
   {
@@ -62,22 +64,70 @@ const devices = ref([
     name: '智能蜂箱002',
     model: 'X-2000',
     status: 'online',
-    image: '/static/images/养蜂.png',
+    image: '/static/images/apiculture.png',
     bindDate: '2023-10-10'
   }
 ])
 
-const handleUnbind = (id) => {
-  uni.showModal({
-    title: '提示',
-    content: '确定要解绑该设备吗？',
-    success: (res) => {
-      if (res.confirm) {
-        // 调用解绑API
+const handleUnbind = async (id) => {
+  try {
+    uni.showModal({
+      title: '提示',
+      content: '确定要解绑该设备吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          const res = await request({
+            url: `/app-api/front/bee-farm/unBanding/facility?id=${id}`,
+            showLoading: true,
+            method: 'POST',
+          })
+          
+          if (res.code === 0) {
+            uni.showToast({
+              title: '解绑成功',
+              icon: 'success',
+              duration: 2000,
+            })
+            // 更新设备列表
+            devices.value = devices.value.filter(device => device.id !== id)
+          } else {
+            throw new Error(res.msg || '解绑失败')
+          }
+        }
       }
-    }
-  })
+    })
+  } catch (err) {
+    console.error('解绑失败:', err)
+    uni.showToast({
+      title: err.message || '解绑失败',
+      icon: 'none',
+      duration: 2000,
+    })
+  }
 }
+// 获取设备信息
+const getDeviceInfo = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/front/bee-farm/get/facilityList',
+      showLoading: true, 
+     
+    })
+    
+    if (res.code === 0 ) {
+      devices.value = res.data || []; 
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取消息失败:', err)
+   
+  }
+}
+onMounted(() => {
+	getDeviceInfo()
+})
+
 </script>
 
 <style lang="scss" scoped>
