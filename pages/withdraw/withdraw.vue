@@ -36,14 +36,7 @@
     <!-- 修改弹窗中的余额显示 -->
     <uni-popup ref="popup" type="center">
       <view class="popup-content center-popup">
-        <view class="popup-header">
-         <text></text>
-          <image 
-            src="/static/images/back(b).png" 
-            class="close-icon" 
-            @click="popup.close()"
-          />
-        </view>
+        <text class="title">现金提现</text>
         <text class="balance">当前有<text class="amount-highlight">{{ walletData.balance || 0 }}</text>可提现</text>
         <text class="notice">提现3-5分钟到账</text>
         <button class="confirm-btn" @click="handleWithdraw">立即提现</button>
@@ -253,16 +246,7 @@ const showCashWithdraw = () => {
   padding: 50rpx;
   background: linear-gradient(180deg #fff2da, #ffffff 57%);
   
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30rpx;
-    
-    .close-icon {
-      width: 32rpx;
-      height: 32rpx;
-    }
-  }
+  
   .title {
     font-size: 40rpx;
     font-weight: bold;
