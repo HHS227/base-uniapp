@@ -59,14 +59,14 @@ const handleLongPress = () => {
     current: qrCodeUrl.value,
     urls: [qrCodeUrl.value],
     success: () => {
-      showToast({
+     uni.showToast({
         title: '请选择"识别图中二维码"',
         icon: 'none'
       })
     },
     fail: (err) => {
       console.error('长按识别失败:', err)
-      showToast({
+      uni.showToast({
         title: '识别失败，请重试',
         icon: 'none'
       })

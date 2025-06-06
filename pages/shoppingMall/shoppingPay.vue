@@ -441,7 +441,7 @@ const confirmPay = async () => {
                 receiverMobile: currentAddress.value.phoneNumber,
                 receiverAddress: `${currentAddress.value.province}${currentAddress.value.city}${currentAddress.value.region}${currentAddress.value.addressDetail}`,
                 deliveryType: 1,
-                couponId: selectedCoupon.value?.id || null // 传递优惠券ID
+                // couponId: selectedCoupon.value?.id || null // 传递优惠券ID
             },
             method: 'post',
             showLoading: true,
