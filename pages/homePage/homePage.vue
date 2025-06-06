@@ -11,7 +11,7 @@
 			<view class="swiper-content">
 				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
 					<swiper-item class="swiper-item" v-for="(item,index) in swiperList" :key="index">
-						<image :src=item.url class="swiper-image" mode=""></image>
+						<image :src=item.url class="swiper-image" mode="" @click="activeBtn(item)"></image>
 					</swiper-item>
 				
 				</swiper>
