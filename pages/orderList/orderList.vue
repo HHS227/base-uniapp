@@ -21,7 +21,7 @@
         :key="item.id" 
         class="record-item"
       >
-        <image class="pet-image" :src="item.image ?item.image  :'/static/images/养蜂.png'" mode="aspectFill"></image>
+        <image class="pet-image" :src="'/static/images/apiculture.png'" mode="aspectFill"></image>
         <view class="info-content">
           <text class="pet-name">{{ item.productName }}</text>
           <text class="pet-date">{{ formatDateTime(item.createTime) ||'2025-05-25'}}</text>
@@ -100,7 +100,7 @@ const getStatusText = (status) => {
     3: '已取消',
     4: '已完成'
   };
-  return texts[status] || '未知状态';
+  return texts[status] || '未支付';
 };
 
 onMounted(() => {

@@ -31,7 +31,7 @@
 					<view class="data-item">
 						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
 						<image src="/static/images/homePage/countryIcon.png" mode="" class="data-icon"></image>
-						<view class="data-item-title">国家</view>
+						<view class="data-item-title">蜂场</view>
 						
 						<view class="data-item-text">
 							{{infoData.countryNumber}}
@@ -127,6 +127,18 @@
 		</scroll-view>
 		<view class="tabbar-bottom"></view>
 	</view>
+	<uni-popup ref="popup" type="center">
+		<view class="popup-content">
+			<view class="popup-title">活动通知</view>
+			<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
+				<view>{{ item.title }}</view>
+				<image style="width: 100%; height:100rpx" :src="item.image"></image>
+			</view>
+			
+			<button class="popup-btn" @click="closePopup">我已了解</button>
+		</view>
+	</uni-popup>
+	
 	</view>
 </template>
 
@@ -138,38 +150,53 @@ import { ref, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+
+
 const {  getAccessToken } = useTokenStorage()
+const swiperList=ref([])
+const infoData=ref({})
+const dataList=ref([])
+const avatarList = ref(['/static/images/apiculture.png', '/static/images/apiculture.png', '/static/images/apiculture.png']);
+
 // 使用uniapp的onShow生命周期
 onShow(() => {
+	getSwiperList()
+	getInfoData()
   if (getAccessToken()) {
-    
     getInfoDataList()
   }
 })
+const popup = ref(null);
+const activities = ref([
+  { id: 1, title: '春季养蜂活动', image: '/static/images/apiculture.png', type:'1' },
+  { id: 2, title: '蜂蜜特惠活动', image: '/static/images/apiculture.png', type:'2' },
+  
+])
 
 onMounted(() => {
-  getSwiperList()
-  getInfoData()
-  
+	popup.value.open();
 })
-const swiperList=ref(['/static/images/轮播图(1).png','/static/images/轮播图(1).png'])
-const infoData=ref({})
-const dataList=ref([
+//跳转到活动页面
+const activeBtn = (item) => {
+  if (item.type === 1) {
+  	console.log('跳转到活动页面')
+  }	else{
+	console.log('跳转到优惠券页面')
+  }
+}
+// 关闭弹窗
+const closePopup = () => {
+  popup.value.close();
+};
 
-])
-const percent = ref(45);
-const avatarList = ref(['/static/images/apiculture.png', '/static/images/apiculture.png']);
 // 获取轮播图数据
 const getSwiperList = async () => {
   try {
     const res = await request({
       url: '/app-api/WeiXinMini/index/get/banner',
       showLoading: true, 
-      loadingText: '加载轮播图中...'
     })
-    
-    // 处理返回数据（兼容code=0和code=200）
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0 ) {
       swiperList.value = res.data || []
     } else {
       throw new Error(res.msg || '数据异常')
@@ -186,9 +213,7 @@ const getInfoData = async () => {
       url: '/app-api/WeiXinMini/index/get/info',
       showLoading: true, 
     })
-    
-    // 处理返回数据（兼容code=0和code=200）
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0 ) {
     infoData.value=res.data
     } else {
       throw new Error(res.msg || '数据异常')
@@ -206,10 +231,9 @@ const getInfoDataList = async () => {
       showLoading: true, 
 	
     })
-    // 处理返回数据（兼容code=0和code=200）
-    if (res.code === 0 || res.code === 200) {
+   
+    if (res.code === 0 ) {
 		dataList.value=res.data||[]
-		
     } else {
       throw new Error(res.msg || '数据异常')
     }
@@ -273,7 +297,6 @@ const scanCode = () => {
   uni.scanCode({
     success: (res) => {
       const productId = JSON.parse(res.result).id
-	  console.log(productId,'121')
       if (productId) {
         uni.navigateTo({
           url: `/pages/shoppingMall/shopDetails?id=${productId}`,
@@ -615,6 +638,39 @@ const scanCode = () => {
 			    
 			}
 		}
+	}
+}
+.popup-content {
+	width: 600rpx;
+	max-height:600rpx ;
+	overflow: auto;
+	background: #fff;
+	border-radius: 24rpx;
+	padding: 40rpx;
+
+	.popup-title {
+		font-weight: bold;
+		font-size: 40rpx;
+		color: #0a0b0f;
+		text-align: center;
+		margin-bottom: 20rpx;
+	}
+	.active-item{
+		background-color: #eeeeee;
+		margin-bottom: 40rpx;
+	}
+
+
+
+	
+
+	.popup-btn {
+		width: 100%;
+		height: 80rpx;
+		background: #ff6f0e;
+		color: #fff;
+		border-radius: 40rpx;
+		font-size: 30rpx;
 	}
 }
 </style>
