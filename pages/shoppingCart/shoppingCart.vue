@@ -426,6 +426,8 @@
 		font-size: 28rpx;
 		color: #333;
 		font-weight: 500;
+		display: flex;
+		align-items: center; 
   
 		.price {
 		  display: flex;

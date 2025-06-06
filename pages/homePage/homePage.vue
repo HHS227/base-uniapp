@@ -130,9 +130,12 @@
 	<uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">活动通知</view>
-			<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
-				<view>{{ item.title }}</view>
-				<image style="width: 100%; height:100rpx" :src="item.image"></image>
+			<view class="active-list">
+				<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
+				<view>{{ item.describle }}</view>
+				<image style="width: 100%; height:100rpx" :src="item.url"></image>
+				</view>
+				
 			</view>
 			
 			<button class="popup-btn" @click="closePopup">我已了解</button>
@@ -174,14 +177,17 @@ const activities = ref([
 ])
 
 onMounted(() => {
-	popup.value.open();
+	getActiveList()
+	
 })
 //跳转到活动页面
 const activeBtn = (item) => {
-  if (item.type === 1) {
-  	console.log('跳转到活动页面')
+  if (item.activityId !==null) {
+  	uni.navigateTo({ url: '/pages/couponPage/couponPage' })
   }	else{
-	console.log('跳转到优惠券页面')
+	uni.navigateTo({
+        url:`/pages/shoppingMall/shopDetails?id=${item.productId}`
+    })
   }
 }
 // 关闭弹窗
@@ -198,6 +204,24 @@ const getSwiperList = async () => {
     })
     if (res.code === 0 ) {
       swiperList.value = res.data || []
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('轮播图加载失败:', err)
+   
+  }
+}
+//
+const getActiveList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/activity',
+      showLoading: true, 
+    })
+    if (res.code === 0 ) {
+      activities.value = res.data || []
+	  popup.value.open();
     } else {
       throw new Error(res.msg || '数据异常')
     }
@@ -642,8 +666,6 @@ const scanCode = () => {
 }
 .popup-content {
 	width: 600rpx;
-	max-height:600rpx ;
-	overflow: auto;
 	background: #fff;
 	border-radius: 24rpx;
 	padding: 40rpx;
@@ -655,14 +677,14 @@ const scanCode = () => {
 		text-align: center;
 		margin-bottom: 20rpx;
 	}
-	.active-item{
+	.active-list{
+		max-height: 400rpx;
+		overflow: auto;
+		.active-item{
 		background-color: #eeeeee;
 		margin-bottom: 40rpx;
 	}
-
-
-
-	
+	}
 
 	.popup-btn {
 		width: 100%;

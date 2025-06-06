@@ -38,7 +38,7 @@
             <!-- 优惠券区域 -->
             <view class="sale-box" @click="openCouponPopup">
                 <text>优惠券</text>
-                <text class="coupon-count">{{selectedCoupon ? selectedCoupon.name : '未选择'}}</text>
+                <text class="coupon-count">{{selectedCoupon ? selectedCoupon.couponName : '未选择'}}</text>
                 <image src="/static/images/rightBtn.png" mode="aspectFit"></image>
             </view>
             
@@ -121,12 +121,12 @@
                     >
                         <view class="coupon-content">
                             <view class="coupon-value">
-                                <text>￥{{(item.discountAmount/100).toFixed(2)}}</text>
+                                <text>￥{{item.amount}}</text>
                             </view>
                             <view class="coupon-info">
-                                <text class="coupon-name">{{item.name}}</text>
-                                <text class="coupon-condition">满{{(item.threshold/100).toFixed(2)}}可用</text>
-                                <text class="coupon-date">{{item.validDate}}</text>
+                                
+                                <text class="coupon-condition">满{{item.fullAmount}}可用</text>
+            
                             </view>
                             <view class="coupon-select">
                                 <radio :checked="selectedCoupon?.id === item.id" color="#ff6f0e"></radio>
@@ -230,14 +230,12 @@ const getCouponList = async () => {
     isLoading.value = true;
     try {
         const res = await request({
-            url: '/app-api/weixin/coupon/available',
-            data: {
-                orderAmount: goodsTotalPrice.value
-            },
+            url: '/app-api/weixin/coupons/get/my',
+          
             showLoading: true
         });
         
-        if (res.code === 0 || res.code === 200) {
+        if (res.code === 0 ) {
             availableCoupons.value = res.data || [];
             // 默认不选择优惠券，由用户手动选择
             selectedCoupon.value = null;
@@ -262,19 +260,19 @@ const getCouponList = async () => {
 // 计算最终价格
 const calculateTotalPrice = () => {
     // 检查优惠券是否满足门槛
-    if (selectedCoupon.value && goodsTotalPrice.value < selectedCoupon.value.threshold) {
+    if (selectedCoupon.value && goodsTotalPrice.value < selectedCoupon.value.fullAmount) {
         uni.showToast({
-            title: `未满足${selectedCoupon.value.name}的使用门槛`,
+            title: `未满足${selectedCoupon.value.couponName}的使用门槛`,
             icon: 'none'
         });
         selectedCoupon.value = null;
         return;
     }
     
-    // 计算总价（包含运费但不在UI显示）
+    // 计算总价
     let total = goodsTotalPrice.value 
     if (selectedCoupon.value) {
-        total -= selectedCoupon.value.discountAmount;
+        total -= selectedCoupon.value.amount*100;
     }
     totalPrice.value = Math.max(total, 0); // 确保总价不小于0
 };
@@ -329,7 +327,7 @@ const selectCoupon = (item) => {
 
 const openCouponPopup = async () => {
     // 打开前刷新优惠券列表
-    // await getCouponList();
+    await getCouponList();
     couponPopup.value.open();
 };
 
@@ -354,6 +352,7 @@ const selectPayment = (method) => {
 // 页面加载和显示时获取数据
 onShow(() => {
     getAddressList();
+    
 });
 
 onMounted(() => {
@@ -441,7 +440,7 @@ const confirmPay = async () => {
                 receiverMobile: currentAddress.value.phoneNumber,
                 receiverAddress: `${currentAddress.value.province}${currentAddress.value.city}${currentAddress.value.region}${currentAddress.value.addressDetail}`,
                 deliveryType: 1,
-                // couponId: selectedCoupon.value?.id || null // 传递优惠券ID
+                couponId: selectedCoupon.value?.id || null // 传递优惠券ID
             },
             method: 'post',
             showLoading: true,
@@ -889,22 +888,14 @@ const confirmPay = async () => {
         flex: 1;
         padding: 0 20rpx;
         
-        .coupon-name {
-            font-size: 32rpx;
-            font-weight: bold;
-            margin-bottom: 10rpx;
-        }
-        
+       
         .coupon-condition {
             font-size: 28rpx;
             color: #666;
             margin-bottom: 5rpx;
         }
         
-        .coupon-date {
-            font-size: 24rpx;
-            color: #999;
-        }
+      
     }
     
     .coupon-select {
