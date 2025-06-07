@@ -10,12 +10,15 @@
 		</view>
 		<view class="form-content">
 			<picker mode="region" @change="selectCity" class="form-item">
-				<view class="picker-view" :class="{ 'has-value': formData.region.length > 0 }">
-					{{ formData.region.length > 0 ? formData.region.join(' ') : '请选择省、市、区' }}
+				<view class="picker-view" :class="{ 'has-value': formData.region }">
+					{{ formData.region || '请选择省、市、区' }}
 				</view>
 			</picker>
-			<input :inputBorder="false" placeholder-class="place" v-model="formData.beeType" placeholder="蜜源种类" class="form-item form-input" />
-			<input :inputBorder="false" placeholder-class="place" v-model="formData.deviceNumber" placeholder="设备编号" class="form-item form-input" />
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.honeySeeds" placeholder="蜜源种类" class="form-item form-input" />
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.name" placeholder="蜂场名称" class="form-item form-input" />
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.area" placeholder="蜂场面积" class="form-item form-input" />
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.beeType" placeholder="蜜蜂种类" class="form-item form-input" />
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.ownerName" placeholder="养蜂人" class="form-item form-input" />
 			<button class="submit-btn" @click="enterBtn">入驻</button>
 		</view>
 	</view>
@@ -25,20 +28,43 @@
 <script setup>
 import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
+import { request } from '@/utils/request';
 const formData = ref({
-	region: [],
-	beeType: '',
-	deviceNumber: ''
+	region: '',
+	honeyseeds: '',
+	name: '',
+	area: '',
+	beetype: '',
+	ownername: '',
 });
 
-const enterBtn = ()=>{
-    uni.navigateTo({
-        url:'/pages/beeFarmerJion/jionFeedback'
+
+const enterBtn = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/beeFarmApply/create',
+      showLoading: true, 
+		data:formData.value,
+		method:'post'
     })
+   
+    if (res.code === 0 ) {
+		uni.navigateTo({
+    url: '/pages/beeFarmerJion/jionFeedback'
+  })
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('入驻失败:', err)
+   
+  }
 }
 
 const selectCity = (e) => {
-	formData.value.region = e.detail.value;
+    // 将数组转换为空格分隔的字符串
+    formData.value.region = e.detail.value.join(' ');
 };
 </script>
 
@@ -73,11 +99,9 @@ const selectCity = (e) => {
 		}
 	}
 	.form-content {
-		padding: 48rpx 32rpx;
+		padding: 48rpx 15rpx;
 		margin: auto;
-		margin-top: 32rpx;
 		width: 686rpx;
-		height: 606rpx;
 		background: #ffffff;
 		border-radius: 24rpx;
 		.form-item {

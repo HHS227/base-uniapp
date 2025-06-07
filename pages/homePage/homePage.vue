@@ -90,11 +90,16 @@
 							</view>
 							<view class="top-info">
 								<view class="card-title">{{item.beehiveName}}</view>
-								<view class="group-purchase" v-if="item.adoptType != 1">
-								  <AvatarStackVue :avatars="avatarList" :size="40"></AvatarStackVue>
+								<view  v-if="item.adoptType == 1" class="exclusive">
+									<view >{{ item.region }}</view>
+									<view >{{ item.honeySeeds }}</view>
+								</view>
+								
+								<view class="group-purchase" v-if="item.adoptType ==2">
+								  <AvatarStackVue :avatars="item.avatars" :size="40"></AvatarStackVue>
 								  <view class="gruop-info">还差{{item.adoptNumber||0}}人</view>
 								</view>
-								<view class="progress-info" v-if="item.adoptType != 1">
+								<view class="progress-info" v-if="item.adoptType == 2">
 								  <view class="progress-content">
 									<view class="progress-val" :style="{ width: `${Math.min((item.groupNumber/5)*100, 100)}%` }"></view>
 								  </view>
@@ -565,7 +570,13 @@ const scanCode = () => {
 							white-space: nowrap;
 							overflow: hidden;
 							text-overflow: ellipsis;
+							
 						}
+						.exclusive{
+							margin-top: 20rpx;
+							font-size: 26rpx;
+							color: #999999;
+							}
 						.group-purchase {
 							height: 40rpx;
 							margin-top: 14rpx;

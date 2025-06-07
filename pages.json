@@ -83,6 +83,13 @@
 			}
 		},
 		{
+			"path": "pages/beeFarmInfo/beeFarmInfo",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/myBeeHive/myBeeHive",
 			"style": {
 				"navigationBarTitleText": "我的蜂箱",

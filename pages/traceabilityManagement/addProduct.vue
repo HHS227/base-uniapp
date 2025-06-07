@@ -6,14 +6,19 @@
         <uni-forms-item label="商品名称" name="name">
           <uni-easyinput v-model="formData.name" placeholder="请输入商品名称" />
         </uni-forms-item>
-        
-        <uni-forms-item label="商品描述" name="description">
-          <uni-easyinput type="textarea" v-model="formData.description" placeholder="请输入商品描述" />
-        </uni-forms-item>
-        
         <uni-forms-item label="商品价格" name="price">
           <uni-easyinput type="number" v-model="formData.price" placeholder="请输入商品价格" />
         </uni-forms-item>
+        <uni-forms-item label="商品库存" name="stock">
+          <uni-easyinput type="number" v-model="formData.stock" placeholder="请输入商品库存" />
+        </uni-forms-item>
+        <uni-forms-item label="商品描述" name="description">
+          <uni-easyinput type="textarea" v-model="formData.description" placeholder="请输入商品描述" />
+        </uni-forms-item>
+
+			<input :inputBorder="false" placeholder-class="place" v-model="formData.honeySeeds" placeholder="蜜源种类" class="form-item form-input" />
+        
+       
         
         <uni-forms-item label="商品图片" name="images">
           <uni-file-picker 

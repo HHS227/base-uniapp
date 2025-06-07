@@ -61,7 +61,7 @@
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
 						<text class="amount">{{ walletData.balance||0 }}</text>
-						<text class="text">现金</text>
+						<text class="text">可提现金额</text>
 					</view>
 					<view class="item-right">
 						<image src="/static/images/myPage/cashIcon.png" mode="" class="amount-image"></image>
@@ -163,6 +163,7 @@ import { request } from '@/utils/request'
 const userInfo = ref({})
 const walletData = ref({})
 const commissionData = ref({})
+const isBeeFarm=ref({})
 const shareConfig = ref({
   title: '智慧养蜂，快来领养吧', 
   imageUrl: '/static/images/myPage/Invitation.png', 
@@ -189,6 +190,7 @@ const handleClickShare = (e) => {
   }
   // 如果已登录，则不阻止，让 onShareAppMessage 处理实际分享逻辑
 }
+
 
 // 注册全局分享钩子
 onShareAppMessage(() => {
@@ -218,18 +220,6 @@ onShareAppMessage(() => {
   }
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
 onShow(() => {
   if (!getAccessToken()) {
     uni.showModal({
@@ -244,10 +234,10 @@ onShow(() => {
       }
     })
   } else {
-	
     getMyInfo()
     getCommissionDetail()
     getWalletInfo()
+	getIsBeeFarm()
   }
 })
 
@@ -366,16 +356,20 @@ const gotoBeeFarmerJion = () => {
             }
         })
     } else {
-        if (userInfo.value.isBeefarmer) {
+        if (isBeeFarm.value.auditStatus == 1 ) {
             uni.navigateTo({
-                url: '/pages/deviceManagement/deviceManagement'
-				//  url: '/pages/traceabilityManagement/traceabilityManagement'
+                url: '/pages/beeFarmInfo/beeFarmInfo'
             })
-        } else {
+        } else if(isBeeFarm.value.auditStatus == 0){
+            uni.navigateTo({
+                url: '/pages/beeFarmerJion/jionFeedback'
+            })
+        } 
+		 else {
             uni.navigateTo({
                 url: '/pages/beeFarmerJion/beeFarmerJion'
             })
-        }
+        } 
     }
 }
 // 跳转智能养蜂
@@ -502,6 +496,26 @@ const getMyInfo = async () => {
     
     if (res.code === 0 || res.code === 200) {
      userInfo.value = res.data || {};
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
+}
+//获取是否是蜂农入驻
+const getIsBeeFarm = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/beeFarmApply/get',
+      showLoading: true, 
+      
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+		isBeeFarm.value=res.data
       
     } else {
       throw new Error(res.msg || '数据异常')

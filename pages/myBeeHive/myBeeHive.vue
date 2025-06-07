@@ -49,32 +49,33 @@
 				<view class="state-info">
 					<view class="info-item">
 						<view class="info-val">
+							{{ MyBeehiveInfo.beeNumber }}
+							<text class="unit">/万只</text>
+						</view>
+						<view class="info-name">蜜蜂数量</view>
+					</view>
+					<view class="info-item">
+						<view class="info-val">
 							{{ MyBeehiveInfo.beeAttendance }}
-							<text class="unit">/%</text>
+							<text class="unit">/万次</text>
 						</view>
 						<view class="info-name">蜜蜂出勤</view>
 					</view>
 					<view class="info-item">
 						<view class="info-val">
 							{{ MyBeehiveInfo.beeYield }}
-							<text class="unit">/万斤</text>
+							<text class="unit">/斤</text>
 						</view>
 						<view class="info-name">蜂蜜产量</view>
 					</view>
 					<view class="info-item">
 						<view class="info-val">
-							{{ MyBeehiveInfo.beeYield }}
-							<text class="unit">/万箱</text>
+							
+							<text class="unit">健康</text>
 						</view>
-						<view class="info-name">蜂箱领养</view>
+						<view class="info-name">健康状态</view>
 					</view>
-					<view class="info-item">
-						<view class="info-val">
-							{{ MyBeehiveInfo.beeNumber }}
-							<text class="unit">/万只</text>
-						</view>
-						<view class="info-name">蜜蜂数量</view>
-					</view>
+					
 				</view>
 			</view>
 			
