@@ -1,7 +1,19 @@
 <template>
 	<view>
 		<TransNavVue title="认养一箱蜂"></TransNavVue>
-  <view class="container">
+   
+    <view class="container">
+    
+      <view class="query-box">
+        <picker class="select" @change="onFarmChange" :value="selectedFarmId" :range="dataList" range-key="name">
+          <view class="picker-text">{{ selectedFarmId ? dataList.find(f=>f.id===selectedFarmId)?.name : '选择蜂场' }}</view>
+        </picker>
+        <picker class="select" @change="onTypeChange" :value="selectedType" :range="typeOptions" range-key="label">
+          <view class="picker-text">{{ selectedType !== '' ? typeOptions[selectedType].label : '选择类型' }}</view>
+        </picker>
+        <view class="query-btn" @click="handleQuery">查询</view>
+        <view class="reset-btn" @click="handleReset">重置</view>
+      </view>
     
     <view class="collect-box" v-for="item in beehiveList" :key="item.id">
       <view class="collect-img"></view>
@@ -14,6 +26,10 @@
         <view class="pddBtn" v-else @click="handleBuy(item)">￥{{item.price}}购买</view>
       </view>
     </view>
+	 
+    <view class="empty-box" v-if="beehiveList.length === 0">
+	<text class="empty-text">暂无蜂箱</text>
+	</view>
   </view>
 	</view>
 </template>
@@ -22,18 +38,27 @@
 import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
-
+import BeeFarmInfo from '../beeFarmInfo/beeFarmInfo.vue';
 const beehiveList = ref([])
+
+const dataList = ref([])
+const fromData = ref({
+	BeeFarmId:'',
+	adoptionType:''
+})
 
 onMounted(() => {
   getBeehiveList()
+  getInfoDataList()
 })
 
 const getBeehiveList = async () => {
   try {
     const res = await request({
-      url: '/app-api/front/beehive/all/list',
-      showLoading: true
+      url: '/app-api/front/beehive/by/condition',
+      showLoading: true,
+      method: 'POST',
+      data:fromData.value
     })
     
     if (res.code === 0 ) {
@@ -50,6 +75,26 @@ const getBeehiveList = async () => {
   }
 }
 
+//获取所有的蜂场列表
+const getInfoDataList = async () => {
+  try {
+    const res = await request({
+		url: '/app-api/front/bee-farm/get/list',
+     
+	
+    })
+    if (res.code === 0 ) {
+		dataList.value=res.data||[]
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } 
+  catch (err) {
+    console.error('获取数据失败:', err)
+   
+  }
+}
+
 const getBeehiveTypeName = (type) => {
   const typeMap = {
     1: '基础蜂箱',
@@ -60,18 +105,48 @@ const getBeehiveTypeName = (type) => {
   return typeMap[type] || '未知类型'
 }
 
+
 const handleBuy = (item) => {
-  uni.showToast({
-    title: `购买了${item.name}蜂箱`,
-    icon: 'none'
-  })
   
-  // 这里可以添加后续的购买逻辑
-  // 比如跳转到支付页面或调用购买接口
+}
+const selectedFarmId = ref('')
+const selectedType = ref('')
+const typeOptions = ref([
+  { label: '独享', value: 1},
+  { label: '拼团', value: 2}
+])
+
+const onFarmChange = (e) => {
+  selectedFarmId.value = dataList.value[e.detail.value]?.id || ''
+}
+
+const onTypeChange = (e) => {
+  selectedType.value = typeOptions.value[e.detail.value].value
+}
+
+const handleQuery = () => {
+  fromData.value = {
+    BeeFarmId: selectedFarmId.value,
+    adoptionType: selectedType.value
+  }
+  getBeehiveList()
+}
+
+const handleReset = () => {
+  selectedFarmId.value = ''
+  selectedType.value = ''
+  fromData.value = {
+    BeeFarmId: '',
+    adoptionType: ''
+  }
+  getBeehiveList()
 }
 </script>
 
 <style lang="scss" scoped>
+
+
+
 .container {
 	background-color: #f7f7f7;
 	height: 100vh;
@@ -79,6 +154,54 @@ const handleBuy = (item) => {
 	z-index: 1;
 	display: flex;
 	flex-direction: column;
+	margin-top: 90rpx;
+	// 新增查询样式
+.query-box {
+position: fixed;
+  top: 130rpx;
+  left: 0;
+  right: 0;;
+  padding: 20rpx 30rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  
+  .select {
+    flex: 1;
+    height: 70rpx;
+    border: 1rpx solid #eee;
+    border-radius: 10rpx;
+    padding: 0 20rpx;
+    
+    .picker-text {
+      line-height: 70rpx;
+      color: #333;
+      font-size: 28rpx;
+    }
+  }
+  
+  .query-btn {
+    width: 100rpx;
+    height: 70rpx;
+    line-height: 70rpx;
+    text-align: center;
+    background: #FF6F0E;
+    color: #fff;
+    border-radius: 10rpx;
+	font-size: 30rpx;
+  }
+  .reset-btn {
+    width: 100rpx;
+    height: 70rpx;
+    line-height: 70rpx;
+    text-align: center;
+    background: #eee;
+    color: #666;
+    border-radius: 10rpx;
+	font-size: 30rpx;
+  }
+}
 	.collect-box{
 		margin: 20rpx 30rpx;
 		height: 500rpx;
@@ -123,4 +246,20 @@ const handleBuy = (item) => {
 		border-radius: 30rpx;
 	}
 	}
+// 新增空状态样式
+.empty-box {
+  padding: 100rpx 0;
+  text-align: center;
+  .empty-img {
+    width: 300rpx;
+    height: 300rpx;
+    opacity: 0.6;
+  }
+  .empty-text {
+    display: block;
+    color: #999;
+    font-size: 28rpx;
+    margin-top: 20rpx;
+  }
+}
 </style>

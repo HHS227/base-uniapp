@@ -90,6 +90,20 @@
 			}
 		},
 		{
+			"path": "pages/beeFarmInfo/addFarm",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceManagement/addDeviceManagement",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/myBeeHive/myBeeHive",
 			"style": {
 				"navigationBarTitleText": "我的蜂箱",

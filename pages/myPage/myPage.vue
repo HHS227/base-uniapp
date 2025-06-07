@@ -781,7 +781,7 @@ const logout = () => {
 		}
 		.list-content {
 			width: 690rpx;
-			height: 378rpx;
+			height: 448rpx;
 			background: #ffffff;
 			box-shadow: 1rpx 6rpx 24rpx 0rpx rgba(0, 0, 0, 0.06);
 			border-radius: 16rpx;
@@ -802,7 +802,7 @@ const logout = () => {
 						height: 40rpx;
 					}
 					.text {
-						margin-left: 12rpx;
+						margin-left: 22rpx;
 						font-size: 28rpx;
 						color: #4c3f30;
 					}

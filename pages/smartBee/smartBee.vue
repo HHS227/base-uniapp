@@ -8,6 +8,7 @@
         v-for="(item, index) in smartBeeList" 
         :key="index" 
         class="question-item"
+        @click="showDetail(item.content)"
       >
         <text class="question-title">{{ index + 1 }}. {{ item.title }}</text>
         <text class="question-content">
@@ -15,6 +16,16 @@
         </text>
         <view class="divider"></view>
       </view>
+      
+      <!-- 弹窗组件 -->
+      <uni-popup ref="popup" type="center">
+        <view class="popup-content">
+          <scroll-view scroll-y class="detail-scroll">
+            <text class="detail-text">{{ currentContent }}</text>
+          </scroll-view>
+          <button class="close-btn" @click="closeDetail">关闭</button>
+        </view>
+      </uni-popup>
       
       <!-- 空状态提示 -->
       <view v-if="smartBeeList.length === 0" class="empty-state">
@@ -31,6 +42,7 @@ import { ref,  onMounted} from 'vue';
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue'
 const smartBeeList=ref([])
+const popup=ref(null)
 
 onMounted(() => {
   getSmartBeeList()
@@ -58,6 +70,17 @@ const getSmartBeeList= async () => {
       icon: 'error'
     })
   }
+}
+const showDialog = ref(false)
+const currentContent = ref('')
+
+const showDetail = (content) => {
+  currentContent.value = content
+  // popup.value.open()
+}
+
+const closeDetail = () => {
+  // popup.value.close()
 }
 </script>
 
@@ -109,6 +132,42 @@ const getSmartBeeList= async () => {
   .empty-text {
     font-size: 28rpx;
     color: #999;
+  }
+}
+
+.question-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 40rpx;
+  border-radius: 16rpx;
+  max-width: 80vw;
+  max-height: 70vh;
+  
+  .detail-scroll {
+    max-height: 60vh;
+    
+    .detail-text {
+      font-size: 28rpx;
+      line-height: 1.6;
+      color: #333;
+    }
+  }
+  
+  .close-btn {
+    margin-top: 30rpx;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 28rpx;
+    padding: 10rpx 30rpx;
+    border-radius: 8rpx;
+    float: right;
   }
 }
 </style>

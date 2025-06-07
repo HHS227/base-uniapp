@@ -13,22 +13,16 @@
           <uni-easyinput type="number" v-model="formData.stock" placeholder="请输入商品库存" />
         </uni-forms-item>
         <uni-forms-item label="商品描述" name="description">
-          <uni-easyinput type="textarea" v-model="formData.description" placeholder="请输入商品描述" />
+          <uni-easyinput type="textarea" v-model="formData.describe" placeholder="请输入商品描述" />
         </uni-forms-item>
-
-			<input :inputBorder="false" placeholder-class="place" v-model="formData.honeySeeds" placeholder="蜜源种类" class="form-item form-input" />
         
        
         
         <uni-forms-item label="商品图片" name="images">
           <uni-file-picker 
-            v-model="formData.images"
+           
             fileMediatype="image" 
-            mode="grid"
-            limit="9"
-            :image-styles="imageStyles"
-            @select="onSelect"
-            @delete="onDelete"
+           
           />
         </uni-forms-item>
         
@@ -40,26 +34,20 @@
 
 <script setup>
 import { ref } from 'vue'
-
 import TransNavVue from '../../components/TransNav.vue'
+import { request } from '@/utils/request'
+import BeeFarmInfo from '../beeFarmInfo/beeFarmInfo.vue'
 
 const formData = ref({
   name: '',
-  description: '',
+  describe: '',
   price: '',
-  images: []
+  images: [],
+  stock: '',
+  BeeFarmId:''
 })
 
-const imageStyles = {
-  width: 160,
-  height: 160,
-  border: {
-    color: '#eee',
-    width: 1,
-    style: 'solid',
-    radius: '4px'
-  }
-}
+
 
 const onSelect = (e) => {
   console.log('选择文件:', e.tempFilePaths)
@@ -74,9 +62,27 @@ const rules = {
   price: { required: true, message: '请输入商品价格' }
 }
 
-const submitForm = () => {
-  // 提交表单逻辑
-  console.log('提交表单:', formData.value)
+
+const submitForm = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/traceabilityManagement/create',
+      showLoading: true, 
+      data:formData.value,
+      method:'post'
+      
+    })
+    
+    if (res.code === 0 || res.code === 200) {
+     
+      
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('获取用户信息失败:', err)
+   
+  }
 }
 </script>
 

@@ -24,7 +24,7 @@
     </scroll-view>
      
      <view class="footer">
-       <button class="add-btn" @click="addTraceability">新增蜂场</button>
+       <button class="add-btn" @click="gotoAddFarm">新增蜂场</button>
      </view>
    </view>
     </view>
@@ -71,7 +71,7 @@ const gotoDevices = () => {
 // 新增跳转方法
 const gotoAddFarm = () => {
   uni.navigateTo({
-    url: '/pages/addFarm/addFarm'
+    url: '/pages/beeFarmInfo/addFarm'
   })
 }
 
@@ -106,15 +106,18 @@ const getBeeFarmInfo = async () => {
    background-color: #f7f7f7;
    display: flex;
    flex-direction: column;
+   
    .scroll-view {
-  height: calc(100vh - 150rpx);  // 从100rpx调整为150rpx
-  background-color: #f7f7f7;
+    flex: 1;
+  
+  
   
   .farm-list {
     .farm-item {
       display: flex;
       margin-bottom: 30rpx;
       padding: 20rpx;
+      margin: 20rpx;
       background: #fff;
       border-radius: 16rpx;
       box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
@@ -179,6 +182,10 @@ const getBeeFarmInfo = async () => {
   
    
    .footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
      padding: 20rpx;
      background: #fff;
      

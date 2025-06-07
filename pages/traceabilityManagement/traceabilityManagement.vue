@@ -210,8 +210,12 @@ const getStatusClass = (status) => {
 }
  
  .footer {
-   padding: 20rpx;
-   background: #fff;
+  position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+     padding: 20rpx;
+     background: #fff;
    
    .add-btn {
      background: #ff6f0e;

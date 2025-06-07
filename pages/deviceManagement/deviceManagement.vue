@@ -2,11 +2,9 @@
    <view>
     <TransNavVue title="设备管理"></TransNavVue>
   <view class="container">
-   
     <view class="header">
       <text class="title">总设备:{{devices.length}}台</text>
     </view>
-    
     <scroll-view scroll-y="true" class="device-list">
       <view v-if="devices.length === 0" class="empty-container">
        
@@ -41,6 +39,9 @@
       </view>
     </scroll-view>
   </view>
+  <view class="footer">
+     <button class="add-btn" @click="addDivce">新增设备</button>
+   </view>
    </view>
 </template>
 
@@ -105,6 +106,12 @@ const handleUnbind = async (id) => {
     })
   }
 }
+
+const addDivce = () => {
+  uni.navigateTo({
+    url: '/pages/deviceManagement/addDeviceManagement'
+  })
+}
 // 获取设备信息
 const getDeviceInfo = async () => {
   try {
@@ -131,24 +138,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.nav-bar {
-  display: flex;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  margin-bottom: 20rpx;
-  
-  .back-icon {
-    width: 40rpx;
-    height: 40rpx;
-    margin-right: 20rpx;
-  }
-  
-  .nav-title {
-    font-size: 32rpx;
-    font-weight: bold;
-    color: #333;
-  }
-}
+
 .container {
   padding: 30rpx;
   background-color: #f7f7f7;
@@ -284,5 +274,24 @@ onMounted(() => {
     font-size: 28rpx;
     color: #999;
   }
+ 
 }
+.footer {
+   
+   position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+     padding: 20rpx;
+     background: #fff;
+   
+   .add-btn {
+     background: #ff6f0e;
+     color: #fff;
+     height: 80rpx;
+     line-height: 80rpx;
+     border-radius: 40rpx;
+     font-size: 32rpx;
+   }
+ }
 </style>
