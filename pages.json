@@ -208,6 +208,14 @@
 				"navigationStyle": "custom"
 			}
 		},
+		{
+			"path": "pages/userAgreement/userAgreement",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
 	
 	
 		

@@ -15,8 +15,8 @@
             <text class="address">{{ item.address }}</text>
             <text class="bee-type">{{ item.mainBeeType }}</text>
             <view class="action-buttons">
-              <button class="product-btn" @click="gotoProducts">我的商品</button>
-              <button class="device-btn" @click="gotoDevices">我的设备</button>
+              <button class="product-btn" @click="gotoProducts(item)">我的商品</button>
+              <button class="device-btn" @click="gotoDevices(item)">我的设备</button>
             </view>
           </view>
         </view>
@@ -54,17 +54,17 @@ onShow(() => {
   getBeeFarmInfo()
 })
 
-const gotoProducts = () => {
+const gotoProducts = (item) => {
   // 跳转商品管理
   uni.navigateTo({
-    url: '/pages/traceabilityManagement/traceabilityManagement'
+    url: `/pages/traceabilityManagement/traceabilityManagement?id=${item.id}`
   })
 }
 
-const gotoDevices = () => {
+const gotoDevices = (item) => {
   // 跳转设备管理
   uni.navigateTo({
-    url: '/pages/deviceManagement/deviceManagement'
+    url: `/pages/deviceManagement/deviceManagement?id=${item.id}`
   })
 }
 

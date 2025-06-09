@@ -116,7 +116,7 @@ const addDivce = () => {
 
 const traffic = () => {
   uni.navigateTo({
-    url: '/pages/trafficRecharge/trafficRecharge'
+    url: '/pages/deviceManagement/addDeviceManagement'
   })
 }
 

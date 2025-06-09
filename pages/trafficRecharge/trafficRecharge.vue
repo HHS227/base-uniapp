@@ -1,20 +1,18 @@
 <template>
+
     <view>
         <TransNavVue title="流量充值" />
-        <view class="flow-management">
-            <!-- 优惠推荐及流量展示区域 -->
-            <view class="recommend-section" v-if="recommendPackage">
+        <view class="container">
+            <view class="recommend-section">
                 <text class="tag">优惠推荐</text>
                 <view class="flow-info">
-                    <text class="flow-value">{{ recommendPackage.flowAmount }}G</text>
+                    <text class="flow-value">100G</text>
                     <text class="flow-unit">/流量</text>
                 </view>
-                <button class="buy-btn" type="default" size="mini" @click="handleBuyNow(recommendPackage)">
+                <button class="buy-btn" type="default" size="mini" @click="handleBuyNow()">
                     立即购买
                 </button>
             </view>
-
-            <!-- 流量充值选项区域 -->
             <view class="recharge-section">
                 <text class="section-title">流量充值</text>
                 <view class="recharge-list">
@@ -22,39 +20,35 @@
                         :class="{ active: item.id === selectedPackageId }" @click="handleRechargeSelect(item)">
                         <text class="recharge-value">{{ item.flowAmount }}G</text>
                         <text class="recharge-price">{{ item.price }}元</text>
-                        <text class="recommend-tag" v-if="item.isRecommend">推荐</text>
+
                     </button>
                 </view>
             </view>
-
-            <!-- 流量包说明区域 -->
             <view class="description-section" v-if="selectedPackage">
                 <text class="section-title">流量包详情</text>
                 <view class="package-detail">
-                    <text class="detail-item">套餐名称: {{ selectedPackage.packageName }}</text>
-                    <text class="detail-item">流量: {{ selectedPackage.flowAmount }}GB</text>
-                    <text class="detail-item">价格: {{ selectedPackage.price }}元</text>
-                    <text class="detail-item">有效期: {{ selectedPackage.validDays }}天</text>
+                    <text class="detail-item"> 套餐名称: {{ selectedPackage.packageName }}</text>
                     <text class="detail-item" v-if="selectedPackage.description">套餐说明: {{ selectedPackage.description
                         }}</text>
                 </view>
             </view>
+        </view>
 
-            <!-- 协议及购买按钮区域 -->
-            <view class="agreement-section">
-                <checkbox-group @change="handleAgreementChange">
-                    <label class="agreement-label">
-                        <checkbox :checked="agreementChecked" />
-                        <text>我已阅读并同意平台《用户协议》</text>
-                    </label>
-                </checkbox-group>
-                <button class="confirm-buy-btn" :disabled="!agreementChecked || !selectedPackageId"
-                    @click="handleConfirmBuy">
-                    立即购买
-                </button>
-            </view>
+
+        <view class="footer">
+            <checkbox-group @change="handleAgreementChange">
+                <label class="agreement-label">
+                    <checkbox :checked="agreementChecked" />
+                    <text>我已阅读并同意平台 <text @click="userxy" style="color:black">《用户协议》</text></text>
+                </label>
+            </checkbox-group>
+            <button class="confirm-buy-btn" :disabled="!agreementChecked || !selectedPackageId"
+                @click="handleConfirmBuy">
+                立即购买
+            </button>
         </view>
     </view>
+
 </template>
 
 <script setup>
@@ -77,10 +71,15 @@ const selectedPackage = computed(() => {
     return trafficList.value.find(item => item.id === selectedPackageId.value) || null;
 });
 
-// 计算属性：获取推荐套餐（如果有）
-const recommendPackage = computed(() => {
-    return trafficList.value.find(item => item.isRecommend) || null;
-});
+const userxy=()=>{
+    
+    uni.navigateTo({
+    url: '/pages/userAgreement/userAgreement'
+  })
+    
+  
+}
+
 
 // 页面加载时获取流量套餐列表
 onShow(async () => {
@@ -265,151 +264,171 @@ const handleConfirmBuy = async () => {
 };
 </script>
 
-<style scoped>
-.flow-management {
-    padding: 30rpx 24rpx;
-    background-color: #f8f8f8;
-}
+<style scoped lang="scss">
+.container {
+    height: 100vh;
+    padding: 20rpx;
+    background-color: #f7f7f7;
 
-/* 优惠推荐区域 */
-.recommend-section {
-    background: linear-gradient(to right, #ff7a7a, #ff4d4f);
-    border-radius: 20rpx;
-    padding: 32rpx 24rpx;
+    .recommend-section {
+        background-image: url('/static/images/myPage/trafficBg.png');
+        background-size: 100% 100%;
+        border-radius: 20rpx;
+        padding: 32rpx 24rpx;
+        color: #fff;
+        position: relative;
+        margin-bottom: 20rpx;
+
+        .tag {
+            background-image: url('/static/images/myPage/trafficTopIcon.png');
+            background-size: 100% 100%;
+            font-size: 24rpx;
+            opacity: 0.9;
+            display: inline-block;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
+
+        .flow-info {
+            display: flex;
+            align-items: center;
+            margin-top: 16rpx;
+        }
+
+        .flow-value {
+            font-size: 56rpx;
+            font-weight: bold;
+        }
+
+        .flow-unit {
+            font-size: 32rpx;
+            margin-left: 12rpx;
+            opacity: 0.9;
+        }
+
+        .buy-btn {
+            margin-top: 20rpx;
+            background-color: #fff;
+            color: #ff4d4f;
+            border-radius: 40rpx;
+            padding: 12rpx 32rpx;
+            font-size: 28rpx;
+            font-weight: 500;
+        }
+
+    }
+
+    .recharge-section {
+        background-color: #fff;
+        border-radius: 20rpx;
+        padding: 32rpx 24rpx;
+        margin-bottom: 30rpx;
+        box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+
+        .section-title {
+            font-size: 36rpx;
+            font-weight: bold;
+            margin-bottom: 24rpx;
+            color: #333;
+        }
+
+        .recharge-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .recharge-item {
+            width: 30%;
+            margin: 20rpx 0rpx;
+            border: 2rpx solid #e6e6e6;
+            border-radius: 16rpx;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12rpx 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .recharge-item.active {
+            border-color: #FF7E26;
+            background-color: rgba(255, 77, 79, 0.05);
+        }
+
+        .recharge-value {
+            font-size: 32rpx;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .recharge-price {
+            font-size: 28rpx;
+            margin-top: 8rpx;
+            color: #ff4d4f;
+        }
+
+        .recommend-tag {
+            position: absolute;
+            top: -10rpx;
+            right: -10rpx;
+            background-color: #ff4d4f;
+            color: #fff;
+            font-size: 20rpx;
+            padding: 4rpx 12rpx;
+            border-radius: 20rpx;
+        }
+    }
+
+    .description-section {
+        background-color: #fff;
+        border-radius: 20rpx;
+        padding: 32rpx 24rpx;
+        margin-bottom: 30rpx;
+        box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+
+        .package-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 16rpx;
+        }
+
+        .detail-item {
+            font-size: 28rpx;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+   
+}
+.footer {
+
+position: fixed;
+bottom: 0;
+right: 0;
+width: 100%;
+padding: 20rpx;
+background: #fff;
+
+.confirm-buy-btn {
+    background: #ff6f0e;
     color: #fff;
-    margin-bottom: 30rpx;
-    box-shadow: 0 4rpx 16rpx rgba(255, 77, 79, 0.2);
-}
-
-.tag {
-    font-size: 24rpx;
-    opacity: 0.9;
-}
-
-.flow-info {
-    display: flex;
-    align-items: center;
-    margin-top: 16rpx;
-}
-
-.flow-value {
-    font-size: 56rpx;
-    font-weight: bold;
-}
-
-.flow-unit {
-    font-size: 32rpx;
-    margin-left: 12rpx;
-    opacity: 0.9;
-}
-
-.buy-btn {
-    margin-top: 20rpx;
-    background-color: #fff;
-    color: #ff4d4f;
+    height: 80rpx;
+    line-height: 80rpx;
     border-radius: 40rpx;
-    padding: 12rpx 32rpx;
-    font-size: 28rpx;
-    font-weight: 500;
-}
-
-/* 流量充值区域 */
-.recharge-section {
-    background-color: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx 24rpx;
-    margin-bottom: 30rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    margin-bottom: 24rpx;
-    color: #333;
-}
-
-.recharge-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.recharge-item {
-    width: 30%;
-    margin-bottom: 20rpx;
-    border: 2rpx solid #e6e6e6;
-    border-radius: 16rpx;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24rpx 0;
-    position: relative;
-    transition: all 0.3s;
-}
-
-.recharge-item.active {
-    border-color: #ff4d4f;
-    background-color: rgba(255, 77, 79, 0.05);
-}
-
-.recharge-value {
-    font-size: 32rpx;
-    font-weight: bold;
-    color: #333;
-}
-
-.recharge-price {
-    font-size: 28rpx;
-    margin-top: 8rpx;
-    color: #ff4d4f;
-}
-
-.recommend-tag {
-    position: absolute;
-    top: -10rpx;
-    right: -10rpx;
-    background-color: #ff4d4f;
-    color: #fff;
-    font-size: 20rpx;
-    padding: 4rpx 12rpx;
-    border-radius: 20rpx;
-}
-
-/* 流量包详情区域 */
-.description-section {
-    background-color: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx 24rpx;
-    margin-bottom: 30rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.package-detail {
-    display: flex;
-    flex-direction: column;
-    gap: 16rpx;
-}
-
-.detail-item {
-    font-size: 28rpx;
-    color: #666;
-    display: flex;
-    align-items: center;
-}
-
-.detail-item::before {
-    content: '•';
-    color: #ff4d4f;
-    margin-right: 12rpx;
     font-size: 32rpx;
 }
 
-/* 协议及购买按钮区域 */
-.agreement-section {
-    padding: 0 24rpx;
+.confirm-buy-btn:disabled {
+    background-color: #e6e6e6;
+    color: #999;
+
 }
 
 .agreement-label {
@@ -417,6 +436,7 @@ const handleConfirmBuy = async () => {
     align-items: center;
     font-size: 26rpx;
     color: #666;
+    margin-bottom: 20rpx;
 }
 
 .agreement-label checkbox {
@@ -424,20 +444,5 @@ const handleConfirmBuy = async () => {
     margin-right: 12rpx;
 }
 
-.confirm-buy-btn {
-    margin-top: 32rpx;
-    background-color: #ff4d4f;
-    color: #fff;
-    font-size: 36rpx;
-    border-radius: 48rpx;
-    padding: 24rpx 0;
-    font-weight: 500;
-    box-shadow: 0 6rpx 20rpx rgba(255, 77, 79, 0.3);
-}
-
-.confirm-buy-btn:disabled {
-    background-color: #e6e6e6;
-    color: #999;
-    box-shadow: none;
 }
 </style>
