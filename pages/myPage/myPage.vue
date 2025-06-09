@@ -226,7 +226,7 @@ onShow(() => {
   } else {
     getMyInfo()
     getCommissionDetail()
-    getWalletInfo()
+    // getWalletInfo()
 	getIsBeeFarm()
   }
 })

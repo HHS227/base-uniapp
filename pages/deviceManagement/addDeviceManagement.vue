@@ -3,14 +3,14 @@
       <TransNavVue title="新增设备" />
       <view class="form-container">
         <uni-forms :model="formData" :rules="rules">
-          <uni-forms-item label="设备名称" name="name">
-            <uni-easyinput v-model="formData.name" placeholder="请输入商品名称" />
+          <uni-forms-item label="设备名称" name="facilityName">
+            <uni-easyinput v-model="formData.facilityName" placeholder="请输入设备名称" />
           </uni-forms-item>
-          <uni-forms-item label="设备类型" name="price">
-            <uni-easyinput type="number" v-model="formData.price" placeholder="请输入商品价格" />
+          <uni-forms-item label="设备类型" name="facilityType">
+            <uni-easyinput v-model="formData.facilityType" placeholder="请输入设备类型" />
           </uni-forms-item>
-          <uni-forms-item label="设备编号" name="stock">
-            <uni-easyinput type="number" v-model="formData.stock" placeholder="请输入商品库存" />
+          <uni-forms-item label="设备型号" name="no">
+            <uni-easyinput  v-model="formData.no" placeholder="请输入设备型号" />
           </uni-forms-item>
         
           
@@ -31,12 +31,10 @@
 
   
   const formData = ref({
-    name: '',
-    describe: '',
-    price: '',
-    images: [],
-    stock: '',
-    BeeFarmId:''
+    facilityName: '',
+    facilityType: '',
+    no: '',
+    farmId:'23041'
   })
   
   
@@ -58,7 +56,7 @@
   const submitForm = async () => {
     try {
       const res = await request({
-        url: '/app-api/weixin/traceabilityManagement/create',
+        url: '/app-api/front/bee-farm/add/facility',
         showLoading: true, 
         data:formData.value,
         method:'post'
@@ -67,7 +65,10 @@
       
       if (res.code === 0 || res.code === 200) {
        
-        
+        uni.navigateTo({
+        url: '/pages/deviceManagement/deviceManagement'
+      });
+      
       } else {
         throw new Error(res.msg || '数据异常')
       }

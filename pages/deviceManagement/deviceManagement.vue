@@ -116,7 +116,7 @@ const addDivce = () => {
 const getDeviceInfo = async () => {
   try {
     const res = await request({
-      url: '/app-api/front/bee-farm/get/facilityList',
+      url: `/app-api/front/bee-farm/get/facilityList?beeFarmId=${23041}`,
       showLoading: true, 
      
     })

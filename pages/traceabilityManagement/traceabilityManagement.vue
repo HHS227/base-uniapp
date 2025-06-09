@@ -9,23 +9,23 @@
           <image style="width:180rpx;height:180rpx" src="/static/images/apiculture.png"></image>
           <view class="info-detail">  
             <text class="name">{{item.name}}</text>
-            <text class="status" :class="getStatusClass(item.status)">{{item.status}}</text>
+            <text class="status" :class="getStatusClass(item.status)">{{ statusMap[item.status]}}</text>
             <text class="price">¥880</text>
           </view>
         </view>
         <view class="editbtn" :class="{
-          'orange-btn': item.status === '未通过',
-          'black-btn': item.status === '通过审核',
-          'empty-btn': item.status === '审核中'
+          'orange-btn': item.status == 2,
+          'black-btn': item.status == 1,
+          'empty-btn': item.status == 0
         }">
           <image
-            v-if="item.status !== '审核中'"
+            v-if="item.status !== 0 "
             style="width:25rpx; height:25rpx;"
             src="/static/images/myPage/edit.png"
             @click="editTraceability(item)"></image>
-          <view v-if="item.status === '未通过'">修改</view>
-          <view v-if="item.status === '通过审核'">领取</view>
-          <view v-if="item.status === '审核中'">&nbsp;</view>
+          <view v-if="item.status == 2 ">修改</view>
+          <view v-if="item.status == 1 " @click="traceCode">领取</view>
+          <view v-if="item.status == 0 ">&nbsp;</view>
         </view>
        </view>
      </view>
@@ -49,13 +49,19 @@ const traceabilityList = ref([
 ])
 const refreshing = ref(false)
 
+const statusMap=ref({
+  0:'审核中',
+  1:'审核通过',
+  2:'已拒绝'
+})
+
 // 获取地址列表
 const getTraceabilityList = async () => {
 
  
  try {
    const res = await request({
-     url: '/app-api/weixin/shipping-address/list',
+     url: `/app-api/weixin/traceability/get/list?beeFarmId=${23041}`,
      showLoading: true
    })
    
@@ -75,6 +81,11 @@ const getTraceabilityList = async () => {
  }
 }
 
+//领取溯源码
+const traceCode=()=>{
+
+}
+
 // 生命周期钩子
 onMounted(() => {
 //  getTraceabilityList()
@@ -82,7 +93,7 @@ onMounted(() => {
 
 onShow(() => {
  // 每次页面显示时刷新数据
-//  getTraceabilityList()
+ getTraceabilityList()
 })
 
 // 新增商品
@@ -110,9 +121,9 @@ const editTraceability = (item) => {
 
 const getStatusClass = (status) => {
   return {
-    'status-pending': status === '审核中',
-    'status-rejected': status === '未通过',
-    'status-approved': status === '通过审核'
+    'status-pending': status == '0',
+    'status-rejected': status == '2',
+    'status-approved': status == '1'
   };
 };
 </script>

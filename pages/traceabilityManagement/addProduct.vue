@@ -44,7 +44,7 @@ const formData = ref({
   price: '',
   images: [],
   stock: '',
-  BeeFarmId:''
+  beeFarmId:'23041'
 })
 
 
@@ -66,7 +66,7 @@ const rules = {
 const submitForm = async () => {
   try {
     const res = await request({
-      url: '/app-api/weixin/traceabilityManagement/create',
+      url: '/app-api/weixin/traceability/create',
       showLoading: true, 
       data:formData.value,
       method:'post'
@@ -74,7 +74,9 @@ const submitForm = async () => {
     })
     
     if (res.code === 0 || res.code === 200) {
-     
+      uni.navigateTo({
+        url: '/pages/traceabilityManagement/traceabilityManagement'
+      });
       
     } else {
       throw new Error(res.msg || '数据异常')
