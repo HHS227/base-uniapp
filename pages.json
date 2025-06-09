@@ -200,6 +200,14 @@
 				"navigationStyle": "custom"
 			}
 		},
+		{
+			"path": "pages/trafficRecharge/trafficRecharge",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
 	
 	
 		

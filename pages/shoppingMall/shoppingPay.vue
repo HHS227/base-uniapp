@@ -163,11 +163,12 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { request } from '@/utils/request';
-import { useTokenStorage } from '../../utils/storage';
+
 import TransNavVue from '../../components/TransNav.vue';
 import { onShow } from '@dcloudio/uni-app';
+import { useTokenStorage } from '../../utils/storage';
 
-const { getAccessToken } = useTokenStorage();
+const { getAccessToken,getOpenId } = useTokenStorage();
 
 // 状态管理
 const selectedItems = ref([]);
@@ -456,7 +457,7 @@ const confirmPay = async () => {
                     id: payOrderId,
                     channelCode: 'wx_lite',
                     channelExtras: {
-                        openid: 'o_zHs0KUgGP6EbmivsvWcM2EoZiA' // 实际环境应从用户信息中获取
+                        openid: getOpenId() // 实际环境应从用户信息中获取
                     }
                 },
                 method: 'post',

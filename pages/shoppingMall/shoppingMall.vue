@@ -46,6 +46,7 @@
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
+import { onShow } from '@dcloudio/uni-app'
 const shoppingList=ref([])
 import { useTokenStorage } from '../../utils/storage'
 
@@ -140,7 +141,7 @@ const getShoppingList = async () => {
 }
 
 
-onMounted(() => {
+onShow(() => {
   getShoppingList()
 })
 

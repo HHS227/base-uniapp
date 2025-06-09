@@ -52,6 +52,7 @@ import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
+import { onShow } from '@dcloudio/uni-app'
 
 const popup = ref(null);
 const loading = ref(false);
@@ -131,7 +132,7 @@ const formatDateTime = (dateString) => {
   const date = new Date(dateString)
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
-onMounted(() => {
+onShow(() => {
   getShoppingList();
 });
 </script>

@@ -26,7 +26,7 @@
 						</image>
 					</view>
 					<view class="name-content">
-  <text class="name-text" :class="{'unlogin-text': !getAccessToken()}">{{userInfo.nickname||'请先登陆' }}</text>
+  <text class="name-text" @click="toLogo" :class="{'unlogin-text': !getAccessToken()}">{{userInfo.nickname||'请先登陆' }}</text>
   <text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || '' }}</text>
 </view>
 					
@@ -209,6 +209,9 @@ onShareAppMessage(() => {
     }
   }
 })
+const toLogo=()=>{
+	uni.navigateTo({ url: '/pages/login/login' })	
+}
 
 onShow(() => {
   if (!getAccessToken()) {

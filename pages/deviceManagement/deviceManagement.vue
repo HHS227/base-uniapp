@@ -15,10 +15,11 @@
         v-for="(device, index) in devices" 
         :key="index" 
         class="device-item"
+        @click="traffic"
       >
         <view class="device-header">
           <text class="device-name">{{ device.facilityName }}</text>
-          <button class="unbind-btn" @click="handleUnbind(device.id)">解绑</button>
+          <button class="unbind-btn" @click.stop="handleUnbind(device.id)">解绑</button>
         </view>
         
         <view class="device-status">
@@ -112,6 +113,15 @@ const addDivce = () => {
     url: '/pages/deviceManagement/addDeviceManagement'
   })
 }
+
+const traffic = () => {
+  uni.navigateTo({
+    url: '/pages/trafficRecharge/trafficRecharge'
+  })
+}
+
+
+
 // 获取设备信息
 const getDeviceInfo = async () => {
   try {

@@ -16,18 +16,18 @@
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/myPage/todaySEarnings.png"></image>
 						<text class="data-label">今日佣金</text>
-						<text class="data-value">{{ commissionData.todaySEarnings}}</text>
+						<text class="data-value">{{ commissionData.todaySEarnings||0}}</text>
 					</view>
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/myPage/cumulativeEarnings.png"></image>
 						<text class="data-label">累计佣金</text>
 	
-						<text class="data-value">{{ commissionData.cumulativeEarnings }}</text>
+						<text class="data-value">{{ commissionData.cumulativeEarnings||0 }}</text>
 					</view>
 					<view class="data-item">
 						<image class="data-icon" src="/static/images/myPage/currentEarnings.png"></image>
-						<text class="data-label">当前收益</text>
-						<text class="data-value">{{ commissionData.currentEarnings }}</text>
+						<text class="data-label">累计邀请人数</text>
+						<text class="data-value">{{ commissionData.countNumber||0 }}</text>
 					</view>
 				</view>
 			
