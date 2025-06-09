@@ -60,7 +60,7 @@
 			<view class="assets-total">
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
-						<text class="amount">{{ walletData.balance||0 }}</text>
+						<text class="amount">{{ commissionData.currentEarnings||0 }}</text>
 						<text class="text">可提现金额</text>
 					</view>
 					<view class="item-right">
@@ -70,7 +70,7 @@
 				</view>
 				<view class="assets-item" @click="gotoWithdraw">
 					<view class="item-left">
-						<text class="amount">{{ walletData.coin ||0 }}</text>
+						<text class="amount">{{ commissionData.coin ||0 }}</text>
 						<text class="text">M币</text>
 					</view>
 					<view class="item-right">
@@ -161,20 +161,12 @@ const {  getAccessToken ,getOpenId} = useTokenStorage()
 import { request } from '@/utils/request'
 
 const userInfo = ref({})
-const walletData = ref({})
 const commissionData = ref({})
 const isBeeFarm=ref({})
-const shareConfig = ref({
-  title: '智慧养蜂，快来领养吧', 
-  imageUrl: '/static/images/myPage/Invitation.png', 
-  path: '/pages/myPage/myPage' 
-})
+
 
 // 点击分享按钮时执行的函数
 const handleClickShare = (e) => {
-  // 可以在这里添加点击按钮后的额外逻辑，如记录点击事件
-  console.log('分享按钮被点击')
-  
   // 如果用户未登录，可以在这里处理登录逻辑
   if (!getAccessToken()) {
     e.stopPropagation() // 阻止默认分享行为
@@ -200,18 +192,16 @@ onShareAppMessage(() => {
   }
   
   return {
-    title: shareConfig.value.title,
-    imageUrl: shareConfig.value.imageUrl,
-    path: shareConfig.value.path,
+    title: '智慧养蜂，快来领养吧',
+    imageUrl: '/static/images/myPage/Invitation.png', 
+    path: `/pages/homePage/homePage?shareUserId=${userInfo.value.id}` ,
     success: () => {
-      console.log('分享成功')
       uni.showToast({
         title: '分享成功',
         icon: 'success'
       })
     },
     fail: (err) => {
-      console.error('分享失败:', err)
       uni.showToast({
         title: '分享失败',
         icon: 'none'
@@ -466,25 +456,25 @@ const getCommissionDetail = async () => {
   }
 }
 // 获取钱包信息
-const getWalletInfo = async () => {
-	try {
-    const res = await request({
-      url: '/app-api/WeiXinMini/wallet/get/Info',
-      showLoading: true, 
+// const getWalletInfo = async () => {
+// 	try {
+//     const res = await request({
+//       url: '/app-api/WeiXinMini/wallet/get/Info',
+//       showLoading: true, 
      
-    })
+//     })
     
-    if (res.code === 0 || res.code === 200) {
-     walletData.value = res.data || {};
+//     if (res.code === 0 || res.code === 200) {
+//      walletData.value = res.data || {};
    
-    } else {
-      throw new Error(res.msg || '数据异常')
-    }
-  } catch (err) {
-    console.error('获取用户信息失败:', err)
+//     } else {
+//       throw new Error(res.msg || '数据异常')
+//     }
+//   } catch (err) {
+//     console.error('获取用户信息失败:', err)
    
-  }
-}
+//   }
+// }
 // 获取用户信息
 const getMyInfo = async () => {
   try {
@@ -535,7 +525,6 @@ const logout = () => {
         const { clearToken } = useTokenStorage()
         clearToken()
         userInfo.value = {}
-        walletData.value = {}
         commissionData.value = {}
         uni.showToast({
           title: '已退出登录',

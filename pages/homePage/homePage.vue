@@ -159,7 +159,23 @@ import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 
+// 新增分享者ID处理
+const shareUserId = ref('')
 
+onShow(() => {
+  // 获取启动参数中的分享者ID
+  const launchOptions = uni.getLaunchOptionsSync()
+  if (launchOptions.query.shareUserId) {
+    shareUserId.value = launchOptions.query.shareUserId
+    uni.setStorageSync('shareUserId', shareUserId.value)
+  }
+  
+  getSwiperList()
+  getInfoData()
+  if (getAccessToken()) {
+    getInfoDataList()
+  }
+})
 const {  getAccessToken } = useTokenStorage()
 const swiperList=ref([])
 const infoData=ref({})

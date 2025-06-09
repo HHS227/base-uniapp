@@ -53,7 +53,8 @@ const handleWechatLogin = async (e) => {
     })
     return
   }
-
+ // 新增获取分享者ID
+  const shareUserId = uni.getStorageSync('shareUserId') || ''
   try {
     isLoading.value = true
     
@@ -69,11 +70,14 @@ const handleWechatLogin = async (e) => {
         loginCode: loginCode.value,
         phoneCode: e.detail.code,
         encryptedData: userInfoRes.value?.encryptedData,
-        iv: userInfoRes.value?.iv
+        iv: userInfoRes.value?.iv,
+        pid: shareUserId // 添加pid参数
       }
     })
     
     if(res.code === 0 || res.code === 200) {
+      // 登录成功后清除分享者ID
+      uni.removeStorageSync('shareUserId')
       setToken({
         accessToken: res.data.accessToken,
         refreshToken: res.data.refreshToken,
