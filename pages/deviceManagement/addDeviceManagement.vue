@@ -25,27 +25,18 @@
 </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref ,onMounted} from 'vue'
   import TransNavVue from '../../components/TransNav.vue'
   import { request } from '@/utils/request'
 
-  
   const formData = ref({
     facilityName: '',
     facilityType: '',
     no: '',
-    farmId:'23041'
+    farmId:''
   })
   
   
-  
-  const onSelect = (e) => {
-    console.log('选择文件:', e.tempFilePaths)
-  }
-  
-  const onDelete = (e) => {
-    console.log('删除文件:', e.tempFilePath)
-  }
   
   const rules = {
     name: { required: true, message: '请输入商品名称' },
@@ -53,6 +44,7 @@
   }
   
   
+  // 提交设备信息
   const submitForm = async () => {
     try {
       const res = await request({
@@ -66,7 +58,7 @@
       if (res.code === 0 || res.code === 200) {
        
         uni.navigateTo({
-        url: '/pages/deviceManagement/deviceManagement'
+        url: `/pages/deviceManagement/deviceManagement?id=${formData.value.farmId}`
       });
       
       } else {
@@ -77,6 +69,19 @@
      
     }
   }
+
+  onMounted(() => {
+  const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	const beeFarmId  = currentPage.$page.options|| currentPage.options
+	  if (beeFarmId.id) {
+    formData.value.farmId=beeFarmId.id
+
+	  } else {
+	    console.error('蜂场 ID 缺失')
+	  }
+})
+
   </script>
   
   <style lang="scss" scoped>

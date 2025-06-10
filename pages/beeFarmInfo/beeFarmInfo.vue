@@ -31,25 +31,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, } from 'vue'
-  import { request } from '@/utils/request'
-  import { onShow } from '@dcloudio/uni-app';
-  import TransNavVue from '../../components/TransNav.vue'
+import { ref, } from 'vue'
+import { request } from '@/utils/request'
+import { onShow } from '@dcloudio/uni-app';
+import TransNavVue from '../../components/TransNav.vue'
 
 // 模拟数据
-const beeFarmInfoList = ref([
-  {
-    image: '/static/images/apiculture.png',
-    address: '北京市密云区蜜蜂养殖基地',
-    type:'小蜜蜂'
-  },
-  {
-    image: '/static/images/apiculture.png',
-    address: '河北省承德市养蜂场',
-    type:'中蜜蜂'
-    
-  }
-])
+const beeFarmInfoList = ref([])
 onShow(() => {
   getBeeFarmInfo()
 })
@@ -60,14 +48,12 @@ const gotoProducts = (item) => {
     url: `/pages/traceabilityManagement/traceabilityManagement?id=${item.id}`
   })
 }
-
 const gotoDevices = (item) => {
   // 跳转设备管理
   uni.navigateTo({
     url: `/pages/deviceManagement/deviceManagement?id=${item.id}`
   })
 }
-
 // 新增跳转方法
 const gotoAddFarm = () => {
   uni.navigateTo({
@@ -75,7 +61,7 @@ const gotoAddFarm = () => {
   })
 }
 
-
+//获取蜂场的数据
 const getBeeFarmInfo = async () => {
   try {
     const res = await request({
@@ -91,15 +77,12 @@ const getBeeFarmInfo = async () => {
     }
   } 
   catch (err) {
-    console.error('获取我的蜂场数据:', err)
+    console.error('获取我的蜂场数据失败:', err)
    
   }
 }
 </script>
 
-
-
-  
   <style lang="scss" scoped>
   .container {
    height: 100vh;
@@ -109,9 +92,6 @@ const getBeeFarmInfo = async () => {
    
    .scroll-view {
     flex: 1;
-  
-  
-  
   .farm-list {
     .farm-item {
       display: flex;

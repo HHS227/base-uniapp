@@ -15,7 +15,7 @@
         v-for="(device, index) in devices" 
         :key="index" 
         class="device-item"
-        @click="traffic"
+        @click="traffic(device)"
       >
         <view class="device-header">
           <text class="device-name">{{ device.facilityName }}</text>
@@ -50,27 +50,13 @@
 import { ref,onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 import { request } from '../../utils/request.js'
+import { onShow } from '@dcloudio/uni-app';
 
 
-const devices = ref([
-  {
-    id: 1,
-    name: '智能蜂箱001',
-    model: 'X-1000',
-    status: 'online',
-    image: '/static/images/apiculture.png',
-    bindDate: '2023-10-15'
-  },
-  {
-    id: 2,
-    name: '智能蜂箱002',
-    model: 'X-2000',
-    status: 'online',
-    image: '/static/images/apiculture.png',
-    bindDate: '2023-10-10'
-  }
-])
+const devices = ref([])
+const beeFarmId=ref({})
 
+// 解绑
 const handleUnbind = async (id) => {
   try {
     uni.showModal({
@@ -110,27 +96,24 @@ const handleUnbind = async (id) => {
 
 const addDivce = () => {
   uni.navigateTo({
-    url: '/pages/deviceManagement/addDeviceManagement'
+    url: `/pages/deviceManagement/addDeviceManagement?id=${beeFarmId.value.id}`
   })
 }
 
-const traffic = () => {
+const traffic = (item) => {
   uni.navigateTo({
-    url: '/pages/deviceManagement/addDeviceManagement'
+    url: `/pages/trafficRecharge/trafficRecharge?id=${item.id}`
   })
 }
-
-
 
 // 获取设备信息
 const getDeviceInfo = async () => {
   try {
     const res = await request({
-      url: `/app-api/front/bee-farm/get/facilityList?beeFarmId=${23041}`,
+      url: `/app-api/front/bee-farm/get/facilityList?beeFarmId=${beeFarmId.value.id}`,
       showLoading: true, 
      
     })
-    
     if (res.code === 0 ) {
       devices.value = res.data || []; 
     } else {
@@ -141,8 +124,16 @@ const getDeviceInfo = async () => {
    
   }
 }
-onMounted(() => {
-	getDeviceInfo()
+
+onShow(() => {
+  const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	beeFarmId.value = currentPage.$page.options || currentPage.options
+	  if (beeFarmId.value.id) {
+      getDeviceInfo()
+	  } else {
+	    console.error(' 蜂场id 缺失')
+	  }
 })
 
 </script>

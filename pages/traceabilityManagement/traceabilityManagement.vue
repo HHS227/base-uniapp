@@ -1,7 +1,7 @@
 <template>
   <view>
-   <TransNavVue title="溯源管理" />
- <view class="container">
+  <TransNavVue title="溯源管理" />
+  <view class="container">
    <scroll-view scroll-y class="list">
      <view class="item" v-for="item in traceabilityList" :key="item.id">
        <view class="info">
@@ -10,7 +10,7 @@
           <view class="info-detail">  
             <text class="name">{{item.name}}</text>
             <text class="status" :class="getStatusClass(item.status)">{{ statusMap[item.status]}}</text>
-            <text class="price">¥880</text>
+            <text class="price">¥{{item. price }}</text>
           </view>
         </view>
         <view class="editbtn" :class="{
@@ -22,9 +22,9 @@
             v-if="item.status !== 0 "
             style="width:25rpx; height:25rpx;"
             src="/static/images/myPage/edit.png"
-            @click="editTraceability(item)"></image>
-          <view v-if="item.status == 2 ">修改</view>
-          <view v-if="item.status == 1 " @click="traceCode">领取</view>
+           ></image>
+          <view v-if="item.status == 2 "  @click="editTraceability(item)">修改</view>
+          <view v-if="item.status == 1 " @click="traceCode(item)">领取</view>
           <view v-if="item.status == 0 ">&nbsp;</view>
         </view>
        </view>
@@ -34,7 +34,7 @@
    <view class="footer">
      <button class="add-btn" @click="addTraceability">新增商品</button>
    </view>
- </view>
+  </view>
   </view>
 </template>
 
@@ -44,24 +44,15 @@ import { request } from '@/utils/request'
 import { onShow } from '@dcloudio/uni-app';
 import TransNavVue from '../../components/TransNav.vue'
 
-const traceabilityList = ref([
-  {name:'商品1',status:'未通过'},{name:'商品2',status:'审核中'},{name:'商品3',status:'通过审核'},{name:'商品4',status:'审核中'},{name:'商品5',status:'审核中'}
-])
-const refreshing = ref(false)
+const traceabilityList = ref([])
+const statusMap=ref({0:'审核中', 1:'审核通过', 2:'已拒绝'})
+const beeFarmId=ref({})
 
-const statusMap=ref({
-  0:'审核中',
-  1:'审核通过',
-  2:'已拒绝'
-})
-
-// 获取地址列表
+// 获取溯源商品的列表
 const getTraceabilityList = async () => {
-
- 
  try {
    const res = await request({
-     url: `/app-api/weixin/traceability/get/list?beeFarmId=${23041}`,
+     url: `/app-api/weixin/traceability/get/list?beeFarmId=${beeFarmId.value.id}`,
      showLoading: true
    })
    
@@ -76,56 +67,71 @@ const getTraceabilityList = async () => {
      title: err.message || '溯源商品列表失败',
      icon: 'none'
    })
- } finally {
-   refreshing.value = false
- }
+ } 
 }
 
 //领取溯源码
-const traceCode=()=>{
 
+const traceCode = async (item) => {
+ try {
+   const res = await request({
+     url: `/app-api/weixin/traceability/get/traceCode?id=${item.id}`,
+     showLoading: true
+   }) 
+   if (res.code === 0 ) {
+    uni.showToast({
+     title: '成功领取溯源码',
+     icon: 'none'
+   })
+   } else {
+     throw new Error(res.msg || '领取溯源码失败')
+   }
+ } catch (err) {
+   console.error('领取溯源码失败:', err)
+   uni.showToast({
+     title: err.message || '领取溯源码失败',
+     icon: 'none'
+   })
+ } 
 }
 
-// 生命周期钩子
-onMounted(() => {
-//  getTraceabilityList()
-})
-
-onShow(() => {
- // 每次页面显示时刷新数据
- getTraceabilityList()
-})
 
 // 新增商品
 const addTraceability= () => {
   uni.navigateTo({
-    url: '/pages/traceabilityManagement/addProduct'
+    url: `/pages/traceabilityManagement/addProduct?id=${beeFarmId.value.id}`
   })
 }
 
 // 编辑商品
 const editTraceability = (item) => {
- uni.navigateTo({
-   url: '/pages/userInfo/addressEdit',
-   success: (res) => {
-     res.eventChannel.emit('acceptAddressData', {
-       address: item
-     })
-    
-   }
- })
+
 }
 
 
+onMounted(() => {
+ 
+})
 
+onShow(() => {
+  const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	beeFarmId.value = currentPage.$page.options || currentPage.options
+	  if (beeFarmId.value.id) {
+      getTraceabilityList()
+	  } else {
+	    console.error(' 蜂场id 缺失')
+	  }
+})
 
+//动态添加样式
 const getStatusClass = (status) => {
   return {
     'status-pending': status == '0',
     'status-rejected': status == '2',
     'status-approved': status == '1'
-  };
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>

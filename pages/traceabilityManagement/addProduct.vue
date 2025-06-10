@@ -15,17 +15,6 @@
         <uni-forms-item label="商品描述" name="description">
           <uni-easyinput type="textarea" v-model="formData.describe" placeholder="请输入商品描述" />
         </uni-forms-item>
-        
-       
-        
-        <uni-forms-item label="商品图片" name="images">
-          <uni-file-picker 
-           
-            fileMediatype="image" 
-           
-          />
-        </uni-forms-item>
-        
         <button class="submit-btn" @click="submitForm">提交</button>
       </uni-forms>
     </view>
@@ -33,10 +22,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 import { request } from '@/utils/request'
-import BeeFarmInfo from '../beeFarmInfo/beeFarmInfo.vue'
 
 const formData = ref({
   name: '',
@@ -44,25 +32,15 @@ const formData = ref({
   price: '',
   images: [],
   stock: '',
-  beeFarmId:'23041'
+  beeFarmId:''
 })
-
-
-
-const onSelect = (e) => {
-  console.log('选择文件:', e.tempFilePaths)
-}
-
-const onDelete = (e) => {
-  console.log('删除文件:', e.tempFilePath)
-}
 
 const rules = {
   name: { required: true, message: '请输入商品名称' },
   price: { required: true, message: '请输入商品价格' }
 }
 
-
+// 提交新增的商品
 const submitForm = async () => {
   try {
     const res = await request({
@@ -75,7 +53,7 @@ const submitForm = async () => {
     
     if (res.code === 0 || res.code === 200) {
       uni.navigateTo({
-        url: '/pages/traceabilityManagement/traceabilityManagement'
+        url: `/pages/traceabilityManagement/traceabilityManagement?id=${formData.value.beeFarmId}`
       });
       
     } else {
@@ -86,6 +64,18 @@ const submitForm = async () => {
    
   }
 }
+
+onMounted(() => {
+  const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	const beeFarmId  = currentPage.$page.options|| currentPage.options
+	  if (beeFarmId.id) {
+    formData.value.beeFarmId=beeFarmId.id
+	  } else {
+	    console.error('蜂场 ID 缺失')
+	  }
+})
+
 </script>
 
 <style lang="scss" scoped>

@@ -3,13 +3,13 @@
     <view>
         <TransNavVue title="流量充值" />
         <view class="container">
-            <view class="recommend-section">
+            <view class="recommend-section" v-if="recommendPackage">
                 <text class="tag">优惠推荐</text>
                 <view class="flow-info">
-                    <text class="flow-value">100G</text>
+                    <text class="flow-value"> {{recommendPackage.flowAmount}}G</text>
                     <text class="flow-unit">/流量</text>
                 </view>
-                <button class="buy-btn" type="default" size="mini" @click="handleBuyNow()">
+                <button class="buy-btn" type="default" size="mini" @click="handleBuyNow(recommendPackage)">
                     立即购买
                 </button>
             </view>
@@ -36,13 +36,14 @@
 
 
         <view class="footer">
+            
             <checkbox-group @change="handleAgreementChange">
                 <label class="agreement-label">
                     <checkbox :checked="agreementChecked" />
-                    <text>我已阅读并同意平台 <text @click="userxy" style="color:black">《用户协议》</text></text>
+                    <text>我已阅读并同意平台 <text @click="userAgreement" style="color:#000">《用户协议》</text></text>
                 </label>
             </checkbox-group>
-            <button class="confirm-buy-btn" :disabled="!agreementChecked || !selectedPackageId"
+            <button class="confirm-buy-btn" :disabled="!agreementChecked"
                 @click="handleConfirmBuy">
                 立即购买
             </button>
@@ -59,7 +60,8 @@ import TransNavVue from '../../components/TransNav.vue'
 import { useTokenStorage } from '../../utils/storage';
 const { getAccessToken, getOpenId } = useTokenStorage();
 
-// 状态管理
+
+const deviceId=ref() //设备id
 const trafficList = ref([]); // 流量套餐列表
 const selectedPackageId = ref(null); // 当前选中的套餐ID
 const agreementChecked = ref(false); // 用户协议勾选状态
@@ -70,15 +72,12 @@ const errorMsg = ref(''); // 错误信息
 const selectedPackage = computed(() => {
     return trafficList.value.find(item => item.id === selectedPackageId.value) || null;
 });
+// 计算属性：获取推荐套餐（如果有）
+const recommendPackage = computed(() => {
+  return trafficList.value.find(item => item.hot) || null;
+});
 
-const userxy=()=>{
-    
-    uni.navigateTo({
-    url: '/pages/userAgreement/userAgreement'
-  })
-    
-  
-}
+
 
 
 // 页面加载时获取流量套餐列表
@@ -99,10 +98,8 @@ const getTrafficList = async () => {
 
         if (res.code === 0 && Array.isArray(res.data)) {
             trafficList.value = res.data;
-
-            // 自动选中第一个套餐或推荐套餐
             if (trafficList.value.length > 0) {
-                const defaultPackage = trafficList.value.find(item => item.isRecommend) || trafficList.value[0];
+                const defaultPackage = trafficList.value.find(item => item.hot);
                 selectedPackageId.value = defaultPackage.id;
             }
         } else {
@@ -119,7 +116,7 @@ const getTrafficList = async () => {
     }
 };
 
-// 处理套餐选择
+// 套餐选择
 const handleRechargeSelect = (packageInfo) => {
     selectedPackageId.value = packageInfo.id;
 };
@@ -130,17 +127,19 @@ const handleBuyNow = (packageInfo) => {
     // 如果已经勾选协议，直接跳转支付
     if (agreementChecked.value) {
         handleConfirmBuy();
+    }else{
+        uni.showToast({
+            title: '请先同意协议',
+            icon: 'none'
+        });
     }
 };
-
 // 处理协议勾选变化
 const handleAgreementChange = (e) => {
     agreementChecked.value = e.detail.value.length > 0;
 };
 
-
-
-// 处理确认购买
+// 确认购买
 const handleConfirmBuy = async () => {
     if (!agreementChecked.value) {
         uni.showToast({
@@ -161,9 +160,8 @@ const handleConfirmBuy = async () => {
     try {
         // 模拟调用购买接口
         const res = await request({
-            url: `/app-api/weixin/flow/create/order?id=${selectedPackageId.value}&facilityId=${28687}`,
+            url: `/app-api/weixin/flow/create/order?id=${selectedPackageId.value}&facilityId=${deviceId.value}`,
             method: 'POST',
-
             showLoading: true
         });
 
@@ -262,6 +260,27 @@ const handleConfirmBuy = async () => {
 
     }
 };
+
+// 跳转协议
+const userAgreement=()=>{
+    uni.navigateTo({
+    url: '/pages/userAgreement/userAgreement'
+  })
+    
+  
+}
+
+//获取id
+onMounted(() => {
+  const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	const beeFarmId  = currentPage.$page.options|| currentPage.options
+	  if (beeFarmId.id) {
+        deviceId.value=beeFarmId.id
+	  } else {
+	    console.error('设备 ID 缺失')
+	  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -269,8 +288,9 @@ const handleConfirmBuy = async () => {
     height: 100vh;
     padding: 20rpx;
     background-color: #f7f7f7;
+}
 
-    .recommend-section {
+.recommend-section {
         background-image: url('/static/images/myPage/trafficBg.png');
         background-size: 100% 100%;
         border-radius: 20rpx;
@@ -279,7 +299,10 @@ const handleConfirmBuy = async () => {
         position: relative;
         margin-bottom: 20rpx;
 
-        .tag {
+
+    }
+    
+    .tag {
             background-image: url('/static/images/myPage/trafficTopIcon.png');
             background-size: 100% 100%;
             font-size: 24rpx;
@@ -318,8 +341,6 @@ const handleConfirmBuy = async () => {
             font-weight: 500;
         }
 
-    }
-
     .recharge-section {
         background-color: #fff;
         border-radius: 20rpx;
@@ -327,7 +348,9 @@ const handleConfirmBuy = async () => {
         margin-bottom: 30rpx;
         box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 
-        .section-title {
+    
+    }
+    .section-title {
             font-size: 36rpx;
             font-weight: bold;
             margin-bottom: 24rpx;
@@ -382,7 +405,6 @@ const handleConfirmBuy = async () => {
             padding: 4rpx 12rpx;
             border-radius: 20rpx;
         }
-    }
 
     .description-section {
         background-color: #fff;
@@ -391,7 +413,9 @@ const handleConfirmBuy = async () => {
         margin-bottom: 30rpx;
         box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 
-        .package-detail {
+     
+    }
+    .package-detail {
             display: flex;
             flex-direction: column;
             gap: 16rpx;
@@ -403,19 +427,15 @@ const handleConfirmBuy = async () => {
             display: flex;
             align-items: center;
         }
-    }
 
-   
-}
 .footer {
-
 position: fixed;
 bottom: 0;
 right: 0;
 width: 100%;
 padding: 20rpx;
 background: #fff;
-
+}
 .confirm-buy-btn {
     background: #ff6f0e;
     color: #fff;
@@ -423,13 +443,13 @@ background: #fff;
     line-height: 80rpx;
     border-radius: 40rpx;
     font-size: 32rpx;
-}
-
-.confirm-buy-btn:disabled {
-    background-color: #e6e6e6;
-    color: #999;
-
-}
+  }
+  .confirm-buy-btn:disabled {
+    background: #e0e0e0; 
+    color: #999; 
+    opacity: 0.8; 
+    box-shadow: none; 
+  }
 
 .agreement-label {
     display: flex;
@@ -444,5 +464,5 @@ background: #fff;
     margin-right: 12rpx;
 }
 
-}
+
 </style>
