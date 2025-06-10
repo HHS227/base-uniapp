@@ -49,7 +49,9 @@
 <script setup>
 import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
-import { request } from '@/utils/request';
+import { request } from '@/utils/request'; 
+import { useTokenStorage } from '../../utils/storage'
+const {  getAccessToken } = useTokenStorage()
 
 const formData = ref({
     region: '',
@@ -58,7 +60,7 @@ const formData = ref({
     area: '',
     beeType: '',
     ownerName: '',
-    image: '' // 存储单张图片上传后的data
+    imgUrl: '' // 存储单张图片上传后的data
 });
 
 // 优化：图片信息
@@ -66,7 +68,8 @@ const imageInfo = ref({
     tempFilePath: '', // 本地临时路径
     data: ''          // 服务器返回的数据
 });
-//选择图片
+
+// 选择图片（使用uni.uploadFile）
 const chooseImage = () => {
   if (imageInfo.value.tempFilePath) {
     uni.showToast({
@@ -79,8 +82,6 @@ const chooseImage = () => {
   uni.chooseImage({
     count: 1,
     success: async (res) => {
-		console.log(res,'1212')
-      // 新增：校验 res 是否存在且包含 tempFilePaths
       if (!res || !res.tempFilePaths || res.tempFilePaths.length === 0) {
         uni.showToast({
           title: '未选择图片',
@@ -88,27 +89,34 @@ const chooseImage = () => {
         });
         return;
       }
-      
+
+      const tempFilePath = res.tempFilePaths[0];
       uni.showLoading({
         title: '上传中...'
       });
       
       try {
-        const tempFilePath = res.tempFilePaths[0]; // 确保索引存在
-        console.log(tempFilePath,'111')
-        // 读取图片文件
-        const file = await readImageFile(tempFilePath);
-        console.log(file,'111')
-        // 上传图片
-        const uploadRes = await request({
-          url: '/app-api/infra/file/upload',
-          method: 'post',
-          data: {
-            file: file // 直接传递二进制文件
-          },
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+        const BASE_URL = 'http://192.168.1.132:48080' 
+        const uploadRes = await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: BASE_URL + '/app-api/infra/file/upload', 
+            filePath: tempFilePath,
+            name: 'file', 
+            header: {
+              'Authorization': `Bearer ${getAccessToken()}`
+            },
+            success: (response) => {
+              try {
+                const data = JSON.parse(response.data);
+                resolve(data);
+              } catch (err) {
+                reject(new Error('解析响应失败'));
+              }
+            },
+            fail: (err) => {
+              reject(err);
+            }
+          });
         });
         
         if (uploadRes.code === 0) {
@@ -119,7 +127,7 @@ const chooseImage = () => {
           };
           
           // 保存到表单数据
-          formData.value.image = uploadRes.data;
+          formData.value.imgUrl = uploadRes.data;
           
           uni.showToast({
             title: '上传成功',
@@ -139,7 +147,6 @@ const chooseImage = () => {
       }
     },
     fail: (err) => {
-      // 新增：处理用户取消选择等失败情况
       console.error('选择图片失败:', err);
       uni.showToast({
         title: '选择图片失败',
@@ -175,22 +182,6 @@ const deleteImage = () => {
   });
 };
 
-// 读取图片文件内容
-const readImageFile = (filePath) => {
-  return new Promise((resolve, reject) => {
-    uni.getFileSystemManager().readFile({
-      filePath,
-	  
-      success: (res) => {
-        resolve(res.data);
-
-      },
-      fail: (err) => {
-        reject(err);
-      }
-    });
-  });
-};
 
 const enterBtn = async () => {
   try {
@@ -242,6 +233,7 @@ const selectCity = (e) => {
 </script>
 
 <style lang="scss" scoped>
+
 .container {
     display: flex;
     flex-direction: column;
@@ -376,4 +368,4 @@ const selectCity = (e) => {
         }
     }
 }
-</style>
+</style>    

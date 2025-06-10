@@ -1,109 +1,398 @@
 <template>
-    <view class="page-container">
-      <TransNavVue title="新增设备" />
-      <view class="form-container">
-        <uni-forms :model="formData" :rules="rules">
-          <uni-forms-item label="设备名称" name="facilityName">
-            <uni-easyinput v-model="formData.facilityName" placeholder="请输入设备名称" />
-          </uni-forms-item>
-          <uni-forms-item label="设备类型" name="facilityType">
-            <uni-easyinput v-model="formData.facilityType" placeholder="请输入设备类型" />
-          </uni-forms-item>
-          <uni-forms-item label="设备型号" name="no">
-            <uni-easyinput  v-model="formData.no" placeholder="请输入设备型号" />
-          </uni-forms-item>
-        
-          
-         
-          
-         
-          
-          <button class="submit-btn" @click="submitForm">提交</button>
-        </uni-forms>
+  <view>
+    <TransNavVue title="新增设备" />
+    <view class="container">
+
+      <view class="form-content">
+
+        <input :inputBorder="false" placeholder-class="place" v-model="formData.facilityName" placeholder="设备名称"
+          class="form-item form-input" />
+        <input :inputBorder="false" placeholder-class="place" v-model="formData.facilityType" placeholder="设备类型"
+          class="form-item form-input" />
+        <input :inputBorder="false" placeholder-class="place" v-model="formData.no" placeholder="设备型号"
+          class="form-item form-input" />
+
+        <view class="form-item image-upload">
+          <view class="upload-title">设备图片</view>
+          <view class="upload-container">
+            <view v-if="imageInfo.tempFilePath" class="image-preview">
+              <view class="image-item">
+                <image :src="imageInfo.tempFilePath" mode="aspectFill" @click="previewImage"></image>
+                <view class="delete-btn" @click.stop="deleteImage">
+                  <text>×</text>
+                </view>
+              </view>
+            </view>
+            <view class="upload-btn" @click="chooseImage"
+              :style="{ display: imageInfo.tempFilePath ? 'none' : 'flex' }">
+              <text>+</text>
+              <text>上传图片</text>
+            </view>
+          </view>
+          <text class="upload-tips">仅支持上传1张</text>
+        </view>
+
+        <button class="submit-btn" @click="enterBtn">新增</button>
       </view>
     </view>
+  </view>
 </template>
-  
-  <script setup>
-  import { ref ,onMounted} from 'vue'
-  import TransNavVue from '../../components/TransNav.vue'
-  import { request } from '@/utils/request'
 
-  const formData = ref({
-    facilityName: '',
-    facilityType: '',
-    no: '',
-    farmId:''
-  })
-  
-  
-  
-  const rules = {
-    name: { required: true, message: '请输入商品名称' },
-    price: { required: true, message: '请输入商品价格' }
-  }
-  
-  
-  // 提交设备信息
-  const submitForm = async () => {
-    try {
-      const res = await request({
-        url: '/app-api/front/bee-farm/add/facility',
-        showLoading: true, 
-        data:formData.value,
-        method:'post'
-        
-      })
-      
-      if (res.code === 0 || res.code === 200) {
-       
-        uni.navigateTo({
-        url: `/pages/deviceManagement/deviceManagement?id=${formData.value.farmId}`
-      });
-      
-      } else {
-        throw new Error(res.msg || '数据异常')
-      }
-    } catch (err) {
-      console.error('获取用户信息失败:', err)
-     
-    }
-  }
+<script setup>
+import { ref, onMounted } from 'vue';
+import TransNavVue from '../../components/TransNav.vue';
+import { request } from '@/utils/request';
+import { useTokenStorage } from '../../utils/storage'
+const { getAccessToken } = useTokenStorage()
 
-  onMounted(() => {
-  const pages = getCurrentPages()
-	const currentPage = pages[pages.length - 1]
-	const beeFarmId  = currentPage.$page.options|| currentPage.options
-	  if (beeFarmId.id) {
-    formData.value.farmId=beeFarmId.id
 
-	  } else {
-	    console.error('蜂场 ID 缺失')
-	  }
+
+
+const formData = ref({
+  facilityName: '',
+  facilityType: '',
+  no: '',
+  farmId: '',
+  imgUrl: ''
 })
 
-  </script>
-  
-  <style lang="scss" scoped>
-  .page-container {
-    background-color: #f7f7f7;
-    min-height: 100vh;
+onMounted(() => {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const beeFarmId = currentPage.$page.options || currentPage.options
+  if (beeFarmId.id) {
+    formData.value.beeFarmId = beeFarmId.id
+  } else {
+    console.error('蜂场 ID 缺失')
   }
-  
-  .form-container {
-    padding: 20rpx;
-    background: #fff;
-    margin: 20rpx;
-    border-radius: 10rpx;
-    
-    .submit-btn {
-      margin-top: 40rpx;
-      background: #ff6f0e;
-      color: #fff;
-      height: 80rpx;
-      line-height: 80rpx;
-      border-radius: 40rpx;
-      font-size: 32rpx;
+})
+
+// 优化：图片信息
+const imageInfo = ref({
+  tempFilePath: '', // 本地临时路径
+  data: ''          // 服务器返回的数据
+});
+
+// 选择图片（使用uni.uploadFile）
+const chooseImage = () => {
+  if (imageInfo.value.tempFilePath) {
+    uni.showToast({
+      title: '已上传一张图片',
+      icon: 'none'
+    });
+    return;
+  }
+
+  uni.chooseImage({
+    count: 1,
+    success: async (res) => {
+      if (!res || !res.tempFilePaths || res.tempFilePaths.length === 0) {
+        uni.showToast({
+          title: '未选择图片',
+          icon: 'none'
+        });
+        return;
+      }
+
+      const tempFilePath = res.tempFilePaths[0];
+      uni.showLoading({
+        title: '上传中...'
+      });
+
+      try {
+        const BASE_URL = 'http://192.168.1.132:48080'
+        const uploadRes = await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: BASE_URL + '/app-api/infra/file/upload',
+            filePath: tempFilePath,
+            name: 'file',
+            header: {
+              'Authorization': `Bearer ${getAccessToken()}`
+            },
+            success: (response) => {
+              try {
+                const data = JSON.parse(response.data);
+                resolve(data);
+              } catch (err) {
+                reject(new Error('解析响应失败'));
+              }
+            },
+            fail: (err) => {
+              reject(err);
+            }
+          });
+        });
+
+        if (uploadRes.code === 0) {
+          // 保存图片信息
+          imageInfo.value = {
+            tempFilePath,
+            data: uploadRes.data
+          };
+
+          // 保存到表单数据
+          formData.value.imgUrl = uploadRes.data;
+
+          uni.showToast({
+            title: '上传成功',
+            icon: 'success'
+          });
+        } else {
+          throw new Error(uploadRes.msg || '图片上传失败');
+        }
+      } catch (err) {
+        uni.showToast({
+          title: '上传失败',
+          icon: 'none'
+        });
+        console.error('图片上传失败:', err);
+      } finally {
+        uni.hideLoading();
+      }
+    },
+    fail: (err) => {
+      console.error('选择图片失败:', err);
+      uni.showToast({
+        title: '选择图片失败',
+        icon: 'none'
+      });
+    }
+  });
+};
+
+// 预览图片
+const previewImage = () => {
+  if (imageInfo.value.tempFilePath) {
+    uni.previewImage({
+      urls: [imageInfo.value.tempFilePath]
+    });
+  }
+};
+
+// 删除图片
+const deleteImage = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定要删除这张图片吗？',
+    success: (res) => {
+      if (res.confirm) {
+        imageInfo.value = {
+          tempFilePath: '',
+          data: ''
+        };
+        formData.value.image = '';
+      }
+    }
+  });
+};
+
+
+const enterBtn = async () => {
+  try {
+    // 验证表单
+    if (!formData.value.name) {
+      uni.showToast({
+        title: '请输入商品名称',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const res = await request({
+      url: '/app-api/front/bee-farm/add/facility',
+      showLoading: true,
+      data: formData.value,
+      method: 'post'
+    });
+
+    if (res.code === 0) {
+      uni.navigateTo({
+        url: `/pages/deviceManagement/deviceManagement?id=${formData.value.farmId}`
+      });
+
+    } else {
+      throw new Error(res.msg || '数据异常');
     }
   }
-  </style>
+  catch (err) {
+    console.error('新增失败:', err);
+    uni.showToast({
+      title: err.message || '新增失败',
+      icon: 'none'
+    });
+  }
+};
+
+const selectCity = (e) => {
+  // 将数组转换为空格分隔的字符串
+  formData.value.region = e.detail.value.join(' ');
+};
+
+onMounted(() => {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const beeFarmId = currentPage.$page.options || currentPage.options
+  if (beeFarmId.id) {
+    formData.value.farmId = beeFarmId.id
+
+  } else {
+    console.error('蜂场 ID 缺失')
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #f6f6f6;
+  height: 100vh;
+  z-index: 1;
+
+  .container-bg {
+    width: 100%;
+    height: 548rpx;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .title-content {
+    margin-top: 70rpx;
+    margin-left: 72rpx;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 48rpx;
+    color: #1e1e1e;
+    line-height: 72rpx;
+
+    .tips {
+      margin-top: 12rpx;
+      font-size: 26rpx;
+      color: #999999;
+      line-height: 40rpx;
+    }
+  }
+
+  .form-content {
+    padding: 48rpx 15rpx;
+    margin: auto;
+    width: 686rpx;
+    background: #ffffff;
+    border-radius: 24rpx;
+
+    .form-item {
+      padding-left: 32rpx;
+      margin-bottom: 28rpx;
+      width: 622rpx;
+      background: #f6f6f6;
+      border-radius: 16rpx;
+
+      .picker-view {
+        padding: 32rpx 0;
+        line-height: 48rpx;
+        font-size: 32rpx;
+
+        &.has-value {
+          color: #000;
+        }
+
+        &:not(.has-value) {
+          color: rgba(0, 0, 0, 0.25);
+        }
+      }
+    }
+
+    ::v-deep .place {
+      color: rgba(0, 0, 0, 0.25);
+    }
+
+    .submit-btn {
+      width: 622rpx;
+      height: 96rpx;
+      background: #FF6F0E;
+      border-radius: 50rpx;
+      font-weight: 500;
+      font-size: 32rpx;
+      color: #FFFFFF;
+      line-height: 96rpx;
+    }
+
+    // 优化：图片上传样式
+    .image-upload {
+      padding: 32rpx;
+
+      .upload-title {
+        font-size: 32rpx;
+        color: #333;
+        margin-bottom: 24rpx;
+      }
+
+      .upload-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        .image-preview {
+          .image-item {
+            position: relative;
+
+            image {
+              width: 160rpx;
+              height: 160rpx;
+              border-radius: 12rpx;
+              margin-bottom: 20rpx;
+            }
+
+            .delete-btn {
+              position: absolute;
+              top: -8rpx;
+              right: 12rpx;
+              width: 32rpx;
+              height: 32rpx;
+              background: rgba(0, 0, 0, 0.6);
+              color: white;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              text {
+                font-size: 28rpx;
+              }
+            }
+          }
+        }
+
+        .upload-btn {
+          width: 160rpx;
+          height: 160rpx;
+          border: 2rpx dashed #ddd;
+          border-radius: 12rpx;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #999;
+
+          text {
+            &:first-child {
+              font-size: 48rpx;
+            }
+
+            &:last-child {
+              font-size: 24rpx;
+            }
+          }
+        }
+      }
+
+      .upload-tips {
+        margin-top: 16rpx;
+        font-size: 24rpx;
+        color: #999;
+      }
+    }
+  }
+}
+</style>

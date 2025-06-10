@@ -1,6 +1,6 @@
 
 import { useTokenStorage } from './storage'
-const { getRefreshToken, setToken ,getAccessToken} = useTokenStorage()
+const { getRefreshToken, setToken, getAccessToken } = useTokenStorage()
 
 const BASE_URL = 'http://192.168.1.132:48080' 
 // const BASE_URL="https://www.cdsrh.top"
@@ -65,9 +65,8 @@ export const request = (options) => {
         method: options.method || 'GET',
         data: options.data || {},
         header: {
-          'Content-Type': 'application/json',
           ...(getAccessToken() ? { 'Authorization': `Bearer ${getAccessToken()}` } : {}),
-          
+          ...options.header // 保留自定义header
         },
         success: async (res) => {
           if (loadingShown) uni.hideLoading()
@@ -83,7 +82,6 @@ export const request = (options) => {
                 })
                 // 使用新token重新构造header
                 const newHeaders = {
-                  'Content-Type': 'application/json',
                   ...(newToken ? { 'Authorization': `Bearer ${newToken}` } : {}),
                   ...options.header
                 }
@@ -138,4 +136,3 @@ export const request = (options) => {
     makeRequest()
   })
 }
-
