@@ -135,11 +135,16 @@
 	<uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">活动通知</view>
+			
 			<view class="active-list">
-				<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
+				<scroll-view>
+
+					<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
 				<view>{{ item.describle }}</view>
-				<image style="width: 100%; height:100rpx" :src="item.url"></image>
+				<image style="width: 100%; height:200rpx"  lazy-load="true" :src="item.url"></image>
 				</view>
+				</scroll-view>
+				
 				
 			</view>
 			
@@ -182,18 +187,9 @@ const infoData=ref({})
 const dataList=ref([])
 const avatarList = ref(['/static/images/apiculture.png', '/static/images/apiculture.png', '/static/images/apiculture.png']);
 
-// 使用uniapp的onShow生命周期
-onShow(() => {
-	getSwiperList()
-	getInfoData()
-  if (getAccessToken()) {
-    getInfoDataList()
-  }
-})
+
 const popup = ref(null);
 const activities = ref([
-  { id: 1, title: '春季养蜂活动', image: '/static/images/apiculture.png', type:'1' },
-  { id: 2, title: '蜂蜜特惠活动', image: '/static/images/apiculture.png', type:'2' },
   
 ])
 
@@ -708,7 +704,7 @@ const scanCode = () => {
 		max-height: 400rpx;
 		overflow: auto;
 		.active-item{
-		background-color: #eeeeee;
+		
 		margin-bottom: 40rpx;
 	}
 	}

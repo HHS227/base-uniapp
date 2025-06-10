@@ -10,7 +10,7 @@
           :key="survey.id || index"  
           @click="handleSurveyClick(survey.id)" 
         >
-          <image class="survey-icon" :src="survey.icon?survey.icon:'/static/images/养蜂.png'"></image>
+          <image class="survey-icon" :src="survey.icon?survey.icon:'/static/images/apiculture.png'"></image>
           <view class="survey-info">
             <text class="survey-title">{{ survey.templateName || survey.title }}</text>  <!-- 兼容原数据结构 -->
           </view>
@@ -38,21 +38,7 @@ import TransNavVue from '../../components/TransNav.vue';
 
 
 const surveyList = ref([
-  {
-    id: 1,  // 添加ID字段
-    icon: '/static/images/养蜂.png',
-    title: '蜂蜜产品满意度调查'
-  },
-  {
-    id: 2,  // 添加ID字段
-    icon: '/static/images/养蜂.png',
-    title: '养蜂体验反馈问卷'
-  },
-  {
-    id: 3,  // 添加ID字段
-    icon: '/static/images/养蜂.png',
-    title: '会员服务评价调查'
-  }
+ 
 ])
 
 // 处理问卷点击事件，跳转到详情页

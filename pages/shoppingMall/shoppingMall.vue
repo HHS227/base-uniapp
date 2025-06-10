@@ -39,6 +39,7 @@
         </scroll-view>
        
     </view>
+    <view class="tabbar-bottom"></view>
    </view>
 </template>
 
@@ -150,7 +151,7 @@ onShow(() => {
 <style lang="scss" scoped>
 .container {
     background-color: #f7f7f7;
-	padding-bottom: 120rpx;
+	
 	
 	z-index: 1;
 	display: flex;

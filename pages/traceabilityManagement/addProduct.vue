@@ -2,7 +2,32 @@
   <view>
     <TransNavVue title="新增商品" />
     <view class="container">
+      <view class="topImg">  
+        <view class="form-item image-upload">
+          <view class="upload-container">
       
+            <view class="image-preview" v-if="mainImage.tempFilePath">
+              <view class="image-item">
+                <image :src="mainImage.tempFilePath" mode="aspectFill"></image>
+                <view class="delete-btn" @click.stop="deleteMainImage">
+                  <text>×</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 顶部上传按钮 -->
+            <view 
+              class="upload-btn main-upload" 
+              v-if="!mainImage.tempFilePath"
+              @click="chooseMainImage"
+            >
+              <text>+</text>
+              <text>上传主图</text>
+            </view>
+          </view>
+          <text class="upload-tips">商品展示图（仅一张）</text>
+        </view>    
+      </view>
       <view class="form-content">
       
         <input :inputBorder="false" placeholder-class="place" v-model="formData.name" placeholder="商品标题"
@@ -13,11 +38,8 @@
           class="form-item form-input" />
         <input :inputBorder="false" placeholder-class="place" v-model="formData.describe" placeholder="商品描述"
           class="form-item form-input" />
-
         <view class="form-item image-upload">
-          <view class="upload-title">商品图片</view>
           <view class="upload-container">
-            <!-- 展示已上传的图片 -->
             <view class="image-preview" v-if="imageList.length">
               <view class="image-item" v-for="(img, index) in imageList" :key="index">
                 <image :src="img.tempFilePath" mode="aspectFill" @click="previewImage(index)"></image>
@@ -27,18 +49,20 @@
               </view>
             </view>
             
-            <!-- 上传按钮，图片数量不足9张时显示 -->
             <view class="upload-btn" @click="chooseImage" 
                   :style="{ display: imageList.length >= 9 ? 'none' : 'flex' }">
               <text>+</text>
               <text>上传图片</text>
             </view>
           </view>
-          <text class="upload-tips">最多上传9张图片</text>
+          <text class="upload-tips">商品图片最多上传9张图片</text>
         </view>
-
-        <button class="submit-btn" @click="enterBtn">新增</button>
       </view>
+
+     
+    </view>
+    <view class="footer">
+      <button class="add-btn" @click="enterBtn">新增</button>
     </view>
   </view>
 </template>
@@ -56,16 +80,41 @@ const formData = ref({
   price: '',
   imgUrls: [], // 存储多张图片的URL
   stock: '',
-  beeFarmId: ''
+  beeFarmId: '',
+  imgUrl:''
 })
 
 // 存储所有图片信息的数组
 const imageList = ref([]);
+const isEditMode = ref(false)
+const productId = ref('') // 添加商品ID存储
 
 onMounted(() => {
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
   const beeFarmId = currentPage.$page.options || currentPage.options
+  if (currentPage && currentPage.$vm) {
+    const eventChannel = currentPage.$vm.getOpenerEventChannel()
+    eventChannel.on('addProduct', (data) => {
+      if (data && data.data.id) {
+        isEditMode.value = true
+        productId.value = data.data.id // 存储商品ID
+        
+        // 转换服务器返回的图片格式到本地需要的格式
+        const serverImages = data.data.imgUrls.map(url => ({
+          tempFilePath: url,  // 直接使用服务器返回的URL作为预览
+          data: url           // 保持数据一致
+        }))
+        
+        imageList.value = serverImages
+        
+        formData.value = {
+          ...data.data,
+          imgUrls: serverImages.map(img => img.data) // 保持数据结构一致
+        }
+      }
+    })
+  }
   if (beeFarmId.id) {
     formData.value.beeFarmId = beeFarmId.id
   } else {
@@ -206,13 +255,21 @@ const enterBtn = async () => {
       return;
     }
 
-    const res = await request({
-      url: '/app-api/weixin/traceability/create',
-      showLoading: true,
-      data: formData.value,
-      method: 'post'
-    });
+    // 根据模式动态设置请求参数
+    const requestConfig = {
+      url: isEditMode.value ? 
+        `/app-api/weixin/traceability/update?id=${productId.value}` : 
+        '/app-api/weixin/traceability/create',
+      method: isEditMode.value ? 'put' : 'post',
+      data: {
+        ...formData.value,
+        ...(isEditMode.value && { id: productId.value })
+      },
+      showLoading: true
+    }
 
+    const res = await request(requestConfig)
+    
     if (res.code === 0) {
       uni.navigateTo({
         url: `/pages/traceabilityManagement/traceabilityManagement?id=${formData.value.beeFarmId}`
@@ -234,164 +291,265 @@ const selectCity = (e) => {
   // 将数组转换为空格分隔的字符串
   formData.value.region = e.detail.value.join(' ');
 };
+
+const mainImage = ref({
+  tempFilePath: '',
+  data: ''
+})
+
+// 顶部主图选择
+const chooseMainImage = () => {
+  uni.chooseImage({
+    count: 1,
+    success: async (res) => {
+      if (res.tempFilePaths.length === 0) return
+      
+      uni.showLoading({ title: '上传中...' })
+      try {
+        const result = await uploadSingleImage(res.tempFilePaths[0])
+        mainImage.value = {
+          tempFilePath: res.tempFilePaths[0],
+          data: result.data
+        }
+        formData.value.imgUrl = result.data
+      } finally {
+        uni.hideLoading()
+      }
+    }
+  })
+}
+
+// 通用图片上传方法
+const uploadSingleImage = (tempFilePath) => {
+  return new Promise((resolve, reject) => {
+    uni.uploadFile({
+      url: 'http://192.168.1.132:48080/app-api/infra/file/upload',
+      filePath: tempFilePath,
+      name: 'file',
+      header: {
+        'Authorization': `Bearer ${getAccessToken()}`
+      },
+      success: (response) => {
+        const data = JSON.parse(response.data)
+        resolve(data)
+      },
+      fail: reject
+    })
+  })
+}
+
+// 删除主图
+const deleteMainImage = () => {
+  mainImage.value = { tempFilePath: '', data: '' }
+  formData.value.imgUrl = ''
+}
 </script>
 
 <style lang="scss" scoped>
 .container {
   display: flex;
   flex-direction: column;
-  position: relative;
-  background: #f6f6f6;
+  background: #f7f7f7;
   height: 100vh;
   z-index: 1;
+  padding: 20rpx;
+.topImg{
+  width: 100%;
+  height: 300rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  border-radius: 24rpx;
+}
+.form-content {
+width: 100%;
+background: #ffffff;
+border-radius: 24rpx;
+padding: 20rpx;
 
-  .container-bg {
-    width: 100%;
-    height: 548rpx;
-    position: absolute;
-    z-index: -1;
+.form-item {
+  padding-left: 20rpx;
+  margin-bottom: 28rpx;
+  height: 80rpx;
+  background: #f7f7f7;
+  border-radius: 16rpx;
+}
+
+::v-deep .place {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+// 优化：图片上传样式
+.image-upload {
+  padding: 32rpx;
+  height: 300rpx;
+
+  .upload-title {
+    font-size: 32rpx;
+    color: #333;
+    margin-bottom: 24rpx;
   }
 
-  .title-content {
-    margin-top: 70rpx;
-    margin-left: 72rpx;
+  .upload-container {
     display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    font-size: 48rpx;
-    color: #1e1e1e;
-    line-height: 72rpx;
+    flex-wrap: wrap;
+    gap: 20rpx; // 图片之间的间距
 
-    .tips {
-      margin-top: 12rpx;
-      font-size: 26rpx;
-      color: #999999;
-      line-height: 40rpx;
-    }
-  }
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20rpx; // 图片之间的间距
 
-  .form-content {
-    padding: 48rpx 15rpx;
-    margin: auto;
-    width: 686rpx;
-    background: #ffffff;
-    border-radius: 24rpx;
+      .image-item {
+        position: relative;
 
-    .form-item {
-      padding-left: 32rpx;
-      margin-bottom: 28rpx;
-      width: 622rpx;
-      background: #f6f6f6;
-      border-radius: 16rpx;
-
-      .picker-view {
-        padding: 32rpx 0;
-        line-height: 48rpx;
-        font-size: 32rpx;
-
-        &.has-value {
-          color: #000;
-        }
-
-        &:not(.has-value) {
-          color: rgba(0, 0, 0, 0.25);
-        }
-      }
-    }
-
-    ::v-deep .place {
-      color: rgba(0, 0, 0, 0.25);
-    }
-
-    .submit-btn {
-      width: 622rpx;
-      height: 96rpx;
-      background: #FF6F0E;
-      border-radius: 50rpx;
-      font-weight: 500;
-      font-size: 32rpx;
-      color: #FFFFFF;
-      line-height: 96rpx;
-    }
-
-    // 优化：图片上传样式
-    .image-upload {
-      padding: 32rpx;
-
-      .upload-title {
-        font-size: 32rpx;
-        color: #333;
-        margin-bottom: 24rpx;
-      }
-
-      .upload-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20rpx; // 图片之间的间距
-
-        .image-preview {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 20rpx; // 图片之间的间距
-
-          .image-item {
-            position: relative;
-
-            image {
-              width: 160rpx;
-              height: 160rpx;
-              border-radius: 12rpx;
-            }
-
-            .delete-btn {
-              position: absolute;
-              top: -8rpx;
-              right: 12rpx;
-              width: 32rpx;
-              height: 32rpx;
-              background: rgba(0, 0, 0, 0.6);
-              color: white;
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-
-              text {
-                font-size: 28rpx;
-              }
-            }
-          }
-        }
-
-        .upload-btn {
+        image {
           width: 160rpx;
           height: 160rpx;
-          border: 2rpx dashed #ddd;
           border-radius: 12rpx;
+        }
+
+        .delete-btn {
+          position: absolute;
+          top: -8rpx;
+          right: 12rpx;
+          width: 32rpx;
+          height: 32rpx;
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          border-radius: 50%;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
-          color: #999;
 
           text {
-            &:first-child {
-              font-size: 48rpx;
-            }
-
-            &:last-child {
-              font-size: 24rpx;
-            }
+            font-size: 28rpx;
           }
         }
       }
+    }
 
-      .upload-tips {
-        margin-top: 16rpx;
-        font-size: 24rpx;
-        color: #999;
+    .upload-btn {
+      width: 160rpx;
+      height: 160rpx;
+      border: 2rpx dashed #ddd;
+      border-radius: 12rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+
+      text {
+        &:first-child {
+          font-size: 48rpx;
+        }
+
+        &:last-child {
+          font-size: 24rpx;
+        }
       }
     }
   }
+
+  .upload-tips {
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
 }
-</style>    
+}
+ 
+
+  
+}
+.image-upload {
+  padding: 32rpx;
+  height: 300rpx;
+
+  .upload-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20rpx; // 图片之间的间距
+
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20rpx; // 图片之间的间距
+
+      .image-item {
+        position: relative;
+
+        image {
+          width: 160rpx;
+          height: 160rpx;
+          border-radius: 12rpx;
+        }
+
+        .delete-btn {
+          position: absolute;
+          top: -8rpx;
+          right: 12rpx;
+          width: 32rpx;
+          height: 32rpx;
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          text {
+            font-size: 28rpx;
+          }
+        }
+      }
+    }
+
+    .upload-btn {
+      width: 160rpx;
+      height: 160rpx;
+      border: 2rpx dashed #ddd;
+      border-radius: 12rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+
+      text {
+        &:first-child {
+          font-size: 48rpx;
+        }
+
+        &:last-child {
+          font-size: 24rpx;
+        }
+      }
+    }
+  }
+
+  .upload-tips {
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
+}
+.footer {
+   
+   position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+     padding: 20rpx;
+     background: #fff;
+   
+   .add-btn {
+     background: #ff6f0e;
+     color: #fff;
+     height: 80rpx;
+     line-height: 80rpx;
+     border-radius: 40rpx;
+     font-size: 32rpx;
+   }
+ }
+</style>

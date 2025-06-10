@@ -16,7 +16,9 @@
       </view>
     
     <view class="collect-box" v-for="item in beehiveList" :key="item.id">
-      <view class="collect-img"></view>
+      <view class="collect-img">
+        <image :src="item.imgUrl" mode="aspectFill"></image>
+      </view>
       <view class="collect-info">
         <view class="info-title">
           {{item.name}}

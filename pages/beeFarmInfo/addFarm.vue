@@ -22,7 +22,7 @@
                 
         
                 <view class="form-item image-upload">
-                    <view class="upload-title">蜂场图片</view>
+                   
                     <view class="upload-container">
                         <view v-if="imageInfo.tempFilePath" class="image-preview">
                             <view class="image-item">
@@ -37,7 +37,7 @@
                             <text>上传图片</text>
                         </view>
                     </view>
-                    <text class="upload-tips">仅支持上传1张</text>
+                    <text class="upload-tips">蜂场图片,仅支持上传1张</text>
                 </view>
                 
                 <button class="submit-btn" @click="enterBtn">新增</button>
@@ -264,21 +264,22 @@ const selectCity = (e) => {
         }
     }
     .form-content {
-        padding: 48rpx 15rpx;
+        padding: 28rpx 15rpx;
         margin: auto;
-        width: 686rpx;
+        
         background: #ffffff;
         border-radius: 24rpx;
         .form-item {
             padding-left: 32rpx;
             margin-bottom: 28rpx;
-            width: 622rpx;
+            
             background: #f6f6f6;
             border-radius: 16rpx;
+            font-size: 32rpx;
             .picker-view {
-                padding: 32rpx 0;
-                line-height: 48rpx;
-                font-size: 32rpx;
+              
+               
+               
                 &.has-value {
                     color: #000;
                 }

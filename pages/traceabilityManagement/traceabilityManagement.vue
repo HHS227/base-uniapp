@@ -6,7 +6,7 @@
      <view class="item" v-for="item in traceabilityList" :key="item.id">
        <view class="info">
         <view class="info-left">
-          <image style="width:180rpx;height:180rpx" src="/static/images/apiculture.png"></image>
+          <image style="width:180rpx;height:180rpx" :src="item.imgUrl"></image>
           <view class="info-detail">  
             <text class="name">{{item.name}}</text>
             <text class="status" :class="getStatusClass(item.status)">{{ statusMap[item.status]}}</text>
@@ -24,7 +24,11 @@
             src="/static/images/myPage/edit.png"
            ></image>
           <view v-if="item.status == 2 "  @click="editTraceability(item)">修改</view>
-          <view v-if="item.status == 1 " @click="traceCode(item)">领取</view>
+          <view v-if="item.status == 1 " 
+              :class="{ 'claimed-btn': item.isClaimed }"
+              @click="!item.isClaimed && traceCode(item)">
+          {{ item.isClaimed ? '已领取' : '领取' }}
+          </view>
           <view v-if="item.status == 0 ">&nbsp;</view>
         </view>
        </view>
@@ -57,7 +61,10 @@ const getTraceabilityList = async () => {
    })
    
    if (res.code === 0 ) {
-    traceabilityList.value = res.data || [];
+    traceabilityList.value = (res.data || []).map(item => ({
+      ...item,
+      isClaimed: item.status === 1 ? false : undefined // 初始化领取状态
+    }));
    } else {
      throw new Error(res.msg || '溯源商品列表失败')
    }
@@ -73,19 +80,26 @@ const getTraceabilityList = async () => {
 //领取溯源码
 
 const traceCode = async (item) => {
- try {
-   const res = await request({
-     url: `/app-api/weixin/traceability/get/traceCode?id=${item.id}`,
-     showLoading: true
-   }) 
-   if (res.code === 0 ) {
-    uni.showToast({
-     title: '成功领取溯源码',
-     icon: 'none'
-   })
-   } else {
-     throw new Error(res.msg || '领取溯源码失败')
-   }
+  try {
+    const res = await request({
+      url: `/app-api/weixin/traceability/get/traceCode?id=${item.id}`,
+      showLoading: true
+    })
+    
+    if (res.code === 0 ) {
+      // 更新领取状态
+      traceabilityList.value = traceabilityList.value.map(i => 
+        i.id === item.id ? {...i, isClaimed: true} : i
+      );
+      
+      uni.showToast({
+        title: '成功领取溯源码',
+        icon: 'none'
+      })
+    }
+    else {
+      throw new Error(res.msg || '领取溯源码失败')
+    }
  } catch (err) {
    console.error('领取溯源码失败:', err)
    uni.showToast({
@@ -105,7 +119,16 @@ const addTraceability= () => {
 
 // 编辑商品
 const editTraceability = (item) => {
-
+  uni.navigateTo({
+    url: `/pages/traceabilityManagement/addProduct?id=${beeFarmId.value.id}`,
+    success: (res) => {
+      res.eventChannel.emit('addProduct', {
+        data: item
+      })
+     
+    }
+  })
+  
 }
 
 
@@ -200,13 +223,14 @@ const getStatusClass = (status) => {
    
      }
      .editbtn {
-        width: 100rpx;
+        width: 120rpx;
         height: 100%; // 改为100%以匹配父容器高度
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         border-radius: 0 10rpx 10rpx 0;
+        font-size: 24rpx;
         
         &.orange-btn {
           background-color: #ff6f0e;
@@ -243,7 +267,9 @@ const getStatusClass = (status) => {
      font-size: 32rpx;
    }
  }
+.black-btn.claimed-btn {
+  background-color: #888 !important;
+  cursor: not-allowed;
 }
-
-
+}
 </style>
