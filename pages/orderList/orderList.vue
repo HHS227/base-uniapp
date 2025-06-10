@@ -138,9 +138,21 @@ const formatDateTime = (dateString) => {
 
 <style lang="scss" scoped>
 .container {
- 
+  background-color: #f7f7f7;
+	height: 100vh;
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	margin-top: 80rpx;
   
   .nav-tabs {
+    position: fixed;
+    top: 130rpx;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: #fff;
     display: flex;
     justify-content: space-around;
     border-bottom: 1rpx solid #eee;

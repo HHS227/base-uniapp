@@ -45,6 +45,7 @@
      </view>
    
    </view>
+   <view class="tabbar-bottom"></view>
    </view>
 </template>
 <script setup>
@@ -143,7 +144,7 @@ onShow(() => {
 	width: 600rpx;
 	background: #fff;
 	border-radius: 24rpx;
-	padding: 40rpx;
+	
 
 	.popup-title {
 		font-weight: bold;

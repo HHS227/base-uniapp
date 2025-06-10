@@ -2,41 +2,43 @@
   <view>
     <TransNavVue title="新增设备" />
     <view class="container">
-
+     
       <view class="form-content">
-
         <input :inputBorder="false" placeholder-class="place" v-model="formData.facilityName" placeholder="设备名称"
           class="form-item form-input" />
         <input :inputBorder="false" placeholder-class="place" v-model="formData.facilityType" placeholder="设备类型"
           class="form-item form-input" />
-        <input :inputBorder="false" placeholder-class="place" v-model="formData.no" placeholder="设备型号"
+        <input :inputBorder="false" placeholder-class="place" v-model="formData.no" placeholder="设备编号"
           class="form-item form-input" />
-
-        <view class="form-item image-upload">
-          <view class="upload-title">设备图片</view>
-          <view class="upload-container">
-            <view v-if="imageInfo.tempFilePath" class="image-preview">
-              <view class="image-item">
-                <image :src="imageInfo.tempFilePath" mode="aspectFill" @click="previewImage"></image>
-                <view class="delete-btn" @click.stop="deleteImage">
-                  <text>×</text>
+       
+          <view class="form-item image-upload">
+                    
+                    <view class="upload-container">
+                        <view v-if="imageInfo.tempFilePath" class="image-preview">
+                            <view class="image-item">
+                                <image :src="imageInfo.tempFilePath" mode="aspectFill" @click="previewImage"></image>
+                                <view class="delete-btn" @click.stop="deleteImage">
+                                    <text>×</text>
+                                </view>
+                            </view>
+                        </view>
+                        <view class="upload-btn" @click="chooseImage" :style="{display: imageInfo.tempFilePath ? 'none' : 'flex'}">
+                            <text>+</text>
+                            <text>上传图片</text>
+                        </view>
+                    </view>
+                    <text class="upload-tips">仅支持上传1张</text>
                 </view>
-              </view>
-            </view>
-            <view class="upload-btn" @click="chooseImage"
-              :style="{ display: imageInfo.tempFilePath ? 'none' : 'flex' }">
-              <text>+</text>
-              <text>上传图片</text>
-            </view>
-          </view>
-          <text class="upload-tips">仅支持上传1张</text>
-        </view>
-
-        <button class="submit-btn" @click="enterBtn">新增</button>
       </view>
+
+     
+    </view>
+    <view class="footer">
+      <button class="add-btn" @click="enterBtn">新增</button>
     </view>
   </view>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -190,7 +192,7 @@ const deleteImage = () => {
 const enterBtn = async () => {
   try {
     // 验证表单
-    if (!formData.value.name) {
+    if (!formData.value.facilityName) {
       uni.showToast({
         title: '请输入商品名称',
         icon: 'none'
@@ -245,154 +247,136 @@ onMounted(() => {
 .container {
   display: flex;
   flex-direction: column;
-  position: relative;
-  background: #f6f6f6;
+  background: #f7f7f7;
   height: 100vh;
   z-index: 1;
+  padding: 20rpx;
+.topImg{
+  width: 100%;
+  height: 300rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  border-radius: 24rpx;
+}
+.form-content {
+width: 100%;
+background: #ffffff;
+border-radius: 24rpx;
+padding: 20rpx;
 
-  .container-bg {
-    width: 100%;
-    height: 548rpx;
-    position: absolute;
-    z-index: -1;
+.form-item {
+  padding-left: 20rpx;
+  margin-bottom: 28rpx;
+  height: 80rpx;
+  background: #f7f7f7;
+  border-radius: 16rpx;
+}
+
+::v-deep .place {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+// 优化：图片上传样式
+.image-upload {
+  padding: 32rpx;
+  height: 300rpx;
+
+  .upload-title {
+    font-size: 32rpx;
+    color: #333;
+    margin-bottom: 24rpx;
   }
 
-  .title-content {
-    margin-top: 70rpx;
-    margin-left: 72rpx;
+  .upload-container {
     display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    font-size: 48rpx;
-    color: #1e1e1e;
-    line-height: 72rpx;
+    flex-wrap: wrap;
+    gap: 20rpx; // 图片之间的间距
 
-    .tips {
-      margin-top: 12rpx;
-      font-size: 26rpx;
-      color: #999999;
-      line-height: 40rpx;
-    }
-  }
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20rpx; // 图片之间的间距
 
-  .form-content {
-    padding: 48rpx 15rpx;
-    margin: auto;
-    width: 686rpx;
-    background: #ffffff;
-    border-radius: 24rpx;
+      .image-item {
+        position: relative;
 
-    .form-item {
-      padding-left: 32rpx;
-      margin-bottom: 28rpx;
-      width: 622rpx;
-      background: #f6f6f6;
-      border-radius: 16rpx;
-
-      .picker-view {
-        padding: 32rpx 0;
-        line-height: 48rpx;
-        font-size: 32rpx;
-
-        &.has-value {
-          color: #000;
-        }
-
-        &:not(.has-value) {
-          color: rgba(0, 0, 0, 0.25);
-        }
-      }
-    }
-
-    ::v-deep .place {
-      color: rgba(0, 0, 0, 0.25);
-    }
-
-    .submit-btn {
-      width: 622rpx;
-      height: 96rpx;
-      background: #FF6F0E;
-      border-radius: 50rpx;
-      font-weight: 500;
-      font-size: 32rpx;
-      color: #FFFFFF;
-      line-height: 96rpx;
-    }
-
-    // 优化：图片上传样式
-    .image-upload {
-      padding: 32rpx;
-
-      .upload-title {
-        font-size: 32rpx;
-        color: #333;
-        margin-bottom: 24rpx;
-      }
-
-      .upload-container {
-        display: flex;
-        flex-wrap: wrap;
-
-        .image-preview {
-          .image-item {
-            position: relative;
-
-            image {
-              width: 160rpx;
-              height: 160rpx;
-              border-radius: 12rpx;
-              margin-bottom: 20rpx;
-            }
-
-            .delete-btn {
-              position: absolute;
-              top: -8rpx;
-              right: 12rpx;
-              width: 32rpx;
-              height: 32rpx;
-              background: rgba(0, 0, 0, 0.6);
-              color: white;
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-
-              text {
-                font-size: 28rpx;
-              }
-            }
-          }
-        }
-
-        .upload-btn {
+        image {
           width: 160rpx;
           height: 160rpx;
-          border: 2rpx dashed #ddd;
           border-radius: 12rpx;
+        }
+
+        .delete-btn {
+          position: absolute;
+          top: -8rpx;
+          right: 12rpx;
+          width: 32rpx;
+          height: 32rpx;
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          border-radius: 50%;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
-          color: #999;
 
           text {
-            &:first-child {
-              font-size: 48rpx;
-            }
-
-            &:last-child {
-              font-size: 24rpx;
-            }
+            font-size: 28rpx;
           }
         }
       }
+    }
 
-      .upload-tips {
-        margin-top: 16rpx;
-        font-size: 24rpx;
-        color: #999;
+    .upload-btn {
+      width: 160rpx;
+      height: 160rpx;
+      border: 2rpx dashed #ddd;
+      border-radius: 12rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+
+      text {
+        &:first-child {
+          font-size: 48rpx;
+        }
+
+        &:last-child {
+          font-size: 24rpx;
+        }
       }
     }
   }
+
+  .upload-tips {
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
 }
+}
+ 
+
+  
+}
+
+.footer {
+   
+   position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+     padding: 20rpx;
+     background: #fff;
+   
+   .add-btn {
+     background: #ff6f0e;
+     color: #fff;
+     height: 80rpx;
+     line-height: 80rpx;
+     border-radius: 40rpx;
+     font-size: 32rpx;
+   }
+ }
 </style>
