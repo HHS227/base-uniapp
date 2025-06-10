@@ -21,7 +21,7 @@
           <image
             v-if="item.status !== 0 "
             style="width:25rpx; height:25rpx;"
-            src="/static/images/myPage/edit.png"
+            src="/static/images/myPage/editIcon.png"
            ></image>
           <view v-if="item.status == 2 "  @click="editTraceability(item)">修改</view>
           <view v-if="item.status == 1 " @click="traceCode(item)">领取</view>
