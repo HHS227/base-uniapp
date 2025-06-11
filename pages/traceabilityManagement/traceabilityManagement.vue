@@ -39,6 +39,7 @@
         <button class="add-btn" @click="addTraceability">新增商品</button>
       </view>
     </view>
+
   </view>
 </template>
 
@@ -159,10 +160,11 @@ const getStatusClass = (status) => {
 
 <style lang="scss" scoped>
 .container {
-  height: 100vh;
+  height: 100%;
   background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
+  padding-bottom: 120rpx;
 
   .list {
     flex: 1;

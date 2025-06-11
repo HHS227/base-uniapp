@@ -1,6 +1,6 @@
 <template>
   <view>
-    <TransNavVue title="新增设备" />
+    <TransNavVue title="新增设备"></TransNavVue>
     <view class="container">
      
       <view class="form-content">
@@ -14,15 +14,15 @@
           <view class="form-item image-upload">
                     
                     <view class="upload-container">
-                        <view v-if="imageInfo.tempFilePath" class="image-preview">
+                        <view v-if="mainImage.tempFilePath" class="image-preview">
                             <view class="image-item">
-                                <image :src="imageInfo.tempFilePath" mode="aspectFill" @click="previewImage"></image>
+                                <image :src="mainImage.tempFilePath" mode="aspectFill" @click="previewImage"></image>
                                 <view class="delete-btn" @click.stop="deleteImage">
                                     <text>×</text>
                                 </view>
                             </view>
                         </view>
-                        <view class="upload-btn" @click="chooseImage" :style="{display: imageInfo.tempFilePath ? 'none' : 'flex'}">
+                        <view class="upload-btn" @click="chooseImage" :style="{display: mainImage.tempFilePath ? 'none' : 'flex'}">
                             <text>+</text>
                             <text>上传图片</text>
                         </view>
@@ -44,12 +44,8 @@
 import { ref, onMounted } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request';
-import { useTokenStorage } from '../../utils/storage'
-const { getAccessToken } = useTokenStorage()
 
-
-
-
+const BASE_URL = 'https://www.cdsrh.top'
 const formData = ref({
   facilityName: '',
   facilityType: '',
@@ -57,27 +53,25 @@ const formData = ref({
   farmId: '',
   imgUrl: ''
 })
+const mainImage = ref({
+  tempFilePath: '',
+  data: ''
+})
 
 onMounted(() => {
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
   const beeFarmId = currentPage.$page.options || currentPage.options
   if (beeFarmId.id) {
-    formData.value.beeFarmId = beeFarmId.id
+    formData.value.farmId = beeFarmId.id
   } else {
     console.error('蜂场 ID 缺失')
   }
 })
 
-// 优化：图片信息
-const imageInfo = ref({
-  tempFilePath: '', // 本地临时路径
-  data: ''          // 服务器返回的数据
-});
-
-// 选择图片（使用uni.uploadFile）
+// 选择图片
 const chooseImage = () => {
-  if (imageInfo.value.tempFilePath) {
+  if (mainImage.value.tempFilePath) {
     uni.showToast({
       title: '已上传一张图片',
       icon: 'none'
@@ -102,15 +96,13 @@ const chooseImage = () => {
       });
 
       try {
-        const BASE_URL = 'https://www.gemitribe.com'
+        
         const uploadRes = await new Promise((resolve, reject) => {
           uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload',
             filePath: tempFilePath,
             name: 'file',
-            header: {
-              'Authorization': `Bearer ${getAccessToken()}`
-            },
+           
             success: (response) => {
               try {
                 const data = JSON.parse(response.data);
@@ -126,13 +118,10 @@ const chooseImage = () => {
         });
 
         if (uploadRes.code === 0) {
-          // 保存图片信息
-          imageInfo.value = {
+          mainImage.value = {
             tempFilePath,
             data: uploadRes.data
           };
-
-          // 保存到表单数据
           formData.value.imgUrl = uploadRes.data;
 
           uni.showToast({
@@ -164,9 +153,9 @@ const chooseImage = () => {
 
 // 预览图片
 const previewImage = () => {
-  if (imageInfo.value.tempFilePath) {
+  if (mainImage.value.tempFilePath) {
     uni.previewImage({
-      urls: [imageInfo.value.tempFilePath]
+      urls: [mainImage.value.tempFilePath]
     });
   }
 };
@@ -178,7 +167,7 @@ const deleteImage = () => {
     content: '确定要删除这张图片吗？',
     success: (res) => {
       if (res.confirm) {
-        imageInfo.value = {
+        mainImage.value = {
           tempFilePath: '',
           data: ''
         };
@@ -188,7 +177,7 @@ const deleteImage = () => {
   });
 };
 
-
+//提交
 const enterBtn = async () => {
   try {
     // 验证表单
@@ -223,22 +212,9 @@ const enterBtn = async () => {
   }
 };
 
-const selectCity = (e) => {
-  // 将数组转换为空格分隔的字符串
-  formData.value.region = e.detail.value.join(' ');
-};
 
-onMounted(() => {
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
-  const beeFarmId = currentPage.$page.options || currentPage.options
-  if (beeFarmId.id) {
-    formData.value.farmId = beeFarmId.id
 
-  } else {
-    console.error('蜂场 ID 缺失')
-  }
-})
+
 </script>
 
 <style lang="scss" scoped>
@@ -263,9 +239,8 @@ border-radius: 24rpx;
 padding: 20rpx;
 
 .form-item {
-  padding-left: 20rpx;
+  padding: 20rpx;
   margin-bottom: 28rpx;
-  height: 80rpx;
   background: #f7f7f7;
   border-radius: 16rpx;
 }

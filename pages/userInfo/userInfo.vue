@@ -32,7 +32,7 @@
                   confirm-type="done"
               />
               <view class="dialog-buttons">
-                  <button @click="nicknamePopup.value.close()">取消</button>
+                  <button @click="close">取消</button>
                   <button @click="confirmNickname">确定</button>
               </view>
           </view>
@@ -71,41 +71,33 @@ import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import { onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
-
 const { getAccessToken} = useTokenStorage()
+const BASE_URL="https://www.cdsrh.top"
 
-const userInfo = ref({
- 
-})
-
-
-const handleAvatar = () => {
-  uni.chooseImage({
-    success: (res) => {
-      userInfo.value.avatar = res.tempFilePaths[0]
-    }
-  })
-}
-
-const handlePhone = () => {
-  uni.navigateTo({ url: '/pages/userInfo/phoneEdit' })
-}
-
-const handleGender = () => {
-  uni.showActionSheet({
-    itemList: ['男', '女'],
-    success: (res) => {
-      userInfo.value.gender = res.tapIndex === 0 ? '男' : '女'
-    }
-  })
-}
+const userInfo = ref({})
+const nicknamePopup = ref(null)
+const tempNickname = ref('')
 
 const handleAddress = () => {
   uni.navigateTo({ url: '/pages/userInfo/addressList' })
 }
 
 const onChooseAvatar = (e) => {
-    updateUserInfo('avatar', e.detail.avatarUrl);
+    uni.uploadFile({
+            url: BASE_URL + '/app-api/infra/file/upload', 
+            filePath: e.detail.avatarUrl,
+            name: 'file', 
+            success: (response) => {
+              try {
+                const data = JSON.parse(response.data);
+                updateUserInfo('avatar', data.data);
+              } catch (err) {
+                
+              }
+            },
+            
+          });
+
 };
 
 const confirmNickname = () => {
@@ -119,7 +111,9 @@ const confirmNickname = () => {
         });
     }
 };
-
+const close =()=>{
+    nicknamePopup.value.close();
+}
 const updateUserInfo = async (type, value) => {
     try {
         const data = {};
@@ -158,44 +152,10 @@ const updateUserInfo = async (type, value) => {
     }
 };
 
-const nicknamePopup = ref(null)
-
-const tempNickname = ref('')
 
 const showNicknameDialog = () => {
     tempNickname.value = userInfo.value.username
     nicknamePopup.value.open()
-}
-
-
-
-const updateNickname = async (nickname) => {
-    try {
-        const res = await request({
-            url: '/app-api/weixin/user/update/info',
-            method: 'POST',
-            data: {
-                nickname: nickname
-            },
-           
-        })
-        
-        if (res.code === 0 || res.code === 200) {
-            userInfo.value.username = nickname
-            uni.showToast({
-                title: '修改成功',
-                icon: 'success'
-            })
-        } else {
-            throw new Error(res.msg || '修改失败')
-        }
-    } catch (err) {
-        console.error('修改用户名失败:', err)
-        uni.showToast({
-            title: '修改失败',
-            icon: 'none'
-        })
-    }
 }
 
 const getUserInfo = async () => {

@@ -8,14 +8,13 @@
       
             <view class="image-preview" v-if="mainImage.tempFilePath">
               <view class="image-item">
-                <image :src="mainImage.tempFilePath" mode="aspectFill"></image>
+                <image :src="mainImage.tempFilePath" mode="aspectFill" @click='previewImage'></image>
                 <view class="delete-btn" @click.stop="deleteMainImage">
                   <text>×</text>
                 </view>
               </view>
             </view>
             
-            <!-- 顶部上传按钮 -->
             <view 
               class="upload-btn main-upload" 
               v-if="!mainImage.tempFilePath"
@@ -42,7 +41,7 @@
           <view class="upload-container">
             <view class="image-preview" v-if="imageList.length">
               <view class="image-item" v-for="(img, index) in imageList" :key="index">
-                <image :src="img.tempFilePath" mode="aspectFill" @click="previewImage(index)"></image>
+                <image :src="img.tempFilePath" mode="aspectFill" @click="previewImages(index)"></image>
                 <view class="delete-btn" @click.stop="deleteImage(index)">
                   <text>×</text>
                 </view>
@@ -71,9 +70,9 @@
 import { ref, onMounted } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request';
-import { useTokenStorage } from '../../utils/storage'
-const { getAccessToken } = useTokenStorage()
 
+
+const BASE_URL = 'https://www.cdsrh.top'
 const formData = ref({
   name: '',
   describe: '',
@@ -83,9 +82,11 @@ const formData = ref({
   beeFarmId: '',
   imgUrl:''
 })
-
-// 存储所有图片信息的数组
-const imageList = ref([]);
+const mainImage = ref({
+  tempFilePath: '',
+  data: ''
+})
+const imageList = ref([]); //暂时储存的图片
 const isEditMode = ref(false)
 const productId = ref('') // 添加商品ID存储
 
@@ -98,16 +99,12 @@ onMounted(() => {
     eventChannel.on('addProduct', (data) => {
       if (data && data.data.id) {
         isEditMode.value = true
-        productId.value = data.data.id // 存储商品ID
-        
-        // 转换服务器返回的图片格式到本地需要的格式
+        productId.value = data.data.id 
         const serverImages = data.data.imgUrls.map(url => ({
-          tempFilePath: url,  // 直接使用服务器返回的URL作为预览
-          data: url           // 保持数据一致
+          tempFilePath: url,  
+          data: url          
         }))
-        
         imageList.value = serverImages
-        
         formData.value = {
           ...data.data,
           imgUrls: serverImages.map(img => img.data) // 保持数据结构一致
@@ -121,7 +118,6 @@ onMounted(() => {
     console.error('蜂场 ID 缺失')
   }
 })
-
 const chooseImage = () => {
   if (imageList.value.length >= 9) {
     uni.showToast({
@@ -132,7 +128,7 @@ const chooseImage = () => {
   }
 
   uni.chooseImage({
-    count: 9 - imageList.value.length, // 最多选择剩余可上传数量的图片
+    count: 9 - imageList.value.length, 
     success: async (res) => {
       if (!res || !res.tempFilePaths || res.tempFilePaths.length === 0) {
         uni.showToast({
@@ -147,16 +143,13 @@ const chooseImage = () => {
       });
 
       try {
-        const BASE_URL = 'https://www.gemitribe.com'
         const uploadPromises = res.tempFilePaths.map(tempFilePath => {
           return new Promise((resolve, reject) => {
             uni.uploadFile({
               url: BASE_URL + '/app-api/infra/file/upload',
               filePath: tempFilePath,
               name: 'file',
-              header: {
-                'Authorization': `Bearer ${getAccessToken()}`
-              },
+            
               success: (response) => {
                 try {
                   const data = JSON.parse(response.data);
@@ -175,15 +168,9 @@ const chooseImage = () => {
           });
         });
 
-        // 并行上传所有图片
         const uploadResults = await Promise.all(uploadPromises);
-        
-        // 添加到图片列表
         imageList.value = [...imageList.value, ...uploadResults];
         
-        // 更新表单数据中的图片URL
-        formData.value.imgUrls = uploadResults.map(img => img.data);
-
         uni.showToast({
           title: `成功上传${uploadResults.length}张图片`,
           icon: 'success'
@@ -208,12 +195,20 @@ const chooseImage = () => {
   });
 };
 
-// 预览图片
-const previewImage = (index) => {
+// 预览大图
+const previewImages = (index) => {
   if (imageList.value.length > index) {
     uni.previewImage({
       urls: imageList.value.map(img => img.tempFilePath),
       current: imageList.value[index].tempFilePath
+    });
+  }
+};
+// 预览图片
+const previewImage = () => {
+  if (mainImage.value.tempFilePath) {
+    uni.previewImage({
+      urls: [mainImage.value.tempFilePath]
     });
   }
 };
@@ -227,15 +222,14 @@ const deleteImage = (index) => {
       if (res.confirm) {
         // 从数组中移除图片
         imageList.value.splice(index, 1);
-        
-        // 更新表单数据中的图片URL
-        formData.value.imgUrls = imageList.value.map(img => img.data);
       }
     }
   });
 };
 
+//提交
 const enterBtn = async () => {
+  formData.value.imgUrls =  imageList.value.map(img => img.data);
   try {
     // 验证表单
     if (!formData.value.name) {
@@ -284,17 +278,7 @@ const enterBtn = async () => {
   }
 };
 
-const selectCity = (e) => {
-  // 将数组转换为空格分隔的字符串
-  formData.value.region = e.detail.value.join(' ');
-};
-
-const mainImage = ref({
-  tempFilePath: '',
-  data: ''
-})
-
-// 顶部主图选择
+// 单张图上传
 const chooseMainImage = () => {
   uni.chooseImage({
     count: 1,
@@ -316,16 +300,14 @@ const chooseMainImage = () => {
   })
 }
 
-// 通用图片上传方法
+// 图片上传方法
 const uploadSingleImage = (tempFilePath) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: 'https://www.gemitribe.com/app-api/infra/file/upload',
+      url: BASE_URL + '/app-api/infra/file/upload',
       filePath: tempFilePath,
       name: 'file',
-      header: {
-        'Authorization': `Bearer ${getAccessToken()}`
-      },
+     
       success: (response) => {
         const data = JSON.parse(response.data)
         resolve(data)
@@ -334,7 +316,6 @@ const uploadSingleImage = (tempFilePath) => {
     })
   })
 }
-
 // 删除主图
 const deleteMainImage = () => {
   mainImage.value = { tempFilePath: '', data: '' }
@@ -364,9 +345,8 @@ border-radius: 24rpx;
 padding: 20rpx;
 
 .form-item {
-  padding-left: 20rpx;
+  padding: 20rpx;
   margin-bottom: 28rpx;
-  height: 80rpx;
   background: #f7f7f7;
   border-radius: 16rpx;
 }
@@ -378,7 +358,6 @@ padding: 20rpx;
 // 优化：图片上传样式
 .image-upload {
   padding: 32rpx;
-  height: 300rpx;
 
   .upload-title {
     font-size: 32rpx;
@@ -461,7 +440,7 @@ padding: 20rpx;
 }
 .image-upload {
   padding: 32rpx;
-  height: 300rpx;
+ 
 
   .upload-container {
     display: flex;

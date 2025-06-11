@@ -31,44 +31,18 @@
         <view class="divider"></view>
         
         <view class="device-detail">
-          <image class="device-image" src="/static/images/apiculture.png" mode="aspectFit"></image>
+          <image class="device-image" :src="device.imgUrl" mode="aspectFit"></image>
           <view class="device-info">
             <text class="info-text">型号：{{ device.no }}</text>
             <text class="info-text">绑定日期：{{ device.bindingTime }}</text>
           </view>
         </view>
       </view>
-      <view 
-       
-        v-for="(device, index) in devices" 
-        :key="index" 
-        class="device-item"
-        @click="traffic(device)"
-      >
-        <view class="device-header">
-          <text class="device-name">{{ device.facilityName }}</text>
-          <button class="unbind-btn" @click.stop="handleUnbind(device.id)">解绑</button>
-        </view>
-        
-        <view class="device-status">
-          <text class="info-tag">普通信息</text>
-          <text class="online-tag">在线</text>
-          <text class="device-model">{{ device.facilityType }}</text>
-        </view>
-        
-        <view class="divider"></view>
-        
-        <view class="device-detail">
-          <image class="device-image" src="/static/images/apiculture.png" mode="aspectFit"></image>
-          <view class="device-info">
-            <text class="info-text">型号：{{ device.no }}</text>
-            <text class="info-text">绑定日期：{{ device.bindingTime }}</text>
-          </view>
-        </view>
-      </view>
+    
+    
     </scroll-view>
   </view>
-  <view class="tabbar-bottom"></view>
+
   <view class="footer">
      <button class="add-btn" @click="addDivce">新增设备</button>
    </view>
@@ -172,7 +146,8 @@ onShow(() => {
 .container {
   padding: 20rpx;
   background-color: #f7f7f7;
-  min-height: 100vh;
+  height: 100vh;
+  padding-bottom: 120rpx;
   
   .header {
     margin-bottom: 30rpx;
@@ -314,6 +289,7 @@ onShow(() => {
     width: 100%;
      padding: 20rpx;
      background: #fff;
+   
    
    .add-btn {
      background: #ff6f0e;

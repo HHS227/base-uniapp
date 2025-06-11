@@ -76,7 +76,7 @@
 					<image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
 				</view>
 				<view class="my-bee-right" @click="collectBee">
-					去认养 <image style="width: 20rpx; height:20rpx ;margin-left:10rpx" src="/static/images/rightBtn.png" mode="" ></image>
+					去认养 <uni-icons type="right" size="14" color="#ff7f00"></uni-icons>
 				</view>
 			</view>
 	

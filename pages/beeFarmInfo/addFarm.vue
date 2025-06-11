@@ -50,9 +50,8 @@
 import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'; 
-import { useTokenStorage } from '../../utils/storage'
-const {  getAccessToken } = useTokenStorage()
 
+const BASE_URL = 'https://www.cdsrh.top' 
 const formData = ref({
     region: '',
     honeySeeds: '',
@@ -60,13 +59,13 @@ const formData = ref({
     area: '',
     beeType: '',
     ownerName: '',
-    imgUrl: '' // 存储单张图片上传后的data
+    imgUrl: '' 
 });
 
 // 优化：图片信息
 const imageInfo = ref({
-    tempFilePath: '', // 本地临时路径
-    data: ''          // 服务器返回的数据
+    tempFilePath: '', 
+    data: ''          
 });
 
 // 选择图片（使用uni.uploadFile）
@@ -96,15 +95,13 @@ const chooseImage = () => {
       });
       
       try {
-        const BASE_URL = 'https://www.gemitribe.com' 
+    
         const uploadRes = await new Promise((resolve, reject) => {
           uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload', 
             filePath: tempFilePath,
             name: 'file', 
-            header: {
-              'Authorization': `Bearer ${getAccessToken()}`
-            },
+         
             success: (response) => {
               try {
                 const data = JSON.parse(response.data);
@@ -194,13 +191,13 @@ const enterBtn = async () => {
       return;
     }
     
-    // if (!formData.value.image) {
-    //   uni.showToast({
-    //     title: '请上传蜂场图片',
-    //     icon: 'none'
-    //   });
-    //   return;
-    // }
+    if (!formData.value.imgUrl) {
+      uni.showToast({
+        title: '请上传蜂场图片',
+        icon: 'none'
+      });
+      return;
+    }
     
     const res = await request({
       url: '/app-api/weixin/beeFarmApply/create',

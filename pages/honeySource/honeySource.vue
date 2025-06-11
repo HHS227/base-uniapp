@@ -7,7 +7,7 @@
 			<view class="popup-title">{{ currentBeeDetail.name }}</view>
 		
 			<view class="popup-body">{{ currentBeeDetail.mainNectarPlants }}</view>
-	    <view class="popup-time">{{ formatDateTime(currentBeeDetail.establishTime) }}</view>
+	    <!-- <view class="popup-time">{{ formatDateTime(currentBeeDetail.establishTime) }}</view> -->
 			<button class="popup-btn" @click="closePopup">我已了解</button>
 		</view>
 	</uni-popup>
@@ -144,6 +144,7 @@ onShow(() => {
 	width: 600rpx;
 	background: #fff;
 	border-radius: 24rpx;
+  padding: 20rpx;
 	
 
 	.popup-title {
@@ -171,10 +172,11 @@ onShow(() => {
 		margin-bottom: 40rpx;
     max-height: 300rpx;
     overflow: auto;
+   
 	}
 
 	.popup-btn {
-		width: 100%;
+		
 		height: 80rpx;
 		background: #ff6f0e;
 		color: #fff;
@@ -208,8 +210,7 @@ onShow(() => {
     height: 500rpx;
     border-radius: 5rpx;
     overflow: hidden;
-    
-    /* 移除Leaflet相关样式 */
+  
   }
   
   .my-bee-title {
