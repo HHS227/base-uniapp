@@ -122,7 +122,6 @@ onMounted(() => {
   }
 })
 
-// 选择图片（使用uni.uploadFile）
 const chooseImage = () => {
   if (imageList.value.length >= 9) {
     uni.showToast({
@@ -148,7 +147,7 @@ const chooseImage = () => {
       });
 
       try {
-        const BASE_URL = 'http://192.168.1.132:48080'
+        const BASE_URL = 'https://www.gemitribe.com'
         const uploadPromises = res.tempFilePaths.map(tempFilePath => {
           return new Promise((resolve, reject) => {
             uni.uploadFile({
@@ -271,9 +270,7 @@ const enterBtn = async () => {
     const res = await request(requestConfig)
     
     if (res.code === 0) {
-      uni.navigateTo({
-        url: `/pages/traceabilityManagement/traceabilityManagement?id=${formData.value.beeFarmId}`
-      });
+      uni.navigateBack()
     } else {
       throw new Error(res.msg || '数据异常');
     }
@@ -323,7 +320,7 @@ const chooseMainImage = () => {
 const uploadSingleImage = (tempFilePath) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: 'http://192.168.1.132:48080/app-api/infra/file/upload',
+      url: 'https://www.gemitribe.com/app-api/infra/file/upload',
       filePath: tempFilePath,
       name: 'file',
       header: {

@@ -96,7 +96,7 @@ const chooseImage = () => {
       });
       
       try {
-        const BASE_URL = 'http://192.168.1.132:48080' 
+        const BASE_URL = 'https://www.gemitribe.com' 
         const uploadRes = await new Promise((resolve, reject) => {
           uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload', 

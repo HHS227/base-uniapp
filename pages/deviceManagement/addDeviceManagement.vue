@@ -102,7 +102,7 @@ const chooseImage = () => {
       });
 
       try {
-        const BASE_URL = 'http://192.168.1.132:48080'
+        const BASE_URL = 'https://www.gemitribe.com'
         const uploadRes = await new Promise((resolve, reject) => {
           uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload',
@@ -208,9 +208,7 @@ const enterBtn = async () => {
     });
 
     if (res.code === 0) {
-      uni.navigateTo({
-        url: `/pages/deviceManagement/deviceManagement?id=${formData.value.farmId}`
-      });
+      uni.navigateBack()
 
     } else {
       throw new Error(res.msg || '数据异常');
