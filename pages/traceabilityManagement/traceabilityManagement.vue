@@ -160,7 +160,7 @@ const getStatusClass = (status) => {
 
 <style lang="scss" scoped>
 .container {
-  height: 100%;
+  height: 100vh;
   background-color: #f7f7f7;
   display: flex;
   flex-direction: column;

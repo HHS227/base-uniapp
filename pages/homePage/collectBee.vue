@@ -7,7 +7,7 @@
           <view class="picker-text">{{selectedFarmId ? dataList.find(f => f.id === selectedFarmId)?.name : '选择蜂场'}}</view>
         </picker>
         <picker class="select" @change="onTypeChange" :value="selectedType" :range="typeOptions" range-key="label">
-          <view class="picker-text">{{ selectedType !== '' ? typeOptions[selectedType].label : '选择类型' }}</view>
+          <view class="picker-text">{{ selectedType !== '' ? typeOptions[selectedType -1].label : '选择类型' }}</view>
         </picker>
         <view class="query-btn" @click="handleQuery">查询</view>
         <view class="reset-btn" @click="handleReset">重置</view>
@@ -322,8 +322,8 @@ const handleBuy = async (item) => {
 const selectedFarmId = ref('')
 const selectedType = ref('')
 const typeOptions = ref([
-  { label: '独享', value: 1 },
-  { label: '拼团', value: 2 }
+  { label: '独享', value: '1'},
+  { label: '拼团', value: '2' }
 ])
 
 const onFarmChange = (e) => {
