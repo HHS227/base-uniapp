@@ -234,7 +234,8 @@ onShow(() => {
     }
   }
   .bee-list-center{
-    height: 450rpx;
+    flex: 1;
+
     overflow: auto;
     .bee-list-box {
     margin: 5rpx 30rpx;

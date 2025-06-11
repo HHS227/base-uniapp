@@ -137,13 +137,21 @@
 			<view class="popup-title">活动通知</view>
 			
 			<view class="active-list">
-				<scroll-view>
+				<!-- <scroll-view>
 
-					<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
+				<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
 				<view>{{ item.describle }}</view>
 				<image style="width: 100%; height:200rpx"  lazy-load="true" :src="item.url"></image>
 				</view>
-				</scroll-view>
+				</scroll-view> -->
+				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
+					
+					<swiper-item class="swiper-item" v-for="(item,index) in activities" :key="index">
+						<view>{{ item.describle }}</view>
+						<image :src=item.url class="swiper-image" mode="" @click="activeBtn(item)"></image>
+					</swiper-item>
+				
+				</swiper>
 				
 				
 			</view>
@@ -710,6 +718,7 @@ const scanCode = () => {
 	}
 
 	.popup-btn {
+		margin-top: 20rpx;
 		width: 100%;
 		height: 80rpx;
 		background: #ff6f0e;

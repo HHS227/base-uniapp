@@ -2,7 +2,7 @@
     <view>
     <TransNavVue title="认养记录" />
   <view class="container">
-    <!-- 导航栏 -->
+
     <view class="nav-tabs">
       <view 
         v-for="tab in tabs" 
@@ -14,7 +14,7 @@
       </view>
     </view>
     
-    <!-- 列表内容 -->
+
     <scroll-view scroll-y class="list-container">
       <view 
         v-for="item in filteredList" 
@@ -34,10 +34,7 @@
           {{ getStatusText(item.status) }}
         </text>
       </view>
-      
-      <!-- 添加空状态展示 -->
       <view v-if="filteredList.length === 0" class="empty-state">
-        
         <text class="empty-text">暂无认养记录</text>
       </view>
     </scroll-view>
@@ -50,6 +47,7 @@ import { ref, computed , onMounted} from 'vue';
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue';
+import { getStatusBarHeight, getTitleBarHeight, getNarBarHeight } from '../../utils/system';
 const { getAccessToken } = useTokenStorage()
 
 const tabs = [
@@ -137,15 +135,11 @@ const formatDateTime = (dateString) => {
 .container {
   background-color: #f7f7f7;
 	height: 100vh;
-	position: relative;
-	z-index: 1;
 	display: flex;
 	flex-direction: column;
-	margin-top: 80rpx;
-  
   .nav-tabs {
-    position: fixed;
-    top: 130rpx;
+  position: absolute;
+    top: getNarBarHeight();
     left: 0;
     right: 0;
     z-index: 1;
@@ -177,9 +171,10 @@ const formatDateTime = (dateString) => {
   }
   
   .list-container {
+    margin-top: 100rpx;
     height: calc(100vh - 100rpx);
     background-color: #f7f7f7; // 整体背景色
-    // padding: 20rpx; // 添加内边距
+ 
 	
     
     .record-item {

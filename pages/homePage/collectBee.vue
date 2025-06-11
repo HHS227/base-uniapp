@@ -1,12 +1,10 @@
 <template>
-	<view>
-		<TransNavVue title="认养一箱蜂"></TransNavVue>
-   
+  <view>
+    <TransNavVue title="认养一箱蜂"></TransNavVue>
     <view class="container">
-    
       <view class="query-box">
         <picker class="select" @change="onFarmChange" :value="selectedFarmId" :range="dataList" range-key="name">
-          <view class="picker-text">{{ selectedFarmId ? dataList.find(f=>f.id===selectedFarmId)?.name : '选择蜂场' }}</view>
+          <view class="picker-text">{{selectedFarmId ? dataList.find(f => f.id === selectedFarmId)?.name : '选择蜂场'}}</view>
         </picker>
         <picker class="select" @change="onTypeChange" :value="selectedType" :range="typeOptions" range-key="label">
           <view class="picker-text">{{ selectedType !== '' ? typeOptions[selectedType].label : '选择类型' }}</view>
@@ -14,43 +12,45 @@
         <view class="query-btn" @click="handleQuery">查询</view>
         <view class="reset-btn" @click="handleReset">重置</view>
       </view>
-    
-    <view class="collect-box" v-for="item in beehiveList" :key="item.id">
-      <view class="collect-img">
-        <image :src="item.imgUrl" mode="aspectFill"></image>
-      </view>
-      <view class="collect-info">
-        <view class="info-title">
-          {{item.name}}
-          <view class="info-format">蜂箱类型：<text class="info-weight">{{getBeehiveTypeName(item.beehiveType)}}</text></view>
+      <view class="collect-container">
+        <view class="collect-box" v-for="item in beehiveList" :key="item.id">
+          <view class="collect-img">
+            <image style="width: 100%; height: 100%; border-radius: 10rpx;"  :src="item.images[0]" mode="aspectFill"></image>
+          </view>
+          <view class="collect-info">
+            <view class="info-title">
+              {{ item.name }}
+              <view class="info-format">蜂箱类型：<text class="info-weight">{{ getBeehiveTypeName(item.beehiveType) }}</text>
+              </view>
+            </view>
+            <view class="pddBtn" v-if="item.adoptionType == 2" @click="handleBuy(item)">￥{{ item.sharePrice }}拼团</view>
+            <view class="pddBtn" v-else @click="handleBuy(item)">￥{{ item.price }}购买</view>
+          </view>
         </view>
-        <view class="pddBtn" v-if="item.adoptionType == 2" @click="handleBuy(item)">￥{{item.sharePrice}}拼团</view>
-        <view class="pddBtn" v-else @click="handleBuy(item)">￥{{item.price}}购买</view>
+      </view>
+
+      <view class="empty-box" v-if="beehiveList.length === 0">
+        <text class="empty-text">暂无蜂箱</text>
       </view>
     </view>
-	 
-    <view class="empty-box" v-if="beehiveList.length === 0">
-	<text class="empty-text">暂无蜂箱</text>
-	</view>
   </view>
-	</view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
-
+import { getStatusBarHeight, getTitleBarHeight, getNarBarHeight } from '../../utils/system';
 import { useTokenStorage } from '../../utils/storage';
 
-const { getAccessToken,getOpenId } = useTokenStorage();
+const { getAccessToken, getOpenId } = useTokenStorage();
 
 const beehiveList = ref([])
 
 const dataList = ref([])
 const fromData = ref({
-	BeeFarmId:'',
-	adoptionType:''
+  BeeFarmId: '',
+  adoptionType: ''
 })
 
 onMounted(() => {
@@ -64,10 +64,10 @@ const getBeehiveList = async () => {
       url: '/app-api/front/beehive/by/condition',
       showLoading: true,
       method: 'POST',
-      data:fromData.value
+      data: fromData.value
     })
-    
-    if (res.code === 0 ) {
+
+    if (res.code === 0) {
       beehiveList.value = res.data || []
     } else {
       throw new Error(res.msg || '获取蜂箱列表失败')
@@ -85,26 +85,26 @@ const getBeehiveList = async () => {
 const getInfoDataList = async () => {
   try {
     const res = await request({
-		url: '/app-api/front/bee-farm/get/list',
-     
-	
+      url: '/app-api/front/bee-farm/get/list',
+
+
     })
-    if (res.code === 0 ) {
-		dataList.value=res.data||[]
+    if (res.code === 0) {
+      dataList.value = res.data || []
     } else {
       throw new Error(res.msg || '数据异常')
     }
-  } 
+  }
   catch (err) {
     console.error('获取数据失败:', err)
-   
+
   }
 }
 
 const getBeehiveTypeName = (type) => {
   const typeMap = {
     1: '基础蜂箱',
-    2: '智慧蜂箱', 
+    2: '智慧蜂箱',
     3: '超级蜂巢',
     4: '未来蜂巢'
   }
@@ -112,217 +112,218 @@ const getBeehiveTypeName = (type) => {
 }
 
 
-const handleBuy = async(item) => {
-  const dataPamas={
-    beehiveId:item.id,
-              beehiveName:item.name,
-              adoptType:item.adoptionType,
-              price:item.price
+const handleBuy = async (item) => {
+  const dataPamas = {
+    beehiveId: item.id,
+    beehiveName: item.name,
+    adoptType: item.adoptionType,
+    price: item.price,
+    sharedPrice: item.sharePrice
   }
-  if(item.adoptionType==1){
+  if (item.adoptionType == 1) {
     const res = await request({
-            url: '/app-api/front/beehive/adopt/alone',
-            data: dataPamas,
-            method: 'post',
-            showLoading: true,
-        });
-        if (res.code === 0 ) {
-            const payOrderId = res.data.payOrderId;
-            
-            // 2. 提交支付请求
-            const paylist = await request({
-                url: '/app-api/pay/order/submit',
-                data: {
-                    id: payOrderId,
-                    channelCode: 'wx_lite',
-                    channelExtras: {
-                        openid: getOpenId() // 实际环境应从用户信息中获取
-                    }
-                },
-                method: 'post',
-                showLoading: true,
-            });
-            
-            if (paylist.code === 0 ) {
-                // 解析支付参数
-                const payParams = JSON.parse(paylist.data.displayContent);
-                console.log('支付参数:', payParams);
-                
-                // 3. 调用微信支付API
-                const payRes = await uni.requestPayment({
-                    provider: 'wxpay',
-                    timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
-                    nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
-                    package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
-                    signType: payParams.signType || 'MD5',   // 默认MD5
-                    paySign: String(payParams.paySign),      // 确保为字符串类型
-                    
-                    success: async (res) => {
-                        uni.showToast({
-                            title: '支付成功',
-                            icon: 'success'
-                        });
-                        
-                        // 4. 支付成功后更新订单状态
-                        await request({
-                            url: '/app-api/weixin/order/update-paid',
-                            data: {
-                                payOrderId: payOrderId
-                            },
-                            method: 'post',
-                            showLoading: true,
-                        });
-                        
-                        // 5. 跳转到订单详情页
-                        setTimeout(() => {
-                            uni.navigateTo({
-                                url: '/pages/orderList/orderList'
-                            });
-                        }, 1500);
-                    },
-                    
-                    fail: async (err) => {
-                        console.error('支付失败:', err);
-                        
-                        if (err.errMsg.includes('cancel')) {
-                            uni.showToast({
-                                title: '支付已取消',
-                                icon: 'none'
-                            });
-                        } else {
-                            // 显示支付失败原因
-                            const errorMsg = err.errMsg.includes('fail') 
-                                ? '支付失败，请重试' 
-                                : err.errMsg;
-                            
-                            // 提供重试选项
-                            const { confirm } = await uni.showModal({
-                                title: '支付失败',
-                                content: errorMsg,
-                                confirmText: '重试',
-                                cancelText: '返回'
-                            });
-                            
-                            if (confirm) {
-                                await confirmPay(); // 重试支付
-                            }
-                        }
-                    }
-                });
-            } else {
-                throw new Error(paylist.msg || '支付请求失败');
-            }
-        } else {
-            throw new Error(orderRes.msg || '订单创建失败');
-        }
+      url: '/app-api/front/beehive/adopt/alone',
+      data: dataPamas,
+      method: 'post',
+      showLoading: true,
+    });
+    if (res.code === 0) {
+      const payOrderId = res.data.payOrderId;
 
-  }else{
-    const res = await request({
-            url: '/app-api/front/beehive/adopt/shared',
-            data: dataPamas,
-            method: 'post',
-            showLoading: true,
-        });
-        if (res.code === 0 ) {
-            const payOrderId = res.data.payOrderId;
-            
-            // 2. 提交支付请求
-            const paylist = await request({
-                url: '/app-api/pay/order/submit',
-                data: {
-                    id: payOrderId,
-                    channelCode: 'wx_lite',
-                    channelExtras: {
-                        openid: getOpenId() // 实际环境应从用户信息中获取
-                    }
-                },
-                method: 'post',
-                showLoading: true,
+      // 2. 提交支付请求
+      const paylist = await request({
+        url: '/app-api/pay/order/submit',
+        data: {
+          id: payOrderId,
+          channelCode: 'wx_lite',
+          channelExtras: {
+            openid: getOpenId() // 实际环境应从用户信息中获取
+          }
+        },
+        method: 'post',
+        showLoading: true,
+      });
+
+      if (paylist.code === 0) {
+        // 解析支付参数
+        const payParams = JSON.parse(paylist.data.displayContent);
+        console.log('支付参数:', payParams);
+
+        // 3. 调用微信支付API
+        const payRes = await uni.requestPayment({
+          provider: 'wxpay',
+          timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
+          nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
+          package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
+          signType: payParams.signType || 'MD5',   // 默认MD5
+          paySign: String(payParams.paySign),      // 确保为字符串类型
+
+          success: async (res) => {
+            uni.showToast({
+              title: '支付成功',
+              icon: 'success'
             });
-            
-            if (paylist.code === 0 ) {
-                // 解析支付参数
-                const payParams = JSON.parse(paylist.data.displayContent);
-                console.log('支付参数:', payParams);
-                
-                // 3. 调用微信支付API
-                const payRes = await uni.requestPayment({
-                    provider: 'wxpay',
-                    timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
-                    nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
-                    package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
-                    signType: payParams.signType || 'MD5',   // 默认MD5
-                    paySign: String(payParams.paySign),      // 确保为字符串类型
-                    
-                    success: async (res) => {
-                        uni.showToast({
-                            title: '支付成功',
-                            icon: 'success'
-                        });
-                        
-                        // 4. 支付成功后更新订单状态
-                        await request({
-                            url: '/app-api/weixin/order/update-paid',
-                            data: {
-                                payOrderId: payOrderId
-                            },
-                            method: 'post',
-                            showLoading: true,
-                        });
-                        
-                        // 5. 跳转到订单详情页
-                        setTimeout(() => {
-                            uni.navigateTo({
-                                url: '/pages/orderList/orderList'
-                            });
-                        }, 1500);
-                    },
-                    
-                    fail: async (err) => {
-                        console.error('支付失败:', err);
-                        
-                        if (err.errMsg.includes('cancel')) {
-                            uni.showToast({
-                                title: '支付已取消',
-                                icon: 'none'
-                            });
-                        } else {
-                            // 显示支付失败原因
-                            const errorMsg = err.errMsg.includes('fail') 
-                                ? '支付失败，请重试' 
-                                : err.errMsg;
-                            
-                            // 提供重试选项
-                            const { confirm } = await uni.showModal({
-                                title: '支付失败',
-                                content: errorMsg,
-                                confirmText: '重试',
-                                cancelText: '返回'
-                            });
-                            
-                            if (confirm) {
-                                await confirmPay(); // 重试支付
-                            }
-                        }
-                    }
-                });
+
+            // 4. 支付成功后更新订单状态
+            await request({
+              url: '/app-api/weixin/order/update-paid',
+              data: {
+                payOrderId: payOrderId
+              },
+              method: 'post',
+              showLoading: true,
+            });
+
+            // 5. 跳转到订单详情页
+            setTimeout(() => {
+              uni.navigateTo({
+                url: '/pages/orderList/orderList'
+              });
+            }, 1500);
+          },
+
+          fail: async (err) => {
+            console.error('支付失败:', err);
+
+            if (err.errMsg.includes('cancel')) {
+              uni.showToast({
+                title: '支付已取消',
+                icon: 'none'
+              });
             } else {
-                throw new Error(paylist.msg || '支付请求失败');
+              // 显示支付失败原因
+              const errorMsg = err.errMsg.includes('fail')
+                ? '支付失败，请重试'
+                : err.errMsg;
+
+              // 提供重试选项
+              const { confirm } = await uni.showModal({
+                title: '支付失败',
+                content: errorMsg,
+                confirmText: '重试',
+                cancelText: '返回'
+              });
+
+              if (confirm) {
+                await confirmPay(); // 重试支付
+              }
             }
-        } else {
-            throw new Error(orderRes.msg || '订单创建失败');
-        }
+          }
+        });
+      } else {
+        throw new Error(paylist.msg || '支付请求失败');
+      }
+    } else {
+      throw new Error(orderRes.msg || '订单创建失败');
+    }
+
+  } else {
+    const res = await request({
+      url: '/app-api/front/beehive/adopt/shared',
+      data: dataPamas,
+      method: 'post',
+      showLoading: true,
+    });
+    if (res.code === 0) {
+      const payOrderId = res.data.payOrderId;
+
+      // 2. 提交支付请求
+      const paylist = await request({
+        url: '/app-api/pay/order/submit',
+        data: {
+          id: payOrderId,
+          channelCode: 'wx_lite',
+          channelExtras: {
+            openid: getOpenId() // 实际环境应从用户信息中获取
+          }
+        },
+        method: 'post',
+        showLoading: true,
+      });
+
+      if (paylist.code === 0) {
+        // 解析支付参数
+        const payParams = JSON.parse(paylist.data.displayContent);
+        console.log('支付参数:', payParams);
+
+        // 3. 调用微信支付API
+        const payRes = await uni.requestPayment({
+          provider: 'wxpay',
+          timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
+          nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
+          package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
+          signType: payParams.signType || 'MD5',   // 默认MD5
+          paySign: String(payParams.paySign),      // 确保为字符串类型
+
+          success: async (res) => {
+            uni.showToast({
+              title: '支付成功',
+              icon: 'success'
+            });
+
+            // 4. 支付成功后更新订单状态
+            await request({
+              url: '/app-api/weixin/order/update-paid',
+              data: {
+                payOrderId: payOrderId
+              },
+              method: 'post',
+              showLoading: true,
+            });
+
+            // 5. 跳转到订单详情页
+            setTimeout(() => {
+              uni.navigateTo({
+                url: '/pages/orderList/orderList'
+              });
+            }, 1500);
+          },
+
+          fail: async (err) => {
+            console.error('支付失败:', err);
+
+            if (err.errMsg.includes('cancel')) {
+              uni.showToast({
+                title: '支付已取消',
+                icon: 'none'
+              });
+            } else {
+              // 显示支付失败原因
+              const errorMsg = err.errMsg.includes('fail')
+                ? '支付失败，请重试'
+                : err.errMsg;
+
+              // 提供重试选项
+              const { confirm } = await uni.showModal({
+                title: '支付失败',
+                content: errorMsg,
+                confirmText: '重试',
+                cancelText: '返回'
+              });
+
+              if (confirm) {
+                await confirmPay(); // 重试支付
+              }
+            }
+          }
+        });
+      } else {
+        throw new Error(paylist.msg || '支付请求失败');
+      }
+    } else {
+      throw new Error(orderRes.msg || '订单创建失败');
+    }
   }
-  
-  
 
-  
+
+
+
 }
 const selectedFarmId = ref('')
 const selectedType = ref('')
 const typeOptions = ref([
-  { label: '独享', value: 1},
-  { label: '拼团', value: 2}
+  { label: '独享', value: 1 },
+  { label: '拼团', value: 2 }
 ])
 
 const onFarmChange = (e) => {
@@ -353,117 +354,124 @@ const handleReset = () => {
 </script>
 
 <style lang="scss" scoped>
-
-
-
 .container {
-	background-color: #f7f7f7;
-	height: 100vh;
-	position: relative;
-	z-index: 1;
-	display: flex;
-	flex-direction: column;
-	margin-top: 90rpx;
-	// 新增查询样式
-.query-box {
-position: fixed;
-  top: 130rpx;
-  left: 0;
-  right: 0;;
-  padding: 20rpx 30rpx;
-  background: #fff;
+  background-color: #f7f7f7;
+  height: 100vh;
   display: flex;
-  align-items: center;
-  gap: 20rpx;
-  
-  .select {
-    flex: 1;
-    height: 70rpx;
-    border: 1rpx solid #eee;
-    border-radius: 10rpx;
-    padding: 0 20rpx;
-    
-    .picker-text {
+  flex-direction: column;
+
+  .query-box {
+    position: fixed;
+    top: getNarBarHeight();
+    left: 0;
+    right: 0;
+    padding: 20rpx 30rpx;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+
+    .select {
+      flex: 1;
+      height: 70rpx;
+      border: 1rpx solid #eee;
+      border-radius: 10rpx;
+      padding: 0 20rpx;
+
+      .picker-text {
+        line-height: 70rpx;
+        color: #333;
+        font-size: 28rpx;
+      }
+    }
+
+    .query-btn {
+      width: 100rpx;
+      height: 70rpx;
       line-height: 70rpx;
-      color: #333;
-      font-size: 28rpx;
+      text-align: center;
+      background: #FF6F0E;
+      color: #fff;
+      border-radius: 10rpx;
+      font-size: 30rpx;
+    }
+
+    .reset-btn {
+      width: 100rpx;
+      height: 70rpx;
+      line-height: 70rpx;
+      text-align: center;
+      background: #eee;
+      color: #666;
+      border-radius: 10rpx;
+      font-size: 30rpx;
     }
   }
-  
-  .query-btn {
-    width: 100rpx;
-    height: 70rpx;
-    line-height: 70rpx;
-    text-align: center;
-    background: #FF6F0E;
-    color: #fff;
-    border-radius: 10rpx;
-	font-size: 30rpx;
+
+  .collect-container {
+    margin-top: 130rpx;
+
+    .collect-box {
+      margin: 20rpx 30rpx;
+      height: 500rpx;
+      background-color: #fff;
+      border-radius: 10rpx;
+    }
+
+    .collect-img {
+      height: 350rpx;
+      background-color: #ddd;
+      border-radius: 10rpx;
+    }
+
+    .collect-info {
+      margin: 20rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-title {
+      font-weight: 500;
+      color: #333333;
+
+      .info-weight {
+        font-size: 24rpx;
+        color: #333333;
+        margin-left: 20rpx;
+      }
+
+      .info-format {
+        margin-top: 20rpx;
+        color: #999999;
+        font-size: 24rpx;
+      }
+    }
+
+    .pddBtn {
+      width: 200rpx;
+      height: 70rpx;
+      line-height: 70rpx;
+      background-color: #FF6F0E;
+      text-align: center;
+      color: #fff;
+      border-radius: 30rpx;
+    }
   }
-  .reset-btn {
-    width: 100rpx;
-    height: 70rpx;
-    line-height: 70rpx;
-    text-align: center;
-    background: #eee;
-    color: #666;
-    border-radius: 10rpx;
-	font-size: 30rpx;
-  }
+
 }
-	.collect-box{
-		margin: 20rpx 30rpx;
-		height: 500rpx;
-		background-color: #fff;
-		border-radius: 10rpx;
-		
-		
-	}
-	.collect-img{
-		height: 350rpx;
-		background-color: #ddd;
-		border-radius: 10rpx;
-	}
-	.collect-info{
-		margin: 20rpx;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.info-title{
-		font-weight: 500;
-		color: #333333;
-		.info-weight{
-			font-size: 24rpx;
-			color: #333333;
-			margin-left: 20rpx;
-		}
-		.info-format{
-			margin-top: 20rpx;
-			color: #999999;
-			font-size: 24rpx;
-		}
-	}
-	
-	.pddBtn{
-		width: 200rpx;
-		height: 70rpx;
-		line-height: 70rpx;
-		background-color: #FF6F0E;
-		text-align: center;
-		color: #fff;
-		border-radius: 30rpx;
-	}
-	}
+
 // 新增空状态样式
 .empty-box {
   padding: 100rpx 0;
   text-align: center;
+
   .empty-img {
     width: 300rpx;
     height: 300rpx;
     opacity: 0.6;
   }
+
   .empty-text {
     display: block;
     color: #999;
