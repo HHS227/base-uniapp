@@ -95,15 +95,15 @@
 									<view >{{ item.honeySeeds }}</view>
 								</view>
 								
-								<view class="group-purchase" v-if="item.adoptType ==2">
-								  <AvatarStackVue :avatars="item.avatars" :size="40"></AvatarStackVue>
-								  <view class="gruop-info">还差{{item.adoptNumber||0}}人</view>
+								<view class="group-purchase" v-if="item.adoptType == 2">
+  									<AvatarStackVue :avatars="item.avatars" :size="40"></AvatarStackVue>
+  									<view class="gruop-info">还差{{item.needNumber - item.adoptNumber||0}}人</view>
 								</view>
 								<view class="progress-info" v-if="item.adoptType == 2">
-								  <view class="progress-content">
-									<view class="progress-val" :style="{ width: `${Math.min((item.groupNumber/5)*100, 100)}%` }"></view>
-								  </view>
-								  {{ Math.min(((item.adoptNumber) /5)*100, 100) + '%' }}
+  								<view class="progress-content">
+    							<view class="progress-val" :style="{ width: `${Math.min((item.adoptNumber / item.needNumber) * 100, 100)}%` }"></view>
+ 								 </view>
+								 {{ Math.min((item.adoptNumber / item.needNumber) * 100, 100) + '%' }}
 								</view>
 							</view>
 						</view>
@@ -137,13 +137,7 @@
 			<view class="popup-title">活动通知</view>
 			
 			<view class="active-list">
-				<!-- <scroll-view>
-
-				<view v-for="item in activities" :key="item.id" @click="activeBtn(item)" class="active-item"> 
-				<view>{{ item.describle }}</view>
-				<image style="width: 100%; height:200rpx"  lazy-load="true" :src="item.url"></image>
-				</view>
-				</scroll-view> -->
+			
 				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
 					
 					<swiper-item class="swiper-item" v-for="(item,index) in activities" :key="index">

@@ -174,7 +174,7 @@ const handleBuy = async (item) => {
             // 5. 跳转到订单详情页
             setTimeout(() => {
               uni.navigateTo({
-                url: '/pages/orderList/orderList'
+                url: '/pages/adoptionRecords/adoptionRecords'
               });
             }, 1500);
           },
