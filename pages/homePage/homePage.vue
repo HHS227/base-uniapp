@@ -171,40 +171,28 @@ import { ref, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+const {  getAccessToken } = useTokenStorage()
 
-// 新增分享者ID处理
-const shareUserId = ref('')
 
+onMounted(() => {
+	getActiveList()
+	
+})
 onShow(() => {
-  // 获取启动参数中的分享者ID
-  const launchOptions = uni.getLaunchOptionsSync()
-  if (launchOptions.query.shareUserId) {
-    shareUserId.value = launchOptions.query.shareUserId
-    uni.setStorageSync('shareUserId', shareUserId.value)
-  }
-  
   getSwiperList()
   getInfoData()
   if (getAccessToken()) {
     getInfoDataList()
   }
 })
-const {  getAccessToken } = useTokenStorage()
+
 const swiperList=ref([])
 const infoData=ref({})
 const dataList=ref([])
-const avatarList = ref(['/static/images/apiculture.png', '/static/images/apiculture.png', '/static/images/apiculture.png']);
-
-
 const popup = ref(null);
-const activities = ref([
-  
-])
+const activities = ref([])
 
-onMounted(() => {
-	getActiveList()
-	
-})
+
 //跳转到活动页面
 const activeBtn = (item) => {
   if (item.activityId !==null) {
@@ -237,7 +225,7 @@ const getSwiperList = async () => {
    
   }
 }
-//
+//获取活动数据
 const getActiveList = async () => {
   try {
     const res = await request({

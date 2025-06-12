@@ -180,7 +180,7 @@ const handleClickShare = (e) => {
       }
     })
   }
-  // 如果已登录，则不阻止，让 onShareAppMessage 处理实际分享逻辑
+
 }
 
 
@@ -194,7 +194,7 @@ onShareAppMessage(() => {
   return {
     title: '智慧养蜂，快来领养吧',
     imageUrl: '/static/images/myPage/Invitation.png', 
-    path: `/pages/homePage/homePage?shareUserId=${userInfo.value.id}` ,
+    path: `/pages/login/login?shareUserId=${userInfo.value.id}` ,
     success: () => {
       uni.showToast({
         title: '分享成功',

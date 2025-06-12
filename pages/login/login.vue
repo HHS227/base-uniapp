@@ -1,6 +1,7 @@
 <template>
   <view class="login-container">
     <image style='width: 200rpx; height: 80rpx;' src="/static/images/logo.png" class="logo"></image>
+    
     <button 
       class="login-btn" 
       open-type="getPhoneNumber"
@@ -19,24 +20,30 @@
         </label>
       </checkbox-group>
     </view>
-    
-    
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
+import { initShareUserId, getShareUserId } from '../../utils/shareUserId' // 引入分享者ID工具函数
 
 const { setToken } = useTokenStorage()
 const isLoading = ref(false)
 const loginCode = ref('')
-
 const agreed = ref(false)
 const userInfoRes = ref(null)
+const shareUserId = ref('') // 分享者ID
 
-// 添加处理微信登录的方法
+
+onMounted(() => {
+  // 初始化并获取分享者ID
+  shareUserId.value = initShareUserId()
+
+})
+
+// 处理微信登录
 const handleWechatLogin = async (e) => {
   if (!agreed.value) {
     uni.showToast({
@@ -53,8 +60,7 @@ const handleWechatLogin = async (e) => {
     })
     return
   }
- // 新增获取分享者ID
-  const shareUserId = uni.getStorageSync('shareUserId') || ''
+ 
   try {
     isLoading.value = true
     
@@ -62,7 +68,7 @@ const handleWechatLogin = async (e) => {
     const loginRes = await uni.login({ provider: 'weixin' })
     loginCode.value = loginRes.code
     
-    // 调用后端登录接口
+    // 调用后端登录接口，传递分享者ID
     const res = await request({
       url: '/app-api/auth/front/wechat/login',
       method: 'POST',
@@ -71,18 +77,23 @@ const handleWechatLogin = async (e) => {
         phoneCode: e.detail.code,
         encryptedData: userInfoRes.value?.encryptedData,
         iv: userInfoRes.value?.iv,
-        pid: shareUserId // 添加pid参数
+        pid: shareUserId.value 
       }
     })
     
-    if(res.code === 0 || res.code === 200) {
-      // 登录成功后清除分享者ID
-      uni.removeStorageSync('shareUserId')
+    if(res.code === 0) {
       setToken({
         accessToken: res.data.accessToken,
         refreshToken: res.data.refreshToken,
         openId: res.data.openid
       })
+      
+      // 登录成功后，可以将分享者ID与用户关联的逻辑
+      if (shareUserId.value) {
+        console.log('用户登录成功，关联分享者ID:', shareUserId.value)
+        // 这里可以添加额外的API调用，将分享者ID与登录用户关联
+      }
+      
       uni.switchTab({ url: '/pages/myPage/myPage' })
     } else {
       throw new Error(res.msg || '登录失败')
@@ -98,6 +109,7 @@ const handleWechatLogin = async (e) => {
   }
 }
 
+// 处理用户协议同意
 const handleAgreementChange = async (e) => {
   agreed.value = e.detail.value.includes('agree')
   if(agreed.value) {
@@ -106,7 +118,6 @@ const handleAgreementChange = async (e) => {
         desc: '获取用户信息用于完善资料',
         lang: 'zh_CN'
       })
-      
     } catch(err) {
       console.error('获取用户信息失败:', err)
       agreed.value = false

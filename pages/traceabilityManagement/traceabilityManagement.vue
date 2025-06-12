@@ -18,8 +18,10 @@
               'black-btn': item.status == 1,
               'empty-btn': item.status == 0
             }">
-              <image v-if="item.status !== 0" style="width:25rpx; height:25rpx;"
+              <image v-if="item.status === 2" style="width:25rpx; height:25rpx;"
                 src="/static/images/myPage/editIcon.png"></image>
+              <image v-if="item.status === 1 && !item.isClaimed" style="width:25rpx; height:25rpx;"
+                src="/static/images/myPage/traceIcon.png"></image>
               <view v-if="item.status == 2" @click="editTraceability(item)">修改</view>
               <view v-if="item.status == 1" :class="{ 'claimed-btn': item.isClaimed }"
                 @click="!item.isClaimed && traceCode(item)">
@@ -30,7 +32,6 @@
           </view>
         </view>
         <view v-if="traceabilityList.length === 0" class="empty-state">
-       
           <text class="empty-text">暂无商品</text>
         </view>
       </scroll-view>
@@ -79,7 +80,6 @@ const getTraceabilityList = async () => {
 }
 
 //领取溯源码
-
 const traceCode = async (item) => {
   try {
     const res = await request({
@@ -110,7 +110,6 @@ const traceCode = async (item) => {
   }
 }
 
-
 // 新增商品
 const addTraceability = () => {
   uni.navigateTo({
@@ -126,12 +125,9 @@ const editTraceability = (item) => {
       res.eventChannel.emit('addProduct', {
         data: item
       })
-
     }
   })
-
 }
-
 
 onMounted(() => {
 
@@ -174,7 +170,6 @@ const getStatusClass = (status) => {
       border-radius: 10rpx;
       margin: 20rpx;
       position: relative;
-
 
       .info {
         height: 231rpx;
@@ -225,14 +220,11 @@ const getStatusClass = (status) => {
               font-weight: bold;
             }
           }
-
-
-
         }
 
         .editbtn {
           width: 120rpx;
-          height: 100%; // 改为100%以匹配父容器高度
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -281,15 +273,14 @@ const getStatusClass = (status) => {
     cursor: not-allowed;
   }
 }
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 100rpx 0;
-  
 
-  
   .empty-text {
     font-size: 28rpx;
     color: #999;

@@ -120,16 +120,15 @@ const handleBuy = async (item) => {
     price: item.price,
     sharedPrice: item.sharePrice
   }
-  if (item.adoptionType == 1) {
-    const res = await request({
-      url: '/app-api/front/beehive/adopt/alone',
+  const adoptUrl = item.adoptionType === 1  ? '/app-api/front/beehive/adopt/alone'  : '/app-api/front/beehive/adopt/shared';
+  const res = await request({
+      url: adoptUrl,
       data: dataPamas,
       method: 'post',
       showLoading: true,
     });
     if (res.code === 0) {
       const payOrderId = res.data.payOrderId;
-
       // 2. 提交支付请求
       const paylist = await request({
         url: '/app-api/pay/order/submit',
@@ -147,16 +146,14 @@ const handleBuy = async (item) => {
       if (paylist.code === 0) {
         // 解析支付参数
         const payParams = JSON.parse(paylist.data.displayContent);
-        console.log('支付参数:', payParams);
-
         // 3. 调用微信支付API
         const payRes = await uni.requestPayment({
           provider: 'wxpay',
-          timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
-          nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
-          package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
-          signType: payParams.signType || 'MD5',   // 默认MD5
-          paySign: String(payParams.paySign),      // 确保为字符串类型
+          timeStamp: String(payParams.timeStamp),  
+          nonceStr: String(payParams.nonceStr),   
+          package: payParams.packageValue || payParams.package,
+          signType: payParams.signType || 'MD5',   
+          paySign: String(payParams.paySign),      
 
           success: async (res) => {
             uni.showToast({
@@ -183,30 +180,13 @@ const handleBuy = async (item) => {
           },
 
           fail: async (err) => {
-            console.error('支付失败:', err);
-
+            getBeehiveList()
             if (err.errMsg.includes('cancel')) {
               uni.showToast({
                 title: '支付已取消',
                 icon: 'none'
               });
-            } else {
-              // 显示支付失败原因
-              const errorMsg = err.errMsg.includes('fail')
-                ? '支付失败，请重试'
-                : err.errMsg;
-
-              // 提供重试选项
-              const { confirm } = await uni.showModal({
-                title: '支付失败',
-                content: errorMsg,
-                confirmText: '重试',
-                cancelText: '返回'
-              });
-
-              if (confirm) {
-                await confirmPay(); // 重试支付
-              }
+             
             }
           }
         });
@@ -216,109 +196,13 @@ const handleBuy = async (item) => {
     } else {
       throw new Error(orderRes.msg || '订单创建失败');
     }
-
-  } else {
-    const res = await request({
-      url: '/app-api/front/beehive/adopt/shared',
-      data: dataPamas,
-      method: 'post',
-      showLoading: true,
-    });
-    if (res.code === 0) {
-      const payOrderId = res.data.payOrderId;
-
-      // 2. 提交支付请求
-      const paylist = await request({
-        url: '/app-api/pay/order/submit',
-        data: {
-          id: payOrderId,
-          channelCode: 'wx_lite',
-          channelExtras: {
-            openid: getOpenId() // 实际环境应从用户信息中获取
-          }
-        },
-        method: 'post',
-        showLoading: true,
-      });
-
-      if (paylist.code === 0) {
-        // 解析支付参数
-        const payParams = JSON.parse(paylist.data.displayContent);
-        console.log('支付参数:', payParams);
-
-        // 3. 调用微信支付API
-        const payRes = await uni.requestPayment({
-          provider: 'wxpay',
-          timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
-          nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
-          package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
-          signType: payParams.signType || 'MD5',   // 默认MD5
-          paySign: String(payParams.paySign),      // 确保为字符串类型
-
-          success: async (res) => {
-            uni.showToast({
-              title: '支付成功',
-              icon: 'success'
-            });
-
-            // 4. 支付成功后更新订单状态
-            await request({
-              url: '/app-api/weixin/order/update-paid',
-              data: {
-                payOrderId: payOrderId
-              },
-              method: 'post',
-              showLoading: true,
-            });
-
-            // 5. 跳转到订单详情页
-            setTimeout(() => {
-              uni.navigateTo({
-                url: '/pages/orderList/orderList'
-              });
-            }, 1500);
-          },
-
-          fail: async (err) => {
-            console.error('支付失败:', err);
-
-            if (err.errMsg.includes('cancel')) {
-              uni.showToast({
-                title: '支付已取消',
-                icon: 'none'
-              });
-            } else {
-              // 显示支付失败原因
-              const errorMsg = err.errMsg.includes('fail')
-                ? '支付失败，请重试'
-                : err.errMsg;
-
-              // 提供重试选项
-              const { confirm } = await uni.showModal({
-                title: '支付失败',
-                content: errorMsg,
-                confirmText: '重试',
-                cancelText: '返回'
-              });
-
-              if (confirm) {
-                await confirmPay(); // 重试支付
-              }
-            }
-          }
-        });
-      } else {
-        throw new Error(paylist.msg || '支付请求失败');
-      }
-    } else {
-      throw new Error(orderRes.msg || '订单创建失败');
-    }
-  }
+  } 
 
 
 
 
-}
+
+
 const selectedFarmId = ref('')
 const selectedType = ref('')
 const typeOptions = ref([

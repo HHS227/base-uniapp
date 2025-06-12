@@ -27,10 +27,7 @@
           <text class="pet-date">{{ formatDateTime(item.createTime) }}</text>
           <text class="pet-amount">¥{{ item.price||0 }}</text>
         </view>
-        <text class="status" :style="{
-          color: getStatusColor(item.status),
-          borderColor: getStatusColor(item.status)
-        }">
+        <text class="status" :style="{ color: getStatusColor(item.status), borderColor: getStatusColor(item.status) }" @click="payBtn(item)">
           {{ getStatusText(item.status) }}
         </text>
       </view>
@@ -48,7 +45,7 @@ import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue';
 import { getStatusBarHeight, getTitleBarHeight, getNarBarHeight } from '../../utils/system';
-const { getAccessToken } = useTokenStorage()
+const { getAccessToken, getOpenId } = useTokenStorage();
 
 const tabs = [
   { label: '全部认养', value: '' },
@@ -84,7 +81,8 @@ const getStatusColor = (status) => {
   const colors = {
     0: '#ff6f0e', // 已认养
     1: '#67c23a', // 已完成
-    2: '#909399'  // 已取消
+    2: '#909399' , // 已取消
+    3: '#ff6f0e', // 已认养
   };
   return colors[status] || '#1989fa';
 };
@@ -93,10 +91,99 @@ const getStatusText = (status) => {
   const texts = {
     0: '已认养',
     1: '已完成', 
-    2: '已取消'
+    2: '已取消',
+    3:  '待支付'
   };
   return texts[status] || '未知状态';
 };
+
+
+const payBtn =async(item)=>{
+  if (item.status === 3) {
+      const payOrderId = item.payOrderId;
+      const paylist = await request({
+        url: '/app-api/pay/order/submit',
+        data: {
+          id: payOrderId,
+          channelCode: 'wx_lite',
+          channelExtras: {
+            openid: getOpenId() // 实际环境应从用户信息中获取
+          }
+        },
+        method: 'post',
+        showLoading: true,
+      });
+
+      if (paylist.code === 0) {
+        // 解析支付参数
+        const payParams = JSON.parse(paylist.data.displayContent);
+        console.log('支付参数:', payParams);
+
+        // 3. 调用微信支付API
+        const payRes = await uni.requestPayment({
+          provider: 'wxpay',
+          timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
+          nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
+          package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
+          signType: payParams.signType || 'MD5',   // 默认MD5
+          paySign: String(payParams.paySign),      // 确保为字符串类型
+
+          success: async (res) => {
+            uni.showToast({
+              title: '支付成功',
+              icon: 'success'
+            });
+
+            // 4. 支付成功后更新订单状态
+            await request({
+              url: '/app-api/weixin/order/update-paid',
+              data: {
+                payOrderId: payOrderId
+              },
+              method: 'post',
+              showLoading: true,
+            });
+
+            // 5. 跳转到订单详情页
+            setTimeout(() => {
+              uni.navigateTo({
+                url: '/pages/orderList/orderList'
+              });
+            }, 1500);
+          },
+
+          fail: async (err) => {
+            console.error('支付失败:', err);
+
+            if (err.errMsg.includes('cancel')) {
+              uni.showToast({
+                title: '支付已取消',
+                icon: 'none'
+              });
+            } else {
+              // 显示支付失败原因
+              const errorMsg = err.errMsg.includes('fail')
+                ? '支付失败，请重试'
+                : err.errMsg;
+
+              // 提供重试选项
+              const { confirm } = await uni.showModal({
+                title: '支付失败',
+                content: errorMsg,
+                confirmText: '重试',
+                cancelText: '返回'
+              });
+
+            
+            }
+          }
+        });
+      } else {
+        throw new Error(paylist.msg || '支付请求失败');
+      }
+    } 
+}
+
 
 onMounted(() => {
   getRecordsList()

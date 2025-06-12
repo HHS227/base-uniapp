@@ -184,6 +184,9 @@ const paymentMethod = ref('wechatPay');
 const isPaying = ref(false);
 const isLoading = ref(false); // 添加加载状态
 
+
+const payOrderId=ref('')
+
 // 计算商品总价
 const goodsTotalPrice = computed(() => {
     return selectedItems.value.reduce((total, item) => {
@@ -424,118 +427,39 @@ const handlePay = () => {
 // 确认支付
 const confirmPay = async () => {
     orderConfirmPopupClose();
-    
     if (isPaying.value) return;
     isPaying.value = true;
-    
     try {
-        // 1. 先创建订单
-        const orderRes = await request({
-            url: '/app-api/trade/cart/create/cartOrder',
-            data: {
-                items: selectedItems.value.map(item => ({
-                    skuId: item.sku.id,
-                    count: item.count
-                })),
-                receiverName: currentAddress.value.consigneeName,
-                receiverMobile: currentAddress.value.phoneNumber,
-                receiverAddress: `${currentAddress.value.province}${currentAddress.value.city}${currentAddress.value.region}${currentAddress.value.addressDetail}`,
-                deliveryType: 1,
-                couponId: selectedCoupon.value?.id || null // 传递优惠券ID
-            },
-            method: 'post',
-            showLoading: true,
-        });
-
-        if (orderRes.code === 0 ) {
-            const payOrderId = orderRes.data.payOrderId;
-            
-            // 2. 提交支付请求
-            const paylist = await request({
-                url: '/app-api/pay/order/submit',
+        let orderId = payOrderId.value;
+        if (!orderId) {
+            // 创建新订单
+            const orderRes = await request({
+                url: '/app-api/trade/cart/create/cartOrder',
                 data: {
-                    id: payOrderId,
-                    channelCode: 'wx_lite',
-                    channelExtras: {
-                        openid: getOpenId() // 实际环境应从用户信息中获取
-                    }
+                    items: selectedItems.value.map(item => ({
+                        skuId: item.sku.id,
+                        count: item.count
+                    })),
+                    receiverName: currentAddress.value.consigneeName,
+                    receiverMobile: currentAddress.value.phoneNumber,
+                    receiverAddress: `${currentAddress.value.province}${currentAddress.value.city}${currentAddress.value.region}${currentAddress.value.addressDetail}`,
+                    deliveryType: 1,
+                    couponId: selectedCoupon.value?.id || null
                 },
                 method: 'post',
                 showLoading: true,
             });
             
-            if (paylist.code === 0 ) {
-                // 解析支付参数
-                const payParams = JSON.parse(paylist.data.displayContent);
-                console.log('支付参数:', payParams);
-                
-                // 3. 调用微信支付API
-                const payRes = await uni.requestPayment({
-                    provider: 'wxpay',
-                    timeStamp: String(payParams.timeStamp),  // 确保为字符串类型
-                    nonceStr: String(payParams.nonceStr),    // 确保为字符串类型
-                    package: payParams.packageValue || payParams.package, // 兼容不同后端返回字段
-                    signType: payParams.signType || 'MD5',   // 默认MD5
-                    paySign: String(payParams.paySign),      // 确保为字符串类型
-                    
-                    success: async (res) => {
-                        uni.showToast({
-                            title: '支付成功',
-                            icon: 'success'
-                        });
-                        
-                        // 4. 支付成功后更新订单状态
-                        await request({
-                            url: '/app-api/weixin/order/update-paid',
-                            data: {
-                                payOrderId: payOrderId
-                            },
-                            method: 'post',
-                            showLoading: true,
-                        });
-                        
-                        // 5. 跳转到订单详情页
-                        setTimeout(() => {
-                            uni.navigateTo({
-                                url: '/pages/orderList/orderList'
-                            });
-                        }, 1500);
-                    },
-                    
-                    fail: async (err) => {
-                        console.error('支付失败:', err);
-                        
-                        if (err.errMsg.includes('cancel')) {
-                            uni.showToast({
-                                title: '支付已取消',
-                                icon: 'none'
-                            });
-                        } else {
-                            // 显示支付失败原因
-                            const errorMsg = err.errMsg.includes('fail') 
-                                ? '支付失败，请重试' 
-                                : err.errMsg;
-                            
-                            // 提供重试选项
-                            const { confirm } = await uni.showModal({
-                                title: '支付失败',
-                                content: errorMsg,
-                                confirmText: '重试',
-                                cancelText: '返回'
-                            });
-                            
-                            if (confirm) {
-                                await confirmPay(); // 重试支付
-                            }
-                        }
-                    }
-                });
-            } else {
-                throw new Error(paylist.msg || '支付请求失败');
+            if (orderRes.code !== 0) {
+                throw new Error(orderRes.msg || '订单创建失败');
             }
-        } else {
-            throw new Error(orderRes.msg || '订单创建失败');
+            
+            payOrderId.value = orderRes.data.payOrderId;
         }
+        
+        // 执行支付流程
+        await processPayment();
+        
     } catch (err) {
         console.error('支付流程出错:', err);
         uni.showToast({
@@ -546,6 +470,96 @@ const confirmPay = async () => {
         isPaying.value = false;
     }
 };
+
+// 处理支付流程的函数
+const processPayment = async (orderId) => {
+    // 提交支付请求
+    const paylist = await request({
+        url: '/app-api/pay/order/submit',
+        data: {
+            id: payOrderId.value,
+            channelCode: 'wx_lite',
+            channelExtras: {
+                openid: getOpenId()
+            }
+        },
+        method: 'post',
+        showLoading: true,
+    });
+    
+    if (paylist.code !== 0) {
+        throw new Error(paylist.msg || '支付请求失败');
+    }
+    
+    // 解析支付参数
+    const payParams = JSON.parse(paylist.data.displayContent);
+    
+    // 调用微信支付API
+    try {
+        await uni.requestPayment({
+            provider: 'wxpay',
+            timeStamp: String(payParams.timeStamp),
+            nonceStr: String(payParams.nonceStr),
+            package: payParams.packageValue || payParams.package,
+            signType: payParams.signType || 'MD5',
+            paySign: String(payParams.paySign),
+            
+            success: async () => {
+                uni.showToast({
+                    title: '支付成功',
+                    icon: 'success'
+                });
+                
+                // 更新订单状态
+                await request({
+                    url: '/app-api/weixin/order/update-paid',
+                    data: { payOrderId: orderId },
+                    method: 'post',
+                    showLoading: true,
+                });
+                
+                // 跳转到订单列表页
+                setTimeout(() => {
+                    uni.navigateTo({
+                        url: '/pages/orderList/orderList'
+                    });
+                }, 1500);
+            },
+            
+            fail: async (err) => {
+                console.error('支付失败:', err);
+                
+                if (err.errMsg.includes('cancel')) {
+                    uni.showToast({
+                        title: '支付已取消',
+                        icon: 'none'
+                    });
+                    return;
+                }
+                
+                // 显示支付失败原因并提供重试选项
+                const errorMsg = err.errMsg.includes('fail') 
+                    ? '支付失败，请重试' 
+                    : err.errMsg;
+                
+                const { confirm } = await uni.showModal({
+                    title: '支付失败',
+                    content: errorMsg,
+                    confirmText: '重试',
+                    cancelText: '返回'
+                });
+                
+                if (confirm) {
+                    await confirmPay(); // 重试支付
+                }
+            }
+        });
+    } catch (err) {
+        // 处理微信支付API调用本身的错误
+        throw new Error('支付API调用失败: ' + err.message);
+    }
+};
+
 </script>    
 
 <style lang="scss" scoped>
