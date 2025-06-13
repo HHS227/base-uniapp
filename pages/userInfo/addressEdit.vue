@@ -67,6 +67,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue'
+import { onShow } from '@dcloudio/uni-app'
 
 const areaList = ref([])
 const regionPickerVisible = ref(false)
@@ -87,7 +88,7 @@ const form = ref({
 })
 
 
-onMounted(() => {
+onShow(() => {
   getAreaList()
   //判断是否编辑模式
   const pages = getCurrentPages()

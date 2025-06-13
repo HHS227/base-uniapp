@@ -8,14 +8,13 @@
         </view>
    
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
-            <view class="scroll-content">
+
+            <view v-if="shoppingList.length === 0" class="empty-container"> 
+                <text class="empty-text">暂无商品</text> 
+            </view>
+            <view class="scroll-content" v-else>
                 <view class="goods-item" v-for="(item,index) in shoppingList" :key="index" @click="shopDetails(item)">
-                    <image 
-              :src="item.imgUrl" 
-              mode="aspectFill" 
-              class="goods-image"
-              lazy-load="true"
-            ></image>
+                 <image  :src="item.imgUrl"  mode="aspectFill"  class="goods-image" lazy-load="true" ></image>
                     <view class="goods-title" >{{item.name}}</view>
                     <view class="goods-info">
                         <view class="goods-weight">
@@ -48,16 +47,12 @@ import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import { onShow } from '@dcloudio/uni-app'
-const shoppingList=ref([])
 import { useTokenStorage } from '../../utils/storage'
 
-const {  getAccessToken } = useTokenStorage()
+const { getAccessToken } = useTokenStorage()
+const shoppingList=ref([])
 
-const gotoMessage =()=>{
-    uni.navigateTo({
-        url:'/pages/messagePage/messagePage'
-    })
-}
+// 跳转购物车
 const gotoCart = ()=>{
     if (!getAccessToken()) {
     uni.showModal({
@@ -71,16 +66,19 @@ const gotoCart = ()=>{
     })
 	}else{
         uni.navigateTo({
-        url:'/pages/shoppingCart/shoppingCart'
+        url:'/pages/shoppingMall/shoppingCart'
     })
 	}
    
 }
+// 跳转详情
 const shopDetails = (item)=>{
     uni.navigateTo({
         url:`/pages/shoppingMall/shopDetails?id=${item.id}`
     })
 }
+
+//单独购买
 const shoppingBuy = async (item)=>{
     const res = await request({
 	      url: '/app-api/trade/cart/add',
@@ -95,14 +93,13 @@ const shoppingBuy = async (item)=>{
  if (res.code === 0 ){
     const selectedItems = [
     {
-     count: 1,
+    count: 1,
     sku: {
     id:item.id, 
     picUrl: item.imgUrl,
     name: item.name,
-     weight: item.weight,
-      price: item.price *100,}
-
+    weight: item.weight,
+    price: item.price *100,}
     }
 ]
   
@@ -127,10 +124,9 @@ const getShoppingList = async () => {
       url: '/app-api/WeiXinMini/product/get/productList',
       showLoading: true, 
     })
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0 ) {
 	shoppingList.value=res.data
 	
-		
     } else {
       throw new Error(res.msg || '数据异常')
     }
@@ -140,8 +136,6 @@ const getShoppingList = async () => {
    
   }
 }
-
-
 onShow(() => {
   getShoppingList()
 })
@@ -293,5 +287,20 @@ onShow(() => {
             }
         }
     }
+    .empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  
+ 
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
+  }
+ 
+}
 }
 </style>

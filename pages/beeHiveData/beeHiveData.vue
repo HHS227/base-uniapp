@@ -47,7 +47,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
 
@@ -116,9 +117,8 @@ const getInfoData = async () => {
       url: '/app-api/WeiXinMini/index/get/info',
       showLoading: true, 
     })
-    
-    // 处理返回数据（兼容code=0和code=200）
-    if (res.code === 0 || res.code === 200) {
+
+    if (res.code === 0 ) {
     dataList.value=res.data
     } else {
       throw new Error(res.msg || '数据异常')
@@ -128,7 +128,7 @@ const getInfoData = async () => {
    
   }
 }
-onMounted(() => {
+onShow(() => {
   getInfoData()
 })
 </script>

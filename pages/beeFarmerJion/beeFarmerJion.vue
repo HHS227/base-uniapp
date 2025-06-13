@@ -27,7 +27,7 @@
 import TransNavVue from '../../components/TransNav.vue';
 const gotoJion = ()=>{
 	uni.navigateTo({
-		url:'/pages/beeFarmerJion/jionForm'
+		url:'/pages/beeFarmerJion/addFarm'
 	})
 }
 </script>

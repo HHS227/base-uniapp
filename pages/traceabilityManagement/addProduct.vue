@@ -69,10 +69,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
-import { request } from '@/utils/request';
-
+import { request,uploadImage } from '@/utils/request';
+import { onShow } from '@dcloudio/uni-app'
 
 const BASE_URL = 'https://www.cdsrh.top'
+
 const formData = ref({
   name: '',
   describe: '',
@@ -90,7 +91,7 @@ const imageList = ref([]); //暂时储存的图片
 const isEditMode = ref(false)
 const productId = ref('') // 添加商品ID存储
 
-onMounted(() => {
+onShow(() => {
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
   const beeFarmId = currentPage.$page.options || currentPage.options
@@ -118,6 +119,8 @@ onMounted(() => {
     console.error('蜂场 ID 缺失')
   }
 })
+
+// 多张图片选择
 const chooseImage = () => {
   if (imageList.value.length >= 9) {
     uni.showToast({
@@ -278,44 +281,25 @@ const enterBtn = async () => {
   }
 };
 
-// 单张图上传
-const chooseMainImage = () => {
-  uni.chooseImage({
-    count: 1,
-    success: async (res) => {
-      if (res.tempFilePaths.length === 0) return
-      
-      uni.showLoading({ title: '上传中...' })
-      try {
-        const result = await uploadSingleImage(res.tempFilePaths[0])
-        mainImage.value = {
-          tempFilePath: res.tempFilePaths[0],
-          data: result.data
-        }
-        formData.value.imgUrl = result.data
-      } finally {
-        uni.hideLoading()
-      }
-    }
-  })
-}
 
-// 图片上传方法
-const uploadSingleImage = (tempFilePath) => {
-  return new Promise((resolve, reject) => {
-    uni.uploadFile({
-      url: BASE_URL + '/app-api/infra/file/upload',
-      filePath: tempFilePath,
-      name: 'file',
-     
-      success: (response) => {
-        const data = JSON.parse(response.data)
-        resolve(data)
-      },
-      fail: reject
-    })
+const chooseMainImage = () => {
+  if (mainImage.value.tempFilePath) {
+     uni.showToast({
+      title: '已上传一张图片',
+      icon: 'none'
+    });
+    return;
+  }
+  uploadImage(1)
+  .then((result) => {
+    mainImage.value = result
+    formData.value.imgUrl = result.data;
   })
-}
+  .catch((err) => {
+    console.error('上传失败:', err);
+  });
+
+};
 // 删除主图
 const deleteMainImage = () => {
   mainImage.value = { tempFilePath: '', data: '' }

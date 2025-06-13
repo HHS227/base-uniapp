@@ -5,18 +5,14 @@
     <uni-popup ref="popup" type="center">
 		<view class="popup-content">
 			<view class="popup-title">{{ currentBeeDetail.name }}</view>
-		
 			<view class="popup-body">{{ currentBeeDetail.mainNectarPlants }}</view>
-	    <!-- <view class="popup-time">{{ formatDateTime(currentBeeDetail.establishTime) }}</view> -->
 			<button class="popup-btn" @click="closePopup">我已了解</button>
 		</view>
-	</uni-popup>
+	  </uni-popup>
    <view class="container">
      <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
      <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
      <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
-     
-     
      <view class="map-container">
        <map 
          id="map" 
@@ -27,7 +23,6 @@
          show-location
        ></map>
      </view>
-     
      <view class="my-bee-title">
        <view>推荐蜜源</view>
        <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
@@ -51,15 +46,16 @@
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { request } from '@/utils/request'
+
 import { onShow } from '@dcloudio/uni-app'
 
 const popup = ref(null);
 const loading = ref(false);
 const currentBeeDetail = ref({});
 const honeySourceList = ref([]);
-// 移除mapInstance引用
+//地图
 const markers = ref([
   {
 		id: 1,
@@ -76,6 +72,7 @@ const markers = ref([
 		}
 	}
 ])
+// 创建图例
 const generateMarkers = (list) => {
   return list
     .filter(item => item.latitude && item.longitude)
@@ -128,16 +125,10 @@ const showBeeDetail = (item) => {
 const closePopup = () => {
   popup.value.close();
 };
-const formatDateTime = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
-}
 onShow(() => {
   getShoppingList();
 });
 </script>
-
 
 <style lang="scss" scoped>
 .popup-content {

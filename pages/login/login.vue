@@ -27,7 +27,7 @@
 import { ref, onMounted } from 'vue'
 import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
-import { initShareUserId, getShareUserId } from '../../utils/shareUserId' // 引入分享者ID工具函数
+import { initShareUserId, } from '../../utils/system' 
 
 const { setToken } = useTokenStorage()
 const isLoading = ref(false)

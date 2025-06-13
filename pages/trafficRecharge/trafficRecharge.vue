@@ -54,11 +54,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { request } from '@/utils/request';
+import { request ,processPayment} from '@/utils/request';
 import { onShow } from '@dcloudio/uni-app';
 import TransNavVue from '../../components/TransNav.vue'
-import { useTokenStorage } from '../../utils/storage';
-const { getAccessToken, getOpenId } = useTokenStorage();
 
 
 const deviceId=ref() //设备id
@@ -67,7 +65,6 @@ const selectedPackageId = ref(null); // 当前选中的套餐ID
 const agreementChecked = ref(false); // 用户协议勾选状态
 const isLoading = ref(false); // 加载状态
 const errorMsg = ref(''); // 错误信息
-const payOrderId=ref('')
 
 // 计算属性：获取当前选中的套餐详情
 const selectedPackage = computed(() => {
@@ -77,10 +74,6 @@ const selectedPackage = computed(() => {
 const recommendPackage = computed(() => {
   return trafficList.value.find(item => item.hot) || null;
 });
-
-
-
-
 // 页面加载时获取流量套餐列表
 onShow(async () => {
     await getTrafficList();
@@ -116,13 +109,11 @@ const getTrafficList = async () => {
         isLoading.value = false;
     }
 };
-
 // 套餐选择
 const handleRechargeSelect = (packageInfo) => {
     selectedPackageId.value = packageInfo.id;
-    payOrderId.value=''
+    
 };
-
 // 处理立即购买按钮点击
 const handleBuyNow = (packageInfo) => {
     selectedPackageId.value = packageInfo.id;
@@ -140,8 +131,6 @@ const handleBuyNow = (packageInfo) => {
 const handleAgreementChange = (e) => {
     agreementChecked.value = e.detail.value.length > 0;
 };
-
-       
 
 // 确认购买
 const handleConfirmBuy = async () => {
@@ -162,118 +151,29 @@ const handleConfirmBuy = async () => {
     }
 
     try {
-        let orderId = payOrderId.value;
-
-        if (!orderId) {
             // 创建新订单
             const res = await request({
             url: `/app-api/weixin/flow/create/order?id=${selectedPackageId.value}&facilityId=${deviceId.value}`,
             method: 'POST',
             showLoading: true
         });
-            
-            if (res.code !== 0) {
+            if (res.code == 0 && res.data.payOrderId) {
+                payOrderId.value = res.data.payOrderId;
+                const options={orderId : res.data.payOrderId, successToUrl :'/pages/deviceManagement/deviceManagement'}
+                processPayment(options)
+            }else{
                 throw new Error(res.msg || '订单创建失败');
             }
-            
-            payOrderId.value = res.data.payOrderId;
-        }
-        
-        // 执行支付流程
-        await processPayment();
-        
+              
     } catch (err) {
-        console.error('支付流程出错:', err);
         uni.showToast({
             title: err.message || '支付出错，请重试',
             icon: 'none'
         });
-    } finally {
-        isPaying.value = false;
-    }
+    } 
 };
 
-// 处理支付流程的函数
-const processPayment = async (orderId) => {
-    // 提交支付请求
-    const paylist = await request({
-        url: '/app-api/pay/order/submit',
-        data: {
-            id: payOrderId.value,
-            channelCode: 'wx_lite',
-            channelExtras: {
-                openid: getOpenId()
-            }
-        },
-        method: 'post',
-        showLoading: true,
-    });
-    
-    if (paylist.code !== 0) {
-        throw new Error(paylist.msg || '支付请求失败');
-    }
-    
-    // 解析支付参数
-    const payParams = JSON.parse(paylist.data.displayContent);
-    
-    // 调用微信支付API
-    try {
-        await uni.requestPayment({
-            provider: 'wxpay',
-            timeStamp: String(payParams.timeStamp),
-            nonceStr: String(payParams.nonceStr),
-            package: payParams.packageValue || payParams.package,
-            signType: payParams.signType || 'MD5',
-            paySign: String(payParams.paySign),
-            
-            success: async () => {
-                uni.showToast({
-                    title: '支付成功',
-                    icon: 'success'
-                });
-                
-                
-                // 跳转到订单列表页
-                setTimeout(() => {
-                            uni.navigateTo({
-                                url: '/pages/deviceManagement/deviceManagement'
-                            });
-                        }, 1500);
-            },
-            
-            fail: async (err) => {
-                console.error('支付失败:', err);
-                
-                if (err.errMsg.includes('cancel')) {
-                    uni.showToast({
-                        title: '支付已取消',
-                        icon: 'none'
-                    });
-                    return;
-                }
-                
-                // 显示支付失败原因并提供重试选项
-                const errorMsg = err.errMsg.includes('fail') 
-                    ? '支付失败，请重试' 
-                    : err.errMsg;
-                
-                const { confirm } = await uni.showModal({
-                    title: '支付失败',
-                    content: errorMsg,
-                    confirmText: '重试',
-                    cancelText: '返回'
-                });
-                
-                if (confirm) {
-                    await confirmPay(); // 重试支付
-                }
-            }
-        });
-    } catch (err) {
-        // 处理微信支付API调用本身的错误
-        throw new Error('支付API调用失败: ' + err.message);
-    }
-};
+
 
 // 跳转协议
 const userAgreement=()=>{
@@ -283,7 +183,6 @@ const userAgreement=()=>{
     
   
 }
-
 //获取id
 onMounted(() => {
   const pages = getCurrentPages()

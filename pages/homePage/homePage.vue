@@ -44,7 +44,7 @@
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
 							{{infoData.outputAmount}}
-							<text>/万斤</text>
+							<text>/斤</text>
 						</view>
 					</view>
 					<view class="data-item">
@@ -165,7 +165,15 @@ import { ref, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
+import {formatDateTime}  from '../../utils/system'
+
+
 const {  getAccessToken } = useTokenStorage()
+const swiperList=ref([])
+const infoData=ref({})
+const dataList=ref([])
+const popup = ref(null);
+const activities = ref([])
 
 
 onMounted(() => {
@@ -178,12 +186,6 @@ onShow(() => {
     getInfoDataList()
   }
 })
-
-const swiperList=ref([])
-const infoData=ref({})
-const dataList=ref([])
-const popup = ref(null);
-const activities = ref([])
 
 
 //跳转到活动页面
@@ -314,12 +316,6 @@ const collectBee = () => {
   });
   }
  
-}
-// 时间戳转换
-const formatDateTime = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 
 //扫码溯源

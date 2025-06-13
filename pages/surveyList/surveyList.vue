@@ -35,6 +35,7 @@
 import { ref, onMounted } from 'vue'
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue';
+import { onShow } from '@dcloudio/uni-app'
 
 
 const surveyList = ref([
@@ -48,7 +49,7 @@ const handleSurveyClick = (id) => {
   })
 }
 
-onMounted(() => {
+onShow(() => {
   getQuestionList()
 })
 

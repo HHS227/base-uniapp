@@ -28,7 +28,6 @@
           </view>
         </view>
       </view>
-
       <view class="empty-box" v-if="beehiveList.length === 0">
         <text class="empty-text">暂无蜂箱</text>
       </view>
@@ -37,27 +36,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import TransNavVue from '../../components/TransNav.vue';
-import { request } from '@/utils/request'
 import { getStatusBarHeight, getTitleBarHeight, getNarBarHeight } from '../../utils/system';
-import { useTokenStorage } from '../../utils/storage';
+import { ref} from 'vue'
+import TransNavVue from '../../components/TransNav.vue';
+import { request,processPayment } from '@/utils/request'
+import { onShow } from '@dcloudio/uni-app'
 
-const { getAccessToken, getOpenId } = useTokenStorage();
-
+const selectedFarmId = ref('')
+const selectedType = ref('')
+const typeOptions = ref([{ label: '独享', value: '1'},{ label: '拼团', value: '2' }])
 const beehiveList = ref([])
-
 const dataList = ref([])
-const fromData = ref({
-  BeeFarmId: '',
-  adoptionType: ''
-})
+const fromData = ref({ BeeFarmId: '',adoptionType: ''})
 
-onMounted(() => {
+onShow(() => {
   getBeehiveList()
   getInfoDataList()
 })
 
+//获取蜂箱数据
 const getBeehiveList = async () => {
   try {
     const res = await request({
@@ -80,7 +77,6 @@ const getBeehiveList = async () => {
     })
   }
 }
-
 //获取所有的蜂场列表
 const getInfoDataList = async () => {
   try {
@@ -100,7 +96,7 @@ const getInfoDataList = async () => {
 
   }
 }
-
+//判断蜂箱类型
 const getBeehiveTypeName = (type) => {
   const typeMap = {
     1: '基础蜂箱',
@@ -110,8 +106,7 @@ const getBeehiveTypeName = (type) => {
   }
   return typeMap[type] || '未知类型'
 }
-
-
+//创建订单
 const handleBuy = async (item) => {
   const dataPamas = {
     beehiveId: item.id,
@@ -127,85 +122,22 @@ const handleBuy = async (item) => {
       method: 'post',
       showLoading: true,
     });
-    if (res.code === 0) {
-      const payOrderId = res.data.payOrderId;
-      // 2. 提交支付请求
-      const paylist = await request({
-        url: '/app-api/pay/order/submit',
-        data: {
-          id: payOrderId,
-          channelCode: 'wx_lite',
-          channelExtras: {
-            openid: getOpenId() // 实际环境应从用户信息中获取
-          }
-        },
-        method: 'post',
-        showLoading: true,
-      });
-
-      if (paylist.code === 0) {
-        // 解析支付参数
-        const payParams = JSON.parse(paylist.data.displayContent);
-        // 3. 调用微信支付API
-        const payRes = await uni.requestPayment({
-          provider: 'wxpay',
-          timeStamp: String(payParams.timeStamp),  
-          nonceStr: String(payParams.nonceStr),   
-          package: payParams.packageValue || payParams.package,
-          signType: payParams.signType || 'MD5',   
-          paySign: String(payParams.paySign),      
-
-          success: async (res) => {
-            uni.showToast({
-              title: '支付成功',
-              icon: 'success'
-            });
-
-
-            // 4. 跳转到订单详情页
-            setTimeout(() => {
-              uni.navigateTo({
-                url: '/pages/adoptionRecords/adoptionRecords'
-              });
-            }, 1500);
-          },
-
-          fail: async (err) => {
-            getBeehiveList()
-            if (err.errMsg.includes('cancel')) {
-              uni.showToast({
-                title: '支付已取消',
-                icon: 'none'
-              });
-             
-            }
-          }
-        });
-      } else {
-        throw new Error(paylist.msg || '支付请求失败');
-      }
+    if (res.code === 0 && res.data.payOrderId) {
+    const options={orderId : res.data.payOrderId, successToUrl :'/pages/adoptionRecords/adoptionRecords'}
+    processPayment(options)
     } else {
       throw new Error(orderRes.msg || '订单创建失败');
     }
   } 
-
-
-
-
-
-
-const selectedFarmId = ref('')
-const selectedType = ref('')
-const typeOptions = ref([{ label: '独享', value: '1'},{ label: '拼团', value: '2' }])
-
+//选择蜂场
 const onFarmChange = (e) => {
   selectedFarmId.value = dataList.value[e.detail.value]?.id || ''
 }
-
+//选择蜂箱类型
 const onTypeChange = (e) => {
   selectedType.value = typeOptions.value[e.detail.value].value
 }
-
+//查询
 const handleQuery = () => {
   fromData.value = {
     BeeFarmId: selectedFarmId.value,
@@ -213,14 +145,11 @@ const handleQuery = () => {
   }
   getBeehiveList()
 }
-
+//重置
 const handleReset = () => {
   selectedFarmId.value = ''
   selectedType.value = ''
-  fromData.value = {
-    BeeFarmId: '',
-    adoptionType: ''
-  }
+  fromData.value = {BeeFarmId: '', adoptionType: ''}
   getBeehiveList()
 }
 </script>

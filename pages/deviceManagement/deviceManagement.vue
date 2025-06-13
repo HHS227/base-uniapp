@@ -21,20 +21,17 @@
           <text class="device-name">{{ device.facilityName }}</text>
           <button class="unbind-btn" @click.stop="handleUnbind(device.id)">解绑</button>
         </view>
-        
         <view class="device-status">
           <text class="info-tag">普通信息</text>
           <text class="online-tag">在线</text>
           <text class="device-model">{{ device.facilityType }}</text>
         </view>
-        
         <view class="divider"></view>
-        
         <view class="device-detail">
           <image class="device-image" :src="device.imgUrl" mode="aspectFit"></image>
           <view class="device-info">
             <text class="info-text">型号：{{ device.no }}</text>
-            <text class="info-text">绑定日期：{{ device.bindingTime }}</text>
+            <text class="info-text">绑定日期：{{formatDateTime (device.bandingTime) }}</text>
           </view>
         </view>
       </view>
@@ -50,10 +47,11 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref} from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 import { request } from '../../utils/request.js'
 import { onShow } from '@dcloudio/uni-app';
+import { formatDateTime } from '../../utils/system';
 
 
 const devices = ref([])

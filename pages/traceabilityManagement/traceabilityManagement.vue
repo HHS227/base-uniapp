@@ -129,9 +129,7 @@ const editTraceability = (item) => {
   })
 }
 
-onMounted(() => {
 
-})
 
 onShow(() => {
   const pages = getCurrentPages()

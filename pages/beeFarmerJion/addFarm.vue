@@ -49,9 +49,8 @@
 <script setup>
 import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
-import { request } from '@/utils/request'; 
+import { request ,uploadImage} from '@/utils/request'; 
 
-const BASE_URL = 'https://www.cdsrh.top' 
 const formData = ref({
     region: '',
     honeySeeds: '',
@@ -68,90 +67,27 @@ const imageInfo = ref({
     data: ''          
 });
 
-// 选择图片（使用uni.uploadFile）
+
+// 选择图片
 const chooseImage = () => {
   if (imageInfo.value.tempFilePath) {
-    uni.showToast({
+     uni.showToast({
       title: '已上传一张图片',
       icon: 'none'
     });
     return;
   }
-  
-  uni.chooseImage({
-    count: 1,
-    success: async (res) => {
-      if (!res || !res.tempFilePaths || res.tempFilePaths.length === 0) {
-        uni.showToast({
-          title: '未选择图片',
-          icon: 'none'
-        });
-        return;
-      }
-
-      const tempFilePath = res.tempFilePaths[0];
-      uni.showLoading({
-        title: '上传中...'
-      });
-      
-      try {
-    
-        const uploadRes = await new Promise((resolve, reject) => {
-          uni.uploadFile({
-            url: BASE_URL + '/app-api/infra/file/upload', 
-            filePath: tempFilePath,
-            name: 'file', 
-         
-            success: (response) => {
-              try {
-                const data = JSON.parse(response.data);
-                resolve(data);
-              } catch (err) {
-                reject(new Error('解析响应失败'));
-              }
-            },
-            fail: (err) => {
-              reject(err);
-            }
-          });
-        });
-        
-        if (uploadRes.code === 0) {
-          // 保存图片信息
-          imageInfo.value = {
-            tempFilePath,
-            data: uploadRes.data
-          };
-          
-          // 保存到表单数据
-          formData.value.imgUrl = uploadRes.data;
-          
-          uni.showToast({
-            title: '上传成功',
-            icon: 'success'
-          });
-        } else {
-          throw new Error(uploadRes.msg || '图片上传失败');
-        }
-      } catch (err) {
-        uni.showToast({
-          title: '上传失败',
-          icon: 'none'
-        });
-        console.error('图片上传失败:', err);
-      } finally {
-        uni.hideLoading();
-      }
-    },
-    fail: (err) => {
-      console.error('选择图片失败:', err);
-      uni.showToast({
-        title: '选择图片失败',
-        icon: 'none'
-      });
-    }
+  uploadImage(1)
+  .then((result) => {
+    imageInfo.value = result
+    formData.value.imgUrl = result.data;
+  })
+  .catch((err) => {
+    console.error('上传失败:', err);
   });
+
 };
+
 
 // 预览图片
 const previewImage = () => {

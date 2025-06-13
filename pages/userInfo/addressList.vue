@@ -85,10 +85,6 @@ const getAddressList = async () => {
   }
 }
 
-// 生命周期钩子
-onMounted(() => {
-  getAddressList()
-})
 
 onShow(() => {
   // 每次页面显示时刷新数据

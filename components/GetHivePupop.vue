@@ -25,22 +25,22 @@ const props = defineProps({
 
 const hives = ref([
 	{
-		image: '/static/images/hive1.png',
+		image: '/static/images/apiculture.png',
 		name: '标准蜂箱',
 		beeName: '意大利蜜蜂'
 	},
 	{
-		image: '/static/images/hive2.png',
+		image: '/static/images/apiculture.png',
 		name: '高级蜂箱',
 		beeName: '卡尼鄂拉蜂'
 	},
 	{
-		image: '/static/images/hive3.png',
+		image: '/static/images/apiculture.png',
 		name: '豪华蜂箱',
 		beeName: '高加索蜂'
 	},
 	{
-		image: '/static/images/hive4.png',
+		image: '/static/images/apiculture.png',
 		name: '定制蜂箱',
 		beeName: '中华蜜蜂'
 	}

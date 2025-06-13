@@ -13,8 +13,11 @@
 
         </view>
         <view class="swiper-title">
-          <view><text class="money">￥{{commodityDetails.price}}</text> <text class="discounts">优惠券</text><text
-                class="sale">满50-20</text> </view>
+          <view>
+			<text class="money">￥{{commodityDetails.price}}</text> 
+			<!-- <text class="discounts">优惠券</text>
+			 <text class="sale">满50-20</text>  -->
+			</view>
           <view class="kg">净重 {{commodityDetails.weight}}克</view>
         </view>
       </view>
@@ -69,15 +72,11 @@
 </style>
 
 <script setup>
-	import {
-		ref,
-		onMounted
-	} from 'vue'
+	import {ref,onMounted} from 'vue'
 	import TransNavVue from '../../components/TransNav.vue';
-	import {
-		request
-	} from '@/utils/request'
+	import {request} from '@/utils/request'
 	import { useTokenStorage } from '../../utils/storage'  // 新增导入
+	import { onShow } from '@dcloudio/uni-app'
 
 	const { getAccessToken } = useTokenStorage()  // 新增获取token方法
 	// 删除useRoute引入，改用uni-app方式获取参数
@@ -166,7 +165,7 @@
 	}
 
 	// 初始化数据
-	onMounted(() => {
+	onShow(() => {
 	  const pages = getCurrentPages()
 	  const currentPage = pages[pages.length - 1]
 	  const options = currentPage.$page.options || currentPage.options

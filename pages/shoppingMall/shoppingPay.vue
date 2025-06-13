@@ -359,7 +359,7 @@ onShow(() => {
     
 });
 
-onMounted(() => {
+onShow(() => {
     // 获取从购物车或商品详情页传递过来的商品信息
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
@@ -370,16 +370,9 @@ onMounted(() => {
         eventChannel.on('acceptSelectedItems', (data) => {
             if (data?.selectedItems && data.selectedItems.length > 0) {
                 selectedItems.value = data.selectedItems;
-
                 calculateTotalPrice();
                 getAddressList();
-                // 不自动获取优惠券，由用户手动点击选择
-            } else {
-                uni.showToast({ title: '参数错误', icon: 'none' });
-                setTimeout(() => {
-                    uni.navigateBack();
-                }, 1500);
-            }
+            } 
         });
     }
 });

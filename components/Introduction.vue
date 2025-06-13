@@ -1,7 +1,7 @@
 <template>
 		<view class="view_box">
 			<view :style="transitionStyle">
-				<template v-for="item in list">
+				<template v-for="(item,index) in list" :key="index">
 					<view class="notice-content">{{ item }}</view>
 				</template>
 			</view>

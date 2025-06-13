@@ -71,6 +71,7 @@ import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
 import { onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
+import { onShow } from '@dcloudio/uni-app'
 const { getAccessToken} = useTokenStorage()
 const BASE_URL="https://www.cdsrh.top"
 
@@ -81,7 +82,6 @@ const tempNickname = ref('')
 const handleAddress = () => {
   uni.navigateTo({ url: '/pages/userInfo/addressList' })
 }
-
 const onChooseAvatar = (e) => {
     uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload', 
@@ -96,7 +96,7 @@ const onChooseAvatar = (e) => {
               }
             },
             
-          });
+    });
 
 };
 
@@ -183,7 +183,7 @@ const getUserInfo = async () => {
     }
 };
 
-onMounted(() => {
+onShow(() => {
     if (getAccessToken()) {
         getUserInfo();
     } else {

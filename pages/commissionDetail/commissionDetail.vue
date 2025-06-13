@@ -60,22 +60,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
-import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
-const { getAccessToken } = useTokenStorage()
+import { onShow } from '@dcloudio/uni-app';
 
-const records = ref([
-    { createTime: '2023-10-15 14:30', amount: '0' },
+const records = ref([])
+const commissionData = ref({})
 
-    // 可以添加更多记录数据
-])
-const commissionData = ref({
-	cumulativeEarnings: 0,
-	currentEarnings: 0,
-	todaySEarnings: 0
-})
+// 跳转提现
 const goToWithdraw = ()=>{
     uni.navigateTo({
         url:'/pages/cashWithdrow/cashWithdrow',
@@ -122,7 +115,7 @@ const getCommissionDetailList = async () => {
    
   }
 }
-onMounted(() => {
+onShow(() => {
 	getCommissionDetail()
 	getCommissionDetailList()
 })

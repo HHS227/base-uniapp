@@ -112,8 +112,9 @@
   <script setup>
   import { ref, computed, onMounted } from 'vue';
   import { request } from '@/utils/request';
-  import { useTokenStorage } from '../../utils/storage'; 
+
   import TransNavVue from '../../components/TransNav.vue';
+  import { onShow } from '@dcloudio/uni-app'
   
   // 状态与数据
   const isEdit = ref(false);        // 编辑状态
@@ -150,7 +151,7 @@
 	}
   };
   
-  onMounted(() => {
+  onShow(() => {
 	getCartList();
   });
   

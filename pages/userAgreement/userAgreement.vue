@@ -35,14 +35,10 @@
 import { ref, onMounted } from 'vue';
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue'
+import { onShow } from '@dcloudio/uni-app'
 const smartBeeList = ref([])
 
 
-onMounted(() => {
-   
-
-
-})
 //获取智能养蜂内容
 
 const getSmartBeeList = async () => {

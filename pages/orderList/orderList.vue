@@ -2,19 +2,13 @@
  <view>
   <TransNavVue title="订单列表" />
   <view class="container">
-    <!-- 导航栏 -->
+
     <view class="nav-tabs">
-      <view 
-        v-for="tab in tabs" 
-        :key="tab.value"
-        :class="['tab-item', {active: activeTab === tab.value}]"
-        @click="activeTab = tab.value"
-      >
+      <view   v-for="tab in tabs"  :key="tab.value" :class="['tab-item', {active: activeTab === tab.value}]" @click="activeTab = tab.value">
         <text>{{ tab.label }}</text>
       </view>
     </view>
     
-    <!-- 列表内容 -->
     <scroll-view scroll-y class="list-container">
       <view 
         v-for="item in filteredList" 
@@ -46,12 +40,11 @@
 </template>
 
 <script setup>
-import { ref, computed , onMounted} from 'vue';
+import { ref, computed , } from 'vue';
 import { request } from '@/utils/request'
-import { useTokenStorage } from '../../utils/storage'
 import TransNavVue from '../../components/TransNav.vue';
-import { getStatusBarHeight, getTitleBarHeight, getNarBarHeight } from '../../utils/system';
-const { getAccessToken} = useTokenStorage()
+import { getNarBarHeight,formatDateTime } from '../../utils/system';
+import { onShow } from '@dcloudio/uni-app'
 
 const tabs = [
   { label: '全部订单', value: '' },
@@ -62,30 +55,18 @@ const tabs = [
 ];
 
 const activeTab = ref('');
-
 // 模拟数据
-const records = ref([
-  {
-    adoptCircle: 3,
-adoptType: 2,
-beehiveId: 24989,
-id: 6,
-price: 473,
-sharedPrice: 279,
-status: 2,
-userId: 23038,
-     image: '/static/images/养蜂.png'
-  },
-
-]);
+const records = ref([]);
 
 const filteredList = computed(() => {
   if (activeTab.value === '') return records.value;
   return records.value.filter(item => item.status === activeTab.value);
 });
 
+
 const getStatusColor = (status) => {
   const colors = {
+    0:  '#f50101',  //待支付
     1: '#ff6f0e', // 待发货 - 橙色
     2: '#1989fa', // 已发货 - 蓝色 
     3: '#909399', // 已取消 - 灰色
@@ -93,21 +74,22 @@ const getStatusColor = (status) => {
   };
   return colors[status] || '#1989fa';
 };
-
 const getStatusText = (status) => {
   const texts = {
+    0:'未支付',
     1: '待发货',
     2: '已发货', 
     3: '已取消',
-    4: '已完成'
+    4: '已完成',
+    5:  '已退款',
+   
   };
-  return texts[status] || '未支付';
+  return texts[status] || '未知状态';
 };
 
-onMounted(() => {
+onShow(() => {
   getRecordsList()
  
-
 })
 //获取认养记录记录
 const getRecordsList= async () => {
@@ -118,22 +100,16 @@ const getRecordsList= async () => {
     
     })
     
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0 ) {
       records.value = res.data || [];
       
     } else {
       throw new Error(res.msg || '数据异常')
     }
   } catch (err) {
-    console.error('获取认养记录失败:', err)
+    console.error('获取订单记录失败:', err)
    
   }
-}
-// 时间戳转换
-const formatDateTime = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
 }
 </script>
 

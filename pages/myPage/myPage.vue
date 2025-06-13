@@ -152,393 +152,235 @@
 
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
-
 import BeeTabbarVue from '../../components/BeeTabbar.vue'
-import {ref,onMounted,} from 'vue'
-import { onShow ,onShareAppMessage} from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { useTokenStorage } from '../../utils/storage'
-const {  getAccessToken ,getOpenId} = useTokenStorage()
 import { request } from '@/utils/request'
 
+const { getAccessToken, clearToken } = useTokenStorage()
 const userInfo = ref({})
 const commissionData = ref({})
-const isBeeFarm=ref({})
+const isBeeFarm = ref({})
 
+// 处理登录检查和导航的公共函数
+const navigateIfLoggedIn = (url) => {
+	if (!getAccessToken()) {
+		uni.showModal({
+			title: '提示',
+			content: '请先登录',
+			success: (res) => {
+				if (res.confirm) {
+					uni.navigateTo({ url: '/pages/login/login' })
+				}
+			}
+		})
+	} else {
+		uni.navigateTo({ url })
+	}
+}
 
 // 点击分享按钮时执行的函数
 const handleClickShare = (e) => {
-  // 如果用户未登录，可以在这里处理登录逻辑
-  if (!getAccessToken()) {
-    e.stopPropagation() // 阻止默认分享行为
-    uni.showModal({
-      title: '提示',
-      content: '请先登录再分享',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-  }
-
+	if (!getAccessToken()) {
+		e.stopPropagation()
+		uni.showModal({
+			title: '提示',
+			content: '请先登录再分享',
+			success: (res) => {
+				if (res.confirm) {
+					uni.navigateTo({ url: '/pages/login/login' })
+				}
+			}
+		})
+	}
 }
-
-
 // 注册全局分享钩子
 onShareAppMessage(() => {
-  // 这里只处理已登录用户的分享配置
-  if (!getAccessToken()) {
-    return false // 阻止未登录用户的分享
-  }
-  
-  return {
-    title: '智慧养蜂，快来领养吧',
-    imageUrl: '/static/images/myPage/Invitation.png', 
-    path: `/pages/login/login?shareUserId=${userInfo.value.id}` ,
-    success: () => {
-      uni.showToast({
-        title: '分享成功',
-        icon: 'success'
-      })
-    },
-    fail: (err) => {
-      uni.showToast({
-        title: '分享失败',
-        icon: 'none'
-      })
-    }
-  }
+	if (!getAccessToken()) {
+		return false
+	}
+
+	return {
+		title: '智慧养蜂，快来领养吧',
+		imageUrl: '/static/images/myPage/Invitation.png',
+		path: `/pages/login/login?shareUserId=${userInfo.value.id}`,
+		success: () => {
+			uni.showToast({
+				title: '分享成功',
+				icon: 'success'
+			})
+		},
+		fail: (err) => {
+			uni.showToast({
+				title: '分享失败',
+				icon: 'none'
+			})
+		}
+	}
 })
-const toLogo=()=>{
-	uni.navigateTo({ url: '/pages/login/login' })	
+
+const toLogin = () => {
+	uni.navigateTo({ url: '/pages/login/login' })
 }
 
 onShow(() => {
-  if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '您尚未登录，请先登录',
-      confirmText: '去登录',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-  } else {
-    getMyInfo()
-    getCommissionDetail()
-    // getWalletInfo()
-	getIsBeeFarm()
-  }
+	if (!getAccessToken()) {
+		uni.showModal({
+			title: '提示',
+			content: '您尚未登录，请先登录',
+			confirmText: '去登录',
+			cancelText: '取消',
+			success: (res) => {
+				if (res.confirm) {
+					uni.navigateTo({ url: '/pages/login/login' })
+				}
+			}
+		})
+	} else {
+		getMyInfo()
+		getCommissionDetail()
+		getIsBeeFarm()
+	}
 })
-
-
-
-//跳转到客服服务
-const gotoCustomerService = () => {
-  if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-  } else {
-    uni.navigateTo({
-      url: '/pages/customerService/customerService'
-    })
-  }
-}
 
 // 跳转佣金详情
 const gotoCommission = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        } 
-      }
-    })
-  } else{
-	uni.navigateTo({
-    url: '/pages/commissionDetail/commissionDetail'
-  })
-  }
-
-  
+	navigateIfLoggedIn('/pages/commissionDetail/commissionDetail')
 }
+
 // 跳转提现
 const gotoWithdraw = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-	  content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        } 
-      }
-    })
-  } else{
-	uni.navigateTo({
-    url: '/pages/withdraw/withdraw',
-    success: (res) => {
-      res.eventChannel.emit('walletData', walletData.value)
-    }
-  })
-  }
- 
- 
+	navigateIfLoggedIn('/pages/withdraw/withdraw')
 }
-
 
 // 跳转认养记录
 const gotAdoptionRecords = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/adoptionRecords/adoptionRecords'
-  })
-	}	
+	navigateIfLoggedIn('/pages/adoptionRecords/adoptionRecords')
 }
+
 // 跳转订单列表
 const gotoOrderList = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/orderList/orderList'
-  })
-	}
+	navigateIfLoggedIn('/pages/orderList/orderList')
 }
+
 // 跳转蜂农入住
 const gotoBeeFarmerJion = () => {
-    if (!getAccessToken()) {
-        uni.showModal({
-            title: '提示',
-            content: '请先登录',
-            success: (res) => {
-                if (res.confirm) {
-                    uni.navigateTo({ url: '/pages/login/login' })
-                }
-            }
-        })
-    } else {
-        if (isBeeFarm.value.auditStatus == 1 ) {
-            uni.navigateTo({
-                url: '/pages/beeFarmInfo/beeFarmInfo'
-            })
-        } else if(isBeeFarm.value.auditStatus == 0){
-            uni.navigateTo({
-                url: '/pages/beeFarmerJion/jionFeedback'
-            })
-        } 
-		 else {
-            uni.navigateTo({
-                url: '/pages/beeFarmerJion/beeFarmerJion'
-            })
-        } 
-    }
+	if (!getAccessToken()) {
+		uni.showModal({
+			title: '提示',
+			content: '请先登录',
+			success: (res) => {
+				if (res.confirm) {
+					uni.navigateTo({ url: '/pages/login/login' })
+				}
+			}
+		})
+	} else {
+		if (isBeeFarm.value.auditStatus == 1) {
+			uni.navigateTo({
+				url: '/pages/beeFarmerJion/beeFarmInfo'
+			})
+		} else if (isBeeFarm.value.auditStatus == 0) {
+			uni.navigateTo({
+				url: '/pages/beeFarmerJion/jionFeedback'
+			})
+		} else {
+			uni.navigateTo({
+				url: '/pages/beeFarmerJion/beeFarmerJion'
+			})
+		}
+	}
 }
+
 // 跳转智能养蜂
 const gotoSmartBee = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/smartBee/smartBee'
-  })
-	}
+	navigateIfLoggedIn('/pages/smartBee/smartBee')
 }
+
 // 跳转消息
 const gotoMessagePage = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/messagePage/messagePage'
-  })
-	}
+	navigateIfLoggedIn('/pages/messagePage/messagePage')
 }
+
 // 跳转问卷调查
 const gotoSurveyList = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/surveyList/surveyList'
-  })
-	}
+	navigateIfLoggedIn('/pages/surveyList/surveyList')
 }
+
 // 跳转用户信息
 const gotoUserInfo = () => {
-	if (!getAccessToken()) {
-    uni.showModal({
-      title: '提示',
-      content: '请先登录',
-      success: (res) => {
-        if (res.confirm) {
-          uni.navigateTo({ url: '/pages/login/login' })
-        }
-      }
-    })
-	}else{
-		uni.navigateTo({
-    url: '/pages/userInfo/userInfo'
-  })
-	}
+	navigateIfLoggedIn('/pages/userInfo/userInfo')
+}
+
+// 跳转客服服务
+const gotoCustomerService = () => {
+	navigateIfLoggedIn('/pages/customerService/customerService')
 }
 
 // 获取佣金详情
 const getCommissionDetail = async () => {
 	try {
-    const res = await request({
-      url: '/app-api/weixin/distribution/get/commission/info',
-      showLoading: true, 
-    
-    })
-    
-    if (res.code === 0 || res.code === 200) {
-     commissionData.value=res.data || {};
-      
-    } else {
-      throw new Error(res.msg || '数据异常')
-    }
-  } catch (err) {
-    console.error('获取用户信息失败:', err)
-   
-  }
+		const res = await request({
+			url: '/app-api/weixin/distribution/get/commission/info',
+			showLoading: true,
+		})
+		if (res.code === 0 || res.code === 200) {
+			commissionData.value = res.data || {};
+		}
+	} catch (err) {
+		console.error('获取佣金信息失败:', err)
+	}
 }
-// 获取钱包信息
-// const getWalletInfo = async () => {
-// 	try {
-//     const res = await request({
-//       url: '/app-api/WeiXinMini/wallet/get/Info',
-//       showLoading: true, 
-     
-//     })
-    
-//     if (res.code === 0 || res.code === 200) {
-//      walletData.value = res.data || {};
-   
-//     } else {
-//       throw new Error(res.msg || '数据异常')
-//     }
-//   } catch (err) {
-//     console.error('获取用户信息失败:', err)
-   
-//   }
-// }
+
 // 获取用户信息
 const getMyInfo = async () => {
-  try {
-    const res = await request({
-      url: '/app-api/weixin/user/get/myInfo',
-      showLoading: true, 
-      
-    })
-    
-    if (res.code === 0 || res.code === 200) {
-     userInfo.value = res.data || {};
-      
-    } else {
-      throw new Error(res.msg || '数据异常')
-    }
-  } catch (err) {
-    console.error('获取用户信息失败:', err)
-   
-  }
+	try {
+		const res = await request({
+			url: '/app-api/weixin/user/get/myInfo',
+			showLoading: true,
+		})
+		if (res.code === 0 || res.code === 200) {
+			userInfo.value = res.data || {};
+		}
+	} catch (err) {
+		console.error('获取用户信息失败:', err)
+	}
 }
-//获取是否是蜂农入驻
+
+// 获取是否是蜂农入驻
 const getIsBeeFarm = async () => {
-  try {
-    const res = await request({
-      url: '/app-api/weixin/beeFarmApply/get',
-      showLoading: true, 
-      
-    })
-    
-    if (res.code === 0 || res.code === 200) {
-		isBeeFarm.value=res.data
-      
-    } else {
-      throw new Error(res.msg || '数据异常')
-    }
-  } catch (err) {
-    console.error('获取用户信息失败:', err)
-   
-  }
+	try {
+		const res = await request({
+			url: '/app-api/weixin/beeFarmApply/get',
+			showLoading: true,
+		})
+		if (res.code === 0 || res.code === 200) {
+			isBeeFarm.value = res.data
+		}
+	} catch (err) {
+		console.error('获取蜂农入驻信息失败:', err)
+	}
 }
-//退出登录
+
+// 退出登录
 const logout = () => {
-  uni.showModal({
-    title: '提示',
-    content: '确定要注销登录吗？',
-    success: (res) => {
-      if (res.confirm) {
-        const { clearToken } = useTokenStorage()
-        clearToken()
-        userInfo.value = {}
-        commissionData.value = {}
-        uni.showToast({
-          title: '已退出登录',
-          icon: 'success'
-        })
-      }
-    }
-  })
+	uni.showModal({
+		title: '提示',
+		content: '确定要注销登录吗？',
+		success: (res) => {
+			if (res.confirm) {
+				clearToken()
+				userInfo.value = {}
+				commissionData.value = {}
+				uni.showToast({
+					title: '已退出登录',
+					icon: 'success'
+				})
+			}
+		}
+	})
 }
-
-
 </script>
 
 <style lang="scss" scoped>

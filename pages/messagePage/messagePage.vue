@@ -44,7 +44,8 @@
 import { ref ,onMounted} from 'vue';
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue';
-
+import {formatDateTime } from '../../utils/system';
+import { onShow } from '@dcloudio/uni-app'
 
 
 const popup = ref(null);
@@ -85,7 +86,7 @@ const closePopup = async () => {
     popup.value.close()
   }
 }
-onMounted(() => {
+onShow(() => {
 	getCurrentMessage()
  
 
@@ -109,12 +110,7 @@ const getCurrentMessage = async () => {
    
   }
 }
-// 时间戳转换
-const formatDateTime = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
-}
+
 
 </script>
 

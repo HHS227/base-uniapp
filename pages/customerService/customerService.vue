@@ -28,9 +28,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { request } from '@/utils/request';
 import TransNavVue from '../../components/TransNav.vue';
+import { onShow } from '@dcloudio/uni-app'
+
 
 const qrCodeUrl = ref('/static/images/logo.png'); // 默认图片
 
@@ -50,7 +52,7 @@ const getCustomerQrCode = async () => {
   }
 };
 
-onMounted(() => {
+onShow(() => {
   getCustomerQrCode();
 });
 

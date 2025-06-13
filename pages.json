@@ -47,7 +47,7 @@
 		},
 	
 		{
-			"path": "pages/shoppingCart/shoppingCart",
+			"path": "pages/shoppingMall/shoppingCart",
 			"style": {
 				"navigationBarTitleText" : "",
 				"navigationStyle": "custom"
@@ -83,14 +83,14 @@
 			}
 		},
 		{
-			"path": "pages/beeFarmInfo/beeFarmInfo",
+			"path": "pages/beeFarmerJion/beeFarmInfo",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/beeFarmInfo/addFarm",
+			"path": "pages/beeFarmerJion/addFarm",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
@@ -269,14 +269,7 @@
 				"navigationStyle": "custom"
 			}
 		},
-		{
-			"path" : "pages/beeFarmerJion/jionForm",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
+	
 		{
 			"path" : "pages/beeFarmerJion/jionFeedback",
 			"style" : 

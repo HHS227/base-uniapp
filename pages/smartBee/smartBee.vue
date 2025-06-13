@@ -1,6 +1,6 @@
 <template>
   <view>
-    <TransNavVue title="认养记录" />
+    <TransNavVue title="智能养蜂" />
   <view class="container">
     <scroll-view scroll-y class="content">
       <!-- 使用v-for遍历后端数据 -->
@@ -20,6 +20,7 @@
       <!-- 弹窗组件 -->
       <uni-popup ref="popup" type="center">
         <view class="popup-content">
+          <view class="popup-title">详情</view>
           <scroll-view scroll-y class="detail-scroll">
             <text class="detail-text">{{ currentContent }}</text>
           </scroll-view>
@@ -38,19 +39,19 @@
 </template>
 
 <script setup>
-import { ref,  onMounted} from 'vue';
+import { ref} from 'vue';
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue'
+import { onShow } from '@dcloudio/uni-app'
 const smartBeeList=ref([])
 const popup=ref(null)
 
-onMounted(() => {
+onShow(() => {
   getSmartBeeList()
  
 
 })
 //获取智能养蜂内容
-
 const getSmartBeeList= async () => {
   try {
     const res = await request({
@@ -71,16 +72,16 @@ const getSmartBeeList= async () => {
     })
   }
 }
-const showDialog = ref(false)
+
 const currentContent = ref('')
 
 const showDetail = (content) => {
   currentContent.value = content
-  // popup.value.open()
+  popup.value.open()
 }
 
 const closeDetail = () => {
-  // popup.value.close()
+  popup.value.close()
 }
 </script>
 
@@ -144,12 +145,11 @@ const closeDetail = () => {
 }
 
 .popup-content {
-  background: #fff;
-  padding: 40rpx;
-  border-radius: 16rpx;
-  max-width: 80vw;
-  max-height: 70vh;
-  
+	width: 600rpx;
+	background: #fff;
+	border-radius: 24rpx;
+  padding: 20rpx;
+	
   .detail-scroll {
     max-height: 60vh;
     
@@ -159,15 +159,25 @@ const closeDetail = () => {
       color: #333;
     }
   }
-  
-  .close-btn {
-    margin-top: 30rpx;
-    background: #f0f0f0;
-    color: #666;
-    font-size: 28rpx;
-    padding: 10rpx 30rpx;
-    border-radius: 8rpx;
-    float: right;
-  }
+	
+
+	.popup-title {
+		font-weight: bold;
+		font-size: 40rpx;
+		color: #ff7f00;
+		text-align: center;
+		margin-bottom: 20rpx;
+	}
+
+
+	.close-btn {
+		
+		height: 80rpx;
+		background: #ff6f0e;
+		color: #fff;
+		border-radius: 40rpx;
+		font-size: 30rpx;
+	}
 }
+
 </style>
