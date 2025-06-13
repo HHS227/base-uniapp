@@ -161,17 +161,8 @@ const handleBuy = async (item) => {
               icon: 'success'
             });
 
-            // 4. 支付成功后更新订单状态
-            await request({
-              url: '/app-api/weixin/order/update-paid',
-              data: {
-                payOrderId: payOrderId
-              },
-              method: 'post',
-              showLoading: true,
-            });
 
-            // 5. 跳转到订单详情页
+            // 4. 跳转到订单详情页
             setTimeout(() => {
               uni.navigateTo({
                 url: '/pages/adoptionRecords/adoptionRecords'
@@ -205,10 +196,7 @@ const handleBuy = async (item) => {
 
 const selectedFarmId = ref('')
 const selectedType = ref('')
-const typeOptions = ref([
-  { label: '独享', value: '1'},
-  { label: '拼团', value: '2' }
-])
+const typeOptions = ref([{ label: '独享', value: '1'},{ label: '拼团', value: '2' }])
 
 const onFarmChange = (e) => {
   selectedFarmId.value = dataList.value[e.detail.value]?.id || ''

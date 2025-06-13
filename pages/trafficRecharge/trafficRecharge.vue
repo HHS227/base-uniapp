@@ -232,13 +232,6 @@ const processPayment = async (orderId) => {
                     icon: 'success'
                 });
                 
-                // 更新订单状态
-                await request({
-                    url: '/app-api/weixin/order/update-paid',
-                    data: { payOrderId: orderId },
-                    method: 'post',
-                    showLoading: true,
-                });
                 
                 // 跳转到订单列表页
                 setTimeout(() => {

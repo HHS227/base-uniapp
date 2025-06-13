@@ -88,12 +88,6 @@ const handleWechatLogin = async (e) => {
         openId: res.data.openid
       })
       
-      // 登录成功后，可以将分享者ID与用户关联的逻辑
-      if (shareUserId.value) {
-        console.log('用户登录成功，关联分享者ID:', shareUserId.value)
-        // 这里可以添加额外的API调用，将分享者ID与登录用户关联
-      }
-      
       uni.switchTab({ url: '/pages/myPage/myPage' })
     } else {
       throw new Error(res.msg || '登录失败')

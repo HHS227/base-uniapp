@@ -168,7 +168,7 @@ import TransNavVue from '../../components/TransNav.vue';
 import { onShow } from '@dcloudio/uni-app';
 import { useTokenStorage } from '../../utils/storage';
 
-const { getAccessToken,getOpenId } = useTokenStorage();
+const {getOpenId } = useTokenStorage();
 
 // 状态管理
 const selectedItems = ref([]);
@@ -472,7 +472,7 @@ const confirmPay = async () => {
 };
 
 // 处理支付流程的函数
-const processPayment = async (orderId) => {
+const processPayment = async () => {
     // 提交支付请求
     const paylist = await request({
         url: '/app-api/pay/order/submit',
@@ -510,13 +510,7 @@ const processPayment = async (orderId) => {
                     icon: 'success'
                 });
                 
-                // 更新订单状态
-                await request({
-                    url: '/app-api/weixin/order/update-paid',
-                    data: { payOrderId: orderId },
-                    method: 'post',
-                    showLoading: true,
-                });
+             
                 
                 // 跳转到订单列表页
                 setTimeout(() => {

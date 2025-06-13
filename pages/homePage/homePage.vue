@@ -81,7 +81,7 @@
 			</view>
 	
 			<view v-if="dataList.length>0">
-				<view class="my-bee-card" v-for='item in dataList' :key="item" @click="gotoMyBeehive(item)">
+				<view class="my-bee-card" v-for='(item,index) in dataList' :key="index" @click="gotoMyBeehive(item)">
 					<image src="/static/images/homePage/myBeeHiveListBg.png" mode="" class="card-bg"></image>
 					<view class="card-content">
 						<view class="card-top">
@@ -170,7 +170,6 @@ const {  getAccessToken } = useTokenStorage()
 
 onMounted(() => {
 	getActiveList()
-	
 })
 onShow(() => {
   getSwiperList()

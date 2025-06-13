@@ -17,7 +17,7 @@
 					<view class="info-content">
 						<view class="goods-price">
 							￥
-							<text>{{ MyBeehiveInfo.price }}</text>
+							<text>{{adoptionType==2 ? MyBeehiveInfo.sharePrice: MyBeehiveInfo.price }}</text>
 						</view>
 						
 					</view>

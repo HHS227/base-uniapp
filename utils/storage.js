@@ -3,15 +3,17 @@ import { ref } from 'vue'
 export const useTokenStorage = () => {
   const token = ref(null)
   
+
+const setToken = (tokenData) => {
+    uni.setStorageSync('token', tokenData)
+    token.value = tokenData
+}
   const getToken = () => {
     const tokenData = uni.getStorageSync('token')
     return tokenData || null
   }
   
-  const setToken = (tokenData) => {
-    uni.setStorageSync('token', tokenData)
-    token.value = tokenData
-  }
+ 
   
   const clearToken = () => {
     uni.removeStorageSync('token')
