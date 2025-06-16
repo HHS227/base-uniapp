@@ -10,7 +10,7 @@
 				<text>商场</text>
 			</view>
 			<view class="tab-item center-button" @click="scanCodeClick">
-				<image src="/static/images/apiculture.png" class="icon-large" />
+				<image src="/static/images/gameLogo.png" class="icon-large" />
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'monitorPage' }" @click="switchTab('/pages/honeySource/honeySource')">
 				<image :src="activeTab == 'monitorPage' ? '../static/images/honeySourceActive.png' : '../static/images/honeySource.png'" class="icon" />

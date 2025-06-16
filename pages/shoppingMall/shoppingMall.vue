@@ -19,7 +19,7 @@
                     <view class="goods-info">
                         <view class="goods-weight">
                             重量：
-                            <text>{{item.weight||0}}kg</text>
+                            <text>{{item.weight||0}}g</text>
                         </view>
                         <view class="goods-weight">已售{{item.sold||0}}</view>
                     </view>

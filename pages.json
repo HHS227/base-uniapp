@@ -129,12 +129,20 @@
 		},
 		
 		{
-			"path": "pages/homePage/collectBee",
+			"path": "pages/collectBee/collectBee",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
 			}
 		},
+		{
+			"path": "pages/collectBee/payBeeFarm",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		
 		{
 			"path": "pages/beeGame/beeGame",
 			"style": {

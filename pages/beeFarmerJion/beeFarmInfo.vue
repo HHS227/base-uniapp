@@ -57,7 +57,7 @@ const gotoDevices = (item) => {
 // 新增跳转方法
 const gotoAddFarm = () => {
   uni.navigateTo({
-    url: '/pages/beeFarmInfo/addFarm'
+    url: '/pages/beeFarmerJion/addFarm'
   })
 }
 

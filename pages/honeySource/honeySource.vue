@@ -1,109 +1,164 @@
 
-<template>
-  <view> 
-    <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
-    <uni-popup ref="popup" type="center">
-		<view class="popup-content">
-			<view class="popup-title">{{ currentBeeDetail.name }}</view>
-			<view class="popup-body">{{ currentBeeDetail.mainNectarPlants }}</view>
-			<button class="popup-btn" @click="closePopup">我已了解</button>
-		</view>
-	  </uni-popup>
-   <view class="container">
-     <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
-     <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
-     <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
-     <view class="map-container">
-       <map 
-         id="map" 
-         style="width: 100%; height: 500rpx;"
-         :latitude="30.5728"
-         :longitude="104.0668"
-         :markers="markers"
-         show-location
-       ></map>
-     </view>
-     <view class="my-bee-title">
-       <view>推荐蜜源</view>
-       <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
-     </view>
-     <view class="bee-list-center">
-       <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index" @click="showBeeDetail(item)">
-       <view class="bee-item-img">
-       <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
-     </view>
-       <view class="bee-item-title">
-         <text>{{item.name}}</text>
-         <view class="bee-item-address">{{item.address}}</view>
-       </view>
-     </view>
-     </view>
-   
-   </view>
-   <view class="tabbar-bottom"></view>
-   </view>
-</template>
+  <template>
+    <view> 
+      <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
+      <uni-popup ref="popup" type="center">
+        <view class="popup-content">
+          <view class="popup-title">{{ currentBeeDetail.name }}</view>
+          <view class="popup-body">
+            <view>面积:{{ currentBeeDetail.area }}</view> 
+            <view>蜜源:{{ currentBeeDetail.honeySeeds }}</view> 
+            <view>产区:{{ currentBeeDetail.region }}</view> 
+          </view>
+          <view class="popup-bottom">
+            <button class="popup-btn" @click="closePopup">我已了解</button>
+            <button class="popup-btn" @click="goToPayBeeFarm(currentBeeDetail.id)">去认养</button>
+          </view>
+        </view>
+      </uni-popup>
+      <view class="container">
+        <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
+        <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
+        <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
+        <view class="map-container">
+          <map 
+            id="map" 
+            style="width: 100%; height: 500rpx;"
+            :latitude="userLocation.latitude"
+            :longitude="userLocation.longitude"
+            :markers="markers"
+            show-location
+          ></map>
+        </view>
+        <view class="my-bee-title">
+          <view>推荐蜜源</view>
+          <image src="/static/images/homePage/myBeeTitle.png" mode="" class="title-image"></image>
+        </view>
+        <view class="bee-list-center">
+          <view class="bee-list-box" v-for="(item,index) in honeySourceList" :key="index" @click="showBeeDetail(item)">
+            <view class="bee-item-img">
+              <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
+            </view>
+            <view class="bee-item-title">
+              <text>{{item.name}}</text>
+              <view class="bee-item-address">{{item.address}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="tabbar-bottom"></view>
+    </view>
+  </template>
+
 <script setup>
 import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref } from 'vue'
 import { request } from '@/utils/request'
-
 import { onShow } from '@dcloudio/uni-app'
 
 const popup = ref(null);
-const loading = ref(false);
+const loading = ref(true);
 const currentBeeDetail = ref({});
 const honeySourceList = ref([]);
-//地图
-const markers = ref([
-  {
-		id: 1,
-		latitude: 30.6667,
-		longitude: 104.0667,
-		iconPath: '/static/images/homePage/marker.png',
-		width: 34,
-		height: 38,
-		label: {
-			content: '1',
-			color: '#ffffff',
-			anchorY: -36,
-			anchorX: -12
-		}
-	}
-])
-// 创建图例
-const generateMarkers = (list) => {
-  return list
-    .filter(item => item.latitude && item.longitude)
-    .map((item, index) => ({
-      id: index,
-      latitude: item.latitude,
-      longitude: item.longitude,
-      iconPath: '/static/images/homePage/marker.png',
-      width: 34,
-      height: 38,
-      // label: {  // 使用label属性在图标上方显示名称
-      //   content: 1,
-      //   color: '#fff',
-      //   fontSize: 14,
-      //   anchorX: -13,
-      //   anchorY: -35  // 调整位置在图标上方
-      // }
-    }))
-}
 
-// 获取蜜源列表
-const getShoppingList = async () => {
+// 用户位置 - 不设置默认值
+const userLocation = ref({
+latitude: null,
+  longitude: null
+});
+
+// 地图标记点
+const markers = ref([]);
+
+// 获取用户当前位置
+const getUserLocation = () => {
+  uni.getLocation({
+    type: 'gcj02',
+    success: (res) => {
+      userLocation.value = {
+        latitude: res.latitude,
+        longitude: res.longitude
+      };
+      getBeeFarmList();
+    },
+    fail: (err) => {
+      console.error('获取位置失败:', err);
+      uni.showToast({
+        title: '获取位置失败，将无法显示附近蜜源',
+        icon: 'none'
+      });
+      loading.value = false;
+    }
+  });
+};
+
+
+
+
+
+// 获取用户附件的蜂场列表
+const getBeeFarmList = async () => {
   try {
     const res = await request({
-      url: '/app-api/front/bee-farm/get/list',
+      url: '/app-api/weixin/location/get/beeFarm/range',
+      method: 'post',
+      data: {
+        latitude: userLocation.value.latitude,
+        longitude: userLocation.value.longitude,
+      },
       showLoading: false, 
     });
     
-    if (res.code === 0 || res.code === 200) {
+    if (res.code === 0) {
+      // 添加蜂场标记点
+      addBeeFarmMarkers(res.data);
+    } else {
+      throw new Error(res.msg || '数据异常');
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err);
+    loading.value = false;
+  }
+};
+
+// 添加蜂场标记点
+const addBeeFarmMarkers = (data) => {
+  data.forEach((farm, index) => {
+    if (farm.latitude && farm.longitude) {
+      markers.value.push({
+        id: index + 1, 
+        latitude: farm.latitude,
+        longitude: farm.longitude,
+        width: 30,
+        height: 30,
+        label: {
+          content: farm.name || '蜂场',
+          color: '#333333',
+          bgColor: '#FFD700',
+          padding: 5,
+          borderRadius: 3,
+          anchorY: -35
+        },
+       
+      });
+    }
+  });
+};
+// 获取蜜源列表
+const getNectarList= async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/nectar/get/list',
+      // data: {
+      //   latitude: userLocation.value.latitude,
+      //   longitude: userLocation.value.longitude
+      // },
+      showLoading: false, 
+    });
+    
+    if (res.code === 0 ) {
       honeySourceList.value = res.data || [];
-      markers.value = generateMarkers(honeySourceList.value);
       loading.value = false;
     } else {
       throw new Error(res.msg || '数据异常');
@@ -113,29 +168,48 @@ const getShoppingList = async () => {
     loading.value = false;
   }
 };
+
 //详情弹出框
 const showBeeDetail = (item) => {
   currentBeeDetail.value = {
     ...item,
-    id: item.id // 确保使用正确的ID字段
+    id: item.id 
   };
   popup.value.open();
 };
+
 // 关闭弹窗
 const closePopup = () => {
   popup.value.close();
 };
+
+//跳转到认养界面
+const goToPayBeeFarm = (id) => {
+  uni.navigateTo({
+    url:`/pages/collectBee/payBeeFarm?id=${id}`
+  })
+};
+
 onShow(() => {
-  getShoppingList();
+  loading.value = true;
+  getUserLocation();
+  getNectarList()
 });
 </script>
+
+
+
 
 <style lang="scss" scoped>
 .popup-content {
 	width: 600rpx;
+  height: 400rpx;
 	background: #fff;
 	border-radius: 24rpx;
   padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 	
 
 	.popup-title {
@@ -154,6 +228,7 @@ onShow(() => {
 		text-align: right;
 		margin-bottom: 40rpx;
 	}
+  
 
 	.popup-body {
 		font-weight: 400;
@@ -165,15 +240,22 @@ onShow(() => {
     overflow: auto;
    
 	}
+  .popup-bottom{
+    display: flex;
+    justify-content: space-between;
 
+    
 	.popup-btn {
-		
+    width: 48%;
 		height: 80rpx;
 		background: #ff6f0e;
 		color: #fff;
 		border-radius: 40rpx;
 		font-size: 30rpx;
 	}
+
+  }
+
 }
 .container {
   background-color: #f7f7f7;

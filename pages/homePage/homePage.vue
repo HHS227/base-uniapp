@@ -312,7 +312,7 @@ const collectBee = () => {
     return
   }else{
 	uni.navigateTo({
-    url: '/pages/homePage/collectBee'
+    url: '/pages/collectBee/collectBee'
   });
   }
  

@@ -141,7 +141,7 @@
 	    })
 	    if (res.code === 0 ) {
 	      uni.navigateTo({
-	        url: '/pages/shoppingCart/shoppingCart'
+	        url: '/pages/shoppingMall/shoppingCart'
 	      })
 	    } else {
 	      throw new Error(res.msg || '数据异常')
