@@ -315,34 +315,38 @@ const collectBee = () => {
 
 //扫码溯源
 const scanCode = () => {
-  uni.scanCode({
-    success: (res) => {
-      const productId = JSON.parse(res.result).id
-      if (productId) {
-        uni.navigateTo({
-          url: `/pages/shoppingMall/shopDetails?id=${productId}`,
-          success: () => {
-            uni.showToast({
-              title: '跳转成功',
-              icon: 'success'
-            })
-          }
+	uni.navigateTo({
+          url: `/pages/traceabilityDetails/traceabilityDetails`,
+         
         })
-      } else {
-        uni.showToast({
-          title: '未识别到商品ID',
-          icon: 'none'
-        })
-      }
-    },
-    fail: (err) => {
-      console.error('扫码失败:', err)
-      uni.showToast({
-        title: '扫码失败',
-        icon: 'none'
-      })
-    }
-  })
+//   uni.scanCode({
+//     success: (res) => {
+//       const productId = JSON.parse(res.result).id
+//       if (productId) {
+//         uni.navigateTo({
+//           url: `/pages/shoppingMall/shopDetails?id=${productId}`,
+//           success: () => {
+//             uni.showToast({
+//               title: '跳转成功',
+//               icon: 'success'
+//             })
+//           }
+//         })
+//       } else {
+//         uni.showToast({
+//           title: '未识别到商品ID',
+//           icon: 'none'
+//         })
+//       }
+//     },
+//     fail: (err) => {
+//       console.error('扫码失败:', err)
+//       uni.showToast({
+//         title: '扫码失败',
+//         icon: 'none'
+//       })
+//     }
+//   })
 }
 </script>
 

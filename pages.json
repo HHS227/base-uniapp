@@ -150,6 +150,13 @@
 				"navigationStyle": "custom"
 			}
 		},
+		{
+			"path": "pages/traceabilityDetails/traceabilityDetails",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
 		
 		{
 			"path": "pages/smartBee/smartBee",
