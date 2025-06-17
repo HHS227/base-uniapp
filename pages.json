@@ -47,7 +47,7 @@
 		},
 	
 		{
-			"path": "pages/shoppingMall/shoppingCart",
+			"path": "pages/shoppingCart/shoppingCart",
 			"style": {
 				"navigationBarTitleText" : "",
 				"navigationStyle": "custom"
@@ -120,7 +120,7 @@
 			}
 		},
 		{
-			"path": "pages/shoppingMall/shoppingPay",
+			"path": "pages/shoppingPay/shoppingPay",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"

@@ -163,7 +163,7 @@
 	}
 	
 	uni.navigateTo({
-	  url: '/pages/shoppingMall/shoppingPay',
+	  url: '/pages/shoppingPay/shoppingPay',
 	  success: (res) => {
 		res.eventChannel.emit('acceptSelectedItems', {
 		  selectedItems,
