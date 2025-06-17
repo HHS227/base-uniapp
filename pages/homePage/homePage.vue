@@ -20,7 +20,7 @@
 				<image src="/static/images/homePage/dataBg.png" class="bee-farm-image" mode="aspectFill"></image>
 				<view class="data-title">
 					<view class="title-right">
-						<view>蜂场数据</view>
+						<view>极蜜智慧蜂场</view>
 						<image src="/static/images/homePage/beeDataTitle.png" mode="" class="title-image"></image>
 					</view>
 					<view class="title-left">
@@ -29,18 +29,15 @@
 				</view>
 				<view class="data-list">
 					<view class="data-item">
-						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
-						<image src="/static/images/homePage/countryIcon.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListOne.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">蜂场</view>
-						
 						<view class="data-item-text">
 							{{infoData.countryNumber}}
 							<text>/个</text>
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
-						<image  src="/static/images/homePage/outputIcon.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListTwo.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">产量</view>
 						<view class="data-item-text">
 							{{infoData.outputAmount}}
@@ -48,8 +45,7 @@
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
-						<image src="/static/images/homePage/beeIcon.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListThree.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">蜂群数量</view>
 						<view class="data-item-text">
 							{{infoData.beeNumber}}
@@ -57,8 +53,7 @@
 						</view>
 					</view>
 					<view class="data-item">
-						<image src="/static/images/homePage/dataListBg.png" mode="" class="data-bg"></image>
-						<image src="/static/images/homePage/adoptIcon.png" mode="" class="data-icon"></image>
+						<image src="/static/images/homePage/dataListFour.png" mode="" class="data-bg"></image>
 						<view class="data-item-title">被认养</view>
 						<view class="data-item-text">
 							{{infoData.adoptionAmount}}
@@ -429,10 +424,11 @@ const scanCode = () => {
 						width: 109rpx;
 						height: 37rpx;
 						position: absolute;
-						left: 124rpx;
+						left: 210rpx;
 						top: 34rpx;
 						z-index: -1;
 					}
+
 				}
 				.title-btn {
 					margin-top: 30rpx;
@@ -460,14 +456,7 @@ const scanCode = () => {
 						height: 157rpx;
 						z-index: -1;
 					}
-					.data-icon {
-						position: absolute;
-						right: 36rpx;
-						top: 15rpx;
-						width: 70rpx;
-						height: 70rpx;
-						z-index: 1;
-					}
+				
 					.six-imge {
 						position: absolute;
 						width: 98rpx;
@@ -480,7 +469,7 @@ const scanCode = () => {
 						margin-left: 24rpx;
 						font-weight: 500;
 						font-size: 32rpx;
-						color: #666666;
+						color: #010022 ;
 					}
 					.data-item-text {
 						margin-top: 20rpx;

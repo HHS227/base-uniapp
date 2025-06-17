@@ -1,131 +1,102 @@
 <template>
 	<view>
 		<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
-	<view class="container">
-		<image src="/static/images/myPage/myPageTopBg.png" mode="" class="bg-image"></image>
-		<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
-		<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-			<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
-		</view>
-		<scroll-view scroll-y="true" class="scroll-content">
-			<view class="my-info-card">
-				<view class="avatar-content">
-					<view class="avatar-view">
-						<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
-						<image 
-						v-if="userInfo.gender == 1" 
-						src="/static/images/myPage/wamanIcon.png" 
-						mode="" 
-						class="sex-image">
-						</image>
-						<image 
-						v-else-if="userInfo.gender == 0" 
-						src="/static/images/myPage/manIcon.png" 
-						mode="" 
-						class="sex-image">
-						</image>
-					</view>
-					<view class="name-content">
-  <text class="name-text" @click="toLogo" :class="{'unlogin-text': !getAccessToken()}">{{userInfo.nickname||'请先登陆' }}</text>
-  <text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || '' }}</text>
-</view>
-					
-				</view>
-				<view class="app-info">
-					<view class="info-left">
-						<text class="name-text">蜜友汇</text>
-						<text class="id">{{ userInfo.weId }}</text>
-					</view>
-					<button 
-                            class="share-btn" 
-                            open-type="share" 
-                            @click="handleClickShare"
-                        >
-                            <image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
-                        </button>
-				</view>
+		<view class="container">
+			<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
+			<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
+				<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
 			</view>
-			<view class="commission-card">
-				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPage/commissionBg.png" mode=""></image>
-					<text class="amount">{{ commissionData.todaySEarnings||0 }}</text>
-					<text class="commission-text">今日佣金</text>
-				</view>
-				<view class="card-item" @click="gotoCommission">
-					<image class="item-bg" src="/static/images/myPage/commissionBg.png" mode=""></image>
-					<text class="amount">{{ commissionData.cumulativeEarnings||0 }}</text>
-					<text class="commission-text">累计佣金</text>
-				</view>
-			</view>
-			<view class="assets-total">
-				<view class="assets-item" @click="gotoWithdraw">
-					<view class="item-left">
-						<text class="amount">{{ commissionData.currentEarnings||0 }}</text>
-						<text class="text">可提现金额</text>
+
+			<scroll-view scroll-y="true" class="scroll-content">
+				<view class="my-info-top">
+					<view class="top-content">
+						<view class="avatar-view">
+							<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
+						</view>
+						<view class="name-content">
+							<text class="name-text" @click="toLogo" :class="{ 'unlogin-text': !getAccessToken() }">{{
+								userInfo.nickname || "请先登陆" }}
+							</text>
+							<view class="vip-content">
+								<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || "" }}</text>
+								<view class="share-box">
+								<button class="share-btn" open-type="share" @click="handleClickShare">
+									<image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
+								</button>
+								<txet>分享</txet>
+								</view>
+							</view>
+							
+						</view>
+						
 					</view>
-					<view class="item-right">
-						<image src="/static/images/myPage/cashIcon.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPage/ellipse.png" mode="" class="icon"></image>
+					<view class="bottom-content">
+						<view>我的服务</view>
+						<view class="menu-content">
+							<view @click="gotAdoptionRecords" class="menu-item">
+								<image src="/static/images/myPage/adoptIcon.png" class="menu-icon" mode=""></image>
+								<text class="menu-text">认养记录</text>
+							</view>
+							<view @click="gotoOrderList" class="menu-item">
+								<image src="/static/images/myPage/orderIcon.png" class="menu-icon" mode=""></image>
+								<text class="menu-text">订单列表</text>
+							</view>
+							<view @click="gotoCommission" class="menu-item">
+								<image src="/static/images/myPage/invitationIcon.png" class="menu-icon" mode=""></image>
+								<text class="menu-text">邀请有礼</text>
+							</view>
+							<view @click="gotoBeeFarmerJion" class="menu-item">
+								<image src="/static/images/myPage/beeEnterIcon.png" class="menu-icon" mode=""></image>
+								<text class="menu-text">蜂农入住</text>
+							</view>
+						</view>
 					</view>
-				</view>
-				<view class="assets-item" @click="gotoWithdraw">
-					<view class="item-left">
-						<text class="amount">{{ commissionData.coin ||0 }}</text>
-						<text class="text">M币</text>
-					</view>
-					<view class="item-right">
-						<image src="/static/images/myPage/MIcon.png" mode="" class="amount-image"></image>
-						<image src="/static/images/myPage/ellipse.png" mode="" class="icon"></image>
-					</view>
-				</view>
-			</view>
-			<view class="menu-content">
-				<view @click="gotAdoptionRecords"  class="menu-item">
-					<image src="/static/images/myPage/adoptIcon.png" class="menu-icon" mode=""></image>
-					<text class="menu-text">认养记录</text>
-				</view>
-				<view @click="gotoOrderList"  class="menu-item">
-					<image src="/static/images/myPage/orderIcon.png" class="menu-icon" mode=""></image>
-					<text class="menu-text">订单列表</text>
 				</view>
 
-				<view @click="gotoBeeFarmerJion"   class="menu-item">
-					<image src="/static/images/myPage/beeEnterIcon.png" class="menu-icon" mode=""></image>
-					<text class="menu-text">蜂农入住</text>
-				</view>
-				<view @click="gotoSmartBee"  class="menu-item">
-					<image src="/static/images/myPage/intelligenceIcon.png" class="menu-icon" mode=""></image>
-					<text class="menu-text">智能养蜂</text>
-				</view>
-			</view>
+				<view class="my-info-center">
+					<view>我的收益</view>
+					<view class="commission-card">
+						<view class="card-todaySEarnings card-item" @click="gotoCommission">
+							<view class="amount">{{ commissionData.todaySEarnings || 0 }}</view>
+							<text class="commission-text">今日佣金</text>
+						</view>
+						<view class="card-cumulativeEarnings card-item" @click="gotoCommission">
+						
+							<view class="amount">{{ commissionData.cumulativeEarnings || 0 }}</view>
+							<text class="commission-text">累计佣金</text>
+						</view>
+						<view class="card-currentEarnings card-item" @click="gotoWithdraw">
+					
+							<view class="amount">{{  commissionData.currentEarnings||0  }}</view>
+							<text class="commission-text">可提现金额</text>
+						</view>
+						<view class="card-coin card-item" @click="gotoWithdraw">
 			
-			<view class="list-content">
-				<view @click="gotoCommission"  class="list-item">
+							<view class="amount">{{ commissionData.coin || 0 }}</view>
+							<text class="commission-text">M币</text>
+						</view>
+					</view>
+
+				</view>
+				<view class="my-info-bottom">
+					<view @click="gotoCustomerService"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/invitationIcon.png" mode=""></image>
-						<text class="text">邀请有礼</text>
+						<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
+						<text class="text"> 联系客服 </text>
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-				</view>
-				<view @click="gotoMessagePage" class="list-item">
+					</view>
+					<view @click="gotoSmartBee"  class="list-item">
 					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
-						<text class="text">消息</text>
+						<image class="item-icon" src="/static/images/myPage/intelligenceIcon.png" mode=""></image>
+						<text class="text"> 智能养蜂 </text>
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-				</view>
-				<view @click="gotoSurveyList"  class="list-item">
+					</view>
+					<view @click="gotoSurveyList"  class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
 						<text class="text">问卷调查</text>
-					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-				</view>
-			
-				<view @click="gotoCustomerService"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
-						<text class="text">联系客服</text>
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
@@ -143,258 +114,255 @@
 				  </view>
 				
 				</view>
-			</view>
-		</scroll-view>
-		<view class="tabbar-bottom"></view>
-	</view>
+
+				</view>
+
+			</scroll-view>
+			<view class="tabbar-bottom"></view>
+		</view>
 	</view>
 </template>
 
 <script setup>
-import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system'
-import BeeTabbarVue from '../../components/BeeTabbar.vue'
-import { ref } from 'vue'
-import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import { useTokenStorage } from '../../utils/storage'
-import { request } from '@/utils/request'
+import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system";
+import BeeTabbarVue from "../../components/BeeTabbar.vue";
+import { ref } from "vue";
+import { onShareAppMessage, onShow } from "@dcloudio/uni-app";
+import { useTokenStorage } from "../../utils/storage";
+import { request } from "@/utils/request";
 
-const { getAccessToken, clearToken } = useTokenStorage()
-const userInfo = ref({})
-const commissionData = ref({})
-const isBeeFarm = ref({})
+const { getAccessToken, clearToken } = useTokenStorage();
+const userInfo = ref({});
+const commissionData = ref({});
+const isBeeFarm = ref({});
 
 // 处理登录检查和导航的公共函数
 const navigateIfLoggedIn = (url) => {
 	if (!getAccessToken()) {
 		uni.showModal({
-			title: '提示',
-			content: '请先登录',
+			title: "提示",
+			content: "请先登录",
 			success: (res) => {
 				if (res.confirm) {
-					uni.navigateTo({ url: '/pages/login/login' })
+					uni.navigateTo({ url: "/pages/login/login" });
 				}
-			}
-		})
+			},
+		});
 	} else {
-		uni.navigateTo({ url })
+		uni.navigateTo({ url });
 	}
-}
+};
 
 // 点击分享按钮时执行的函数
 const handleClickShare = (e) => {
 	if (!getAccessToken()) {
-		e.stopPropagation()
+		e.stopPropagation();
 		uni.showModal({
-			title: '提示',
-			content: '请先登录再分享',
+			title: "提示",
+			content: "请先登录再分享",
 			success: (res) => {
 				if (res.confirm) {
-					uni.navigateTo({ url: '/pages/login/login' })
+					uni.navigateTo({ url: "/pages/login/login" });
 				}
-			}
-		})
+			},
+		});
 	}
-}
+};
 // 注册全局分享钩子
 onShareAppMessage(() => {
 	if (!getAccessToken()) {
-		return false
+		return false;
 	}
 
 	return {
-		title: '智慧养蜂，快来领养吧',
-		imageUrl: '/static/images/myPage/Invitation.png',
+		title: "智慧养蜂，快来领养吧",
+		imageUrl: "/static/images/myPage/Invitation.png",
 		path: `/pages/login/login?shareUserId=${userInfo.value.id}`,
 		success: () => {
 			uni.showToast({
-				title: '分享成功',
-				icon: 'success'
-			})
+				title: "分享成功",
+				icon: "success",
+			});
 		},
 		fail: (err) => {
 			uni.showToast({
-				title: '分享失败',
-				icon: 'none'
-			})
-		}
-	}
-})
+				title: "分享失败",
+				icon: "none",
+			});
+		},
+	};
+});
 
 const toLogin = () => {
-	uni.navigateTo({ url: '/pages/login/login' })
-}
+	uni.navigateTo({ url: "/pages/login/login" });
+};
 
 onShow(() => {
 	if (!getAccessToken()) {
 		uni.showModal({
-			title: '提示',
-			content: '您尚未登录，请先登录',
-			confirmText: '去登录',
-			cancelText: '取消',
+			title: "提示",
+			content: "您尚未登录，请先登录",
+			confirmText: "去登录",
+			cancelText: "取消",
 			success: (res) => {
 				if (res.confirm) {
-					uni.navigateTo({ url: '/pages/login/login' })
+					uni.navigateTo({ url: "/pages/login/login" });
 				}
-			}
-		})
+			},
+		});
 	} else {
-		getMyInfo()
-		getCommissionDetail()
-		getIsBeeFarm()
+		getMyInfo();
+		getCommissionDetail();
+		getIsBeeFarm();
 	}
-})
+});
 
 // 跳转佣金详情
 const gotoCommission = () => {
-	navigateIfLoggedIn('/pages/commissionDetail/commissionDetail')
-}
+	navigateIfLoggedIn("/pages/commissionDetail/commissionDetail");
+};
 
 // 跳转提现
 const gotoWithdraw = () => {
-	navigateIfLoggedIn('/pages/withdraw/withdraw')
-}
+	navigateIfLoggedIn("/pages/withdraw/withdraw");
+};
 
 // 跳转认养记录
 const gotAdoptionRecords = () => {
-	navigateIfLoggedIn('/pages/adoptionRecords/adoptionRecords')
-}
+	navigateIfLoggedIn("/pages/adoptionRecords/adoptionRecords");
+};
 
 // 跳转订单列表
 const gotoOrderList = () => {
-	navigateIfLoggedIn('/pages/orderList/orderList')
-}
+	navigateIfLoggedIn("/pages/orderList/orderList");
+};
 
 // 跳转蜂农入住
 const gotoBeeFarmerJion = () => {
 	if (!getAccessToken()) {
 		uni.showModal({
-			title: '提示',
-			content: '请先登录',
+			title: "提示",
+			content: "请先登录",
 			success: (res) => {
 				if (res.confirm) {
-					uni.navigateTo({ url: '/pages/login/login' })
+					uni.navigateTo({ url: "/pages/login/login" });
 				}
-			}
-		})
+			},
+		});
 	} else {
 		if (isBeeFarm.value.auditStatus == 1) {
 			uni.navigateTo({
-				url: '/pages/beeFarmerJion/beeFarmInfo'
-			})
+				url: "/pages/beeFarmerJion/beeFarmInfo",
+			});
 		} else if (isBeeFarm.value.auditStatus == 0) {
 			uni.navigateTo({
-				url: '/pages/beeFarmerJion/jionFeedback'
-			})
+				url: "/pages/beeFarmerJion/jionFeedback",
+			});
 		} else {
 			uni.navigateTo({
-				url: '/pages/beeFarmerJion/beeFarmerJion'
-			})
+				url: "/pages/beeFarmerJion/beeFarmerJion",
+			});
 		}
 	}
-}
+};
 
 // 跳转智能养蜂
 const gotoSmartBee = () => {
-	navigateIfLoggedIn('/pages/smartBee/smartBee')
-}
+	navigateIfLoggedIn("/pages/smartBee/smartBee");
+};
 
 // 跳转消息
 const gotoMessagePage = () => {
-	navigateIfLoggedIn('/pages/messagePage/messagePage')
-}
+	navigateIfLoggedIn("/pages/messagePage/messagePage");
+};
 
 // 跳转问卷调查
 const gotoSurveyList = () => {
-	navigateIfLoggedIn('/pages/surveyList/surveyList')
-}
+	navigateIfLoggedIn("/pages/surveyList/surveyList");
+};
 
 // 跳转用户信息
 const gotoUserInfo = () => {
-	navigateIfLoggedIn('/pages/userInfo/userInfo')
-}
+	navigateIfLoggedIn("/pages/userInfo/userInfo");
+};
 
 // 跳转客服服务
 const gotoCustomerService = () => {
-	navigateIfLoggedIn('/pages/customerService/customerService')
-}
+	navigateIfLoggedIn("/pages/customerService/customerService");
+};
 
 // 获取佣金详情
 const getCommissionDetail = async () => {
 	try {
 		const res = await request({
-			url: '/app-api/weixin/distribution/get/commission/info',
+			url: "/app-api/weixin/distribution/get/commission/info",
 			showLoading: true,
-		})
+		});
 		if (res.code === 0 || res.code === 200) {
 			commissionData.value = res.data || {};
 		}
 	} catch (err) {
-		console.error('获取佣金信息失败:', err)
+		console.error("获取佣金信息失败:", err);
 	}
-}
+};
 
 // 获取用户信息
 const getMyInfo = async () => {
 	try {
 		const res = await request({
-			url: '/app-api/weixin/user/get/myInfo',
+			url: "/app-api/weixin/user/get/myInfo",
 			showLoading: true,
-		})
+		});
 		if (res.code === 0 || res.code === 200) {
 			userInfo.value = res.data || {};
 		}
 	} catch (err) {
-		console.error('获取用户信息失败:', err)
+		console.error("获取用户信息失败:", err);
 	}
-}
+};
 
 // 获取是否是蜂农入驻
 const getIsBeeFarm = async () => {
 	try {
 		const res = await request({
-			url: '/app-api/weixin/beeFarmApply/get',
+			url: "/app-api/weixin/beeFarmApply/get",
 			showLoading: true,
-		})
+		});
 		if (res.code === 0 || res.code === 200) {
-			isBeeFarm.value = res.data
+			isBeeFarm.value = res.data;
 		}
 	} catch (err) {
-		console.error('获取蜂农入驻信息失败:', err)
+		console.error("获取蜂农入驻信息失败:", err);
 	}
-}
+};
 
 // 退出登录
 const logout = () => {
 	uni.showModal({
-		title: '提示',
-		content: '确定要注销登录吗？',
+		title: "提示",
+		content: "确定要注销登录吗？",
 		success: (res) => {
 			if (res.confirm) {
-				clearToken()
-				userInfo.value = {}
-				commissionData.value = {}
+				clearToken();
+				userInfo.value = {};
+				commissionData.value = {};
 				uni.showToast({
-					title: '已退出登录',
-					icon: 'success'
-				})
+					title: "已退出登录",
+					icon: "success",
+				});
 			}
-		}
-	})
-}
+		},
+	});
+};
 </script>
 
 <style lang="scss" scoped>
 .container {
+	background: linear-gradient(180deg, #f9ddc9 0%, #f6ebe8 58%, #f6f6f6 83%);
 	height: 100vh;
-	display: flex;
-	flex-direction: column;
-	padding-bottom: 35rpx;
 	position: relative;
-	.bg-image {
-		position: absolute;
-		width: 750rpx;
-		height: 292rpx;
-	}
+	padding: 0rpx 20rpx;
+
 	.title-bar {
 		.logo-image {
 			width: 205rpx;
@@ -402,58 +370,51 @@ const logout = () => {
 			margin-left: 40rpx;
 		}
 	}
+
 	.scroll-content {
-		flex: 1;
-		height: 300rpx;
-		margin-top: 20rpx;
-		.my-info-card {
-			margin: auto;
-			width: 690rpx;
-			height: 308rpx;
-			background: linear-gradient(203deg, #e7b597 0%, #f2ece6  100%);
-			border-radius: 16rpx 16rpx 16rpx 16rpx;
-			border: 1rpx solid #ffffff;
-			.avatar-content {
-				padding-top: 24rpx;
+		margin: 20rpx 0rpx;
+
+		.my-info-top {
+			background-image: url('/static/images/myPage/myPageTopbg.png');
+			height: 445rpx;
+			background-size: 100% 100%;
+			padding: 30rpx;
+
+			.top-content {
 				display: flex;
+				align-items: center;
+
 				.avatar-view {
-					margin-left: 50rpx;
-					width: 140rpx;
-					height: 140rpx;
-					border-radius: 140rpx;
+					width: 95rpx;
+					height: 95rpx;
 					border: 2rpx solid #fff;
-					position: relative;
-					display: flex;
+					border-radius: 95rpx;
+
 					.avatar-image {
-						width: 136rpx;
-						height: 136rpx;
-						border-radius: 140rpx;
-					}
-					.sex-image {
-						right: 2rpx;
-						bottom: 2rpx;
-						position: absolute;
-						width: 40rpx;
-						height: 40rpx;
-						border-radius: 32rpx;
-						border: 2rpx solid #fff;
+						width: 91rpx;
+						height: 91rpx;
+						border-radius: 95rpx;
 					}
 				}
+
 				.name-content {
-					margin-top: 26rpx;
-					margin-left: 30rpx;
 					display: flex;
 					flex-direction: column;
+					justify-content: space-between;
+					margin-left: 20rpx;
+
 					.name-text {
 						font-weight: bold;
-						font-size: 46rpx;
+						font-size: 42rpx;
 						color: #010022;
 						line-height: 38rpx;
 					}
+
 					.unlogin-text {
-  color: red;
-  font-size: 12px;
-}
+						color: red;
+						font-size: 12px;
+					}
+
 					.id-text {
 						margin-top: 10rpx;
 						font-size: 24rpx;
@@ -461,175 +422,123 @@ const logout = () => {
 						line-height: 38rpx;
 					}
 				}
-			}
-			.app-info {
-				margin-top: 30rpx;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				padding: 0 40rpx 0 30rpx;
 
-				.info-left {
+				.vip-content {
 					display: flex;
-					flex-direction: column;
-					.name-text {
-						font-weight: 500;
-						font-size: 32rpx;
-						color: #010022;
-						line-height: 34rpx;
-					}
-					.id {
-						margin-top: 14rpx;
-						font-weight: bold;
-						font-size: 30rpx;
-						color: #ff7f00;
-						line-height: 34rpx;
+					.share-box {
+						display: flex;
+						align-items: center;
+						color: #FF6F0E;
+						margin-top: 10rpx;
+					
+						.share-btn {
+							background: transparent;
+							padding: 0;
+							margin-left: 10rpx;
+
+							.btn {
+								margin-right: 10rpx;
+								width: 30rpx;
+								height: 30rpx;
+							}
+						}
 					}
 				}
-				.share-btn{
-					margin: 0;
-					margin-top: 20rpx;
-					padding: 0;
-					background: transparent;
-					width: 60rpx;
-					height: 60rpx;
-				}
-				.btn {
-					width: 60rpx;
-					height: 60rpx;
+			}
+
+			.bottom-content {
+				margin-top: 80rpx;
+
+				.menu-content {
+					margin-top: 30rpx;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+
+					.menu-item {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+
+						.menu-icon {
+							width: 70rpx;
+							height: 70rpx;
+						}
+
+						.menu-text {
+							margin-top: 10rpx;
+							font-weight: 400;
+							font-size: 26rpx;
+							color: #000000;
+						}
+					}
 				}
 			}
 		}
-		.commission-card {
-			margin: auto;
-			margin-top: 24rpx;
-			height: 144rpx;
-			width: 690rpx;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			position: relative;
-			
-			.card-item {
-				width: 336rpx;
-				height: 144rpx;
+
+		.my-info-center {
+			margin-top: 20rpx;
+			height: 380rpx;
+			background-color: #fff;
+			padding: 10rpx 30rpx;
+			border-radius: 16rpx;
+
+			.commission-card {
+				margin-top: 24rpx;
 				display: flex;
-				flex-direction: column;
-				position: relative;
-				.item-bg{
-					position: absolute;
-					width: 336rpx;
-					height: 144rpx;
-					z-index: -1;
-				}
-				.amount {
-					margin-top: 24rpx;
-					margin-left: 42rpx;
-					font-weight: 800;
-					font-size: 42rpx;
-					color: #fff7d6;
-				}
-				.commission-text {
-					margin-top: 2rpx;
-					margin-left: 42rpx;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				.card-item{
+					height: 120rpx;
+					width: 48%;
+					margin-bottom: 20rpx;
+					padding: 20rpx;
 					font-weight: 500;
 					font-size: 24rpx;
-					color: #fff7d6;
+					color: #CCC5AC;
+				.amount{
+					font-weight: 800;
+					font-size: 42rpx;
+					color: #fff;
+				}
+				}
+				.card-todaySEarnings{
+					background-image: url('/static/images/myPage/todaySEarningsBg.png');
+					background-size: 100% 100%;
+					
+				}
+				.card-cumulativeEarnings{
+					background-image: url('/static/images/myPage/cumulativeEarningsBg.png');
+					background-size: 100% 100%;
+				}
+				.card-currentEarnings{
+					background-image: url('/static/images/myPage/currentEarningsBg.png');
+					background-size: 100% 100%;
+				}
+				.card-coin{
+					background-image: url('/static/images/myPage/coinBg.png');
+					background-size: 100% 100%;
 				}
 			}
+
 		}
-		.assets-total {
-			width: 690rpx;
-			display: flex;
-			justify-content: space-between;
-			margin: auto;
-			margin-top: 32rpx;
-			.assets-item {
-				padding: 16rpx 32rpx 0 28rpx;
-				width: 338rpx;
-				height: 120rpx;
-				background: #ffeddd;
-				box-shadow: 1rpx 6rpx 24rpx 0rpx rgba(0, 0, 0, 0.06);
-				border-radius: 16rpx;
-				display: flex;
-				justify-content: space-between;
-				.item-left {
-					display: flex;
-					flex-direction: column;
-					.amount {
-						font-weight: 800;
-						font-size: 32rpx;
-						color: #411a0a;
-						line-height: 48rpx;
-					}
-					.text {
-						line-height: 34rpx;
-						margin-top: 4rpx;
-						font-weight: 400;
-						font-size: 22rpx;
-						color: #2d2d2d;
-					}
-				}
-				.item-right {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					.amount-image {
-						width: 74rpx;
-						height: 78rpx;
-					}
-					.icon {
-						margin-top: 6rpx;
-						width: 50rpx;
-						height: 7rpx;
-					}
-				}
-			}
-		}
-		.menu-content {
-			margin: auto;
-			margin-top: 30rpx;
-			width: 690rpx;
-			height: 142rpx;
-			background: #ffffff;
-			box-shadow: 1rpx 6rpx 24rpx 0rpx rgba(0, 0, 0, 0.06);
+
+		.my-info-bottom {
+			margin-top: 20rpx;
+			height: 400rpx;
+			background-color: #fff;
 			border-radius: 16rpx;
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			.menu-item {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				.menu-icon {
-					width: 48rpx;
-					height: 48rpx;
-				}
-				.menu-text {
-					margin-top: 10rpx;
-					font-weight: 400;
-					font-size: 24rpx;
-					color: #000000;
-				}
-			}
-		}
-		.list-content {
-			width: 690rpx;
-			height: 448rpx;
-			background: #ffffff;
-			box-shadow: 1rpx 6rpx 24rpx 0rpx rgba(0, 0, 0, 0.06);
-			border-radius: 16rpx;
-			margin: auto;
-			margin-top: 30rpx;
-			display: flex;
-			flex-direction: column;
+			padding:10rpx 20rpx;
 			.list-item {
-				padding: 0 24rpx;
 				display: flex;
-				flex: 1;
 				align-items: center;
 				justify-content: space-between;
+				border-bottom: 1px solid #EEEEEE;
+
 				.item-left {
+					padding: 15rpx 0rpx;
 					display: flex;
 					.item-icon {
 						width: 40rpx;
@@ -641,23 +550,15 @@ const logout = () => {
 						color: #4c3f30;
 					}
 				}
+
 				.btn {
 					width: 27rpx;
 					height: 27rpx;
 				}
 			}
-			.contact-btn{
-				margin: 0;
-				background: #fff;
-				.item-left{
-					display: flex;
-					align-items: center;
-				}
-			}
 		}
 	}
+
+
 }
 </style>
-
-
-

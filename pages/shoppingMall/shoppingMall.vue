@@ -2,6 +2,7 @@
    <view>
     <BeeTabbarVue active-tab="shoppingMall"></BeeTabbarVue>
     <view class="container">
+
         <view class="floating-btn cart-btn" @click="gotoCart">
             <image src="/static/images/cart.png" mode="aspectFit" class="cart-icon"></image>
             <view class="btn-text">购物车</view>

@@ -25,7 +25,7 @@
 				<view class="bar-left">
 					<image src="/static/images/homePage/honeySourceIcon.png" mode="" class="bee-image"></image>
 					<view class="bar-title">
-						<text>蜜源面积</text>
+						<text>极蜜部落专属认证蜂场面积</text>
 						<view class="title-bt">
 							<image src="/static/images/homePage/diamond.png" mode="" class="icon"></image>
 							<text class="text" style='font-size: 8px;'>优质蜂源</text>
@@ -34,7 +34,7 @@
 				</view>
 				<view class="bar-right">
 						{{dataList.nectarSourceArea || '0'}}
-					<text class="unit">平方/公顷</text>
+					<text class="unit">亩</text>
 				</view>
 			</view>
 		</view>
@@ -78,7 +78,7 @@ const dataMap = ref({
 	adoptionAmount: {
 		text: '领养量',
 		icon: '/static/images/homePage/outputIcon.png',
-		unit: '/万箱'
+		unit: '/箱'
 	},
 	outputAmount: {
 		text: '产量',
@@ -88,17 +88,17 @@ const dataMap = ref({
 	beeNumber: {
 		text: '数量',
 		icon: '/static/images/homePage/beeIcon.png',
-		unit: '/万只'
+		unit: '/箱'
 	},
 	attendanceRate: {
 		text: '出勤',
 		icon: '/static/images/homePage/beeIcon.png',
-		unit: '%'
+		unit: '/万次'
 	},
 	userAmount: {
 		text: '用户量',
 		icon: '/static/images/homePage/uesrIcon.png',
-		unit: '/万人'
+		unit: '/人'
 	}
 });
 const dataList = ref({

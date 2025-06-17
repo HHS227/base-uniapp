@@ -6,9 +6,12 @@
         <view class="popup-content">
           <view class="popup-title">{{ currentBeeDetail.name }}</view>
           <view class="popup-body">
-            <view>面积:{{ currentBeeDetail.area }}</view> 
-            <view>蜜源:{{ currentBeeDetail.honeySeeds }}</view> 
-            <view>产区:{{ currentBeeDetail.region }}</view> 
+           <view> <image style="width: 100%; height: 350rpx;"  :src='currentBeeDetail.imgUrl'  mode="aspectFill"></image></view>
+            <view>
+              <view>面积:{{ currentBeeDetail.area }}</view> 
+              <view>产区:{{ currentBeeDetail.productionArea }}</view> 
+              <view>描述:{{ currentBeeDetail.describle }}</view> 
+            </view>
           </view>
           <view class="popup-bottom">
             <button class="popup-btn" @click="closePopup">我已了解</button>
@@ -64,8 +67,8 @@ const honeySourceList = ref([]);
 
 // 用户位置 - 不设置默认值
 const userLocation = ref({
-latitude: null,
-  longitude: null
+  latitude: null, 
+  longitude: null 
 });
 
 // 地图标记点
@@ -83,7 +86,10 @@ const getUserLocation = () => {
       getBeeFarmList();
     },
     fail: (err) => {
-      console.error('获取位置失败:', err);
+      userLocation.value = {
+        latitude: 30.5728, 
+  longitude: 104.0668 
+      };
       uni.showToast({
         title: '获取位置失败，将无法显示附近蜜源',
         icon: 'none'
@@ -203,7 +209,8 @@ onShow(() => {
 <style lang="scss" scoped>
 .popup-content {
 	width: 600rpx;
-  height: 400rpx;
+  max-height: 800rpx;
+  overflow: auto;
 	background: #fff;
 	border-radius: 24rpx;
   padding: 20rpx;
@@ -236,7 +243,7 @@ onShow(() => {
 		color: #323232;
 		line-height: 1.6;
 		margin-bottom: 40rpx;
-    max-height: 300rpx;
+    max-height: 600rpx;
     overflow: auto;
    
 	}

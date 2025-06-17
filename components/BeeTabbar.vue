@@ -7,7 +7,7 @@
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'shoppingMall' }" @click="switchTab('/pages/shoppingMall/shoppingMall')">
 				<image :src="activeTab == 'shoppingMall' ? '../static/images/shoppingActive.png' : '../static/images/shopping.png'" class="icon" />
-				<text>商场</text>
+				<text>商城</text>
 			</view>
 			<view class="tab-item center-button" @click="scanCodeClick">
 				<image src="/static/images/gameLogo.png" class="icon-large" />
