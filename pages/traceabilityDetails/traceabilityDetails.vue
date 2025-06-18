@@ -33,7 +33,7 @@
                                     <text class="itme-right">{{traceabilityData.registeredAddress}}</text>
                                 </view>
                             </view>
-                            <!-- <view class="angin-buy"><view class="buy" @click="anginBuy(traceabilityData.productId)">再次购买</view></view> -->
+                            <view class="angin-buy"><view class="buy" @click="anginBuy(traceabilityData.productId)">再次购买</view></view>
                     </view>
                 </view>
 
