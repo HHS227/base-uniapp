@@ -4,17 +4,21 @@
       <BeeTabbarVue active-tab="monitorPage"></BeeTabbarVue>
       <uni-popup ref="popup" type="center">
         <view class="popup-content">
-          <view class="popup-title">{{ currentBeeDetail.name }}</view>
+          <view class="popup-title">
+          <view>{{ currentBeeDetail.name }}</view>  
+          <view  @click="closePopup">x</view>  
+
+          </view>
           <view class="popup-body">
            <view> <image style="width: 100%; height: 350rpx;"  :src='currentBeeDetail.imgUrl'  mode="aspectFill"></image></view>
             <view>
               <view>面积:{{ currentBeeDetail.area }}m²</view> 
-              <view>产区:{{ currentBeeDetail.productionArea }}</view> 
-              <view>描述:{{ currentBeeDetail.describle }}</view> 
+              <view>蜜源:{{ currentBeeDetail.mainNectarPlants }}</view> 
+              <view>蜂种:{{ currentBeeDetail.mainBeeType }}</view> 
             </view>
           </view>
           <view class="popup-bottom">
-            <button class="popup-btn" @click="closePopup">我已了解</button>
+            <button class="popup-btn" @click="goToshopping()">去商场</button>
             <button class="popup-btn" @click="goToPayBeeFarm(currentBeeDetail.id)">去认养</button>
           </view>
         </view>
@@ -30,7 +34,8 @@
             :latitude="userLocation.latitude"
             :longitude="userLocation.longitude"
             :markers="markers"
-            show-location
+            :scale="13"
+        
           ></map>
         </view>
         <view class="my-bee-title">
@@ -43,12 +48,12 @@
               <image :src=item.imgUrl style="width: 100%; height: 100%;"></image>
             </view>
             <view class="bee-item-title">
-              <text>{{item.name}}</text>
-
-              <view class="bee-item-address">
-                <text>面积：{{item.area}}m²</text>   
-               <text>产区：{{item.productionArea}}</text>   
+              <view class="bee-item-name">
+                <text style="font-weight: 600;">{{item.name}}-{{ item.honeySeeds }}</text>
+                <text style="font-size: 26rpx;" >{{item.area }}m²</text>
               </view>
+               <text class="bee-item-address" >地区：{{item.address}}</text>   
+ 
             </view>
           </view>
         </view>
@@ -87,15 +92,13 @@ const getUserLocation = () => {
         latitude: res.latitude,
         longitude: res.longitude
       };
-      // getBeeFarmList();
+      getBeeFarmList();
     },
     fail: (err) => {
-      
       userLocation.value = {
         latitude: 30.5728, 
         longitude: 104.0668 
       };
-      getBeeFarmList();
       uni.showToast({
         title: '获取位置失败，将无法显示附近蜜源',
         icon: 'none'
@@ -106,10 +109,7 @@ const getUserLocation = () => {
 };
 
 
-
-
-
-// 获取用户附件的蜂场列表
+// 获取用户附近的蜂场列表
 const getBeeFarmList = async () => {
   try {
     const res = await request({
@@ -124,7 +124,7 @@ const getBeeFarmList = async () => {
     });
     
     if (res.code === 0) {
-      // 添加蜂场标记点
+      honeySourceList.value=res.data
       addBeeFarmMarkers(res.data);
     } else {
       throw new Error(res.msg || '数据异常');
@@ -158,29 +158,6 @@ const addBeeFarmMarkers = (data) => {
     }
   });
 };
-// 获取蜜源列表
-const getNectarList= async () => {
-  try {
-    const res = await request({
-      url: '/app-api/weixin/nectar/get/list',
-      // data: {
-      //   latitude: userLocation.value.latitude,
-      //   longitude: userLocation.value.longitude
-      // },
-      showLoading: false, 
-    });
-    
-    if (res.code === 0 ) {
-      honeySourceList.value = res.data || [];
-      loading.value = false;
-    } else {
-      throw new Error(res.msg || '数据异常');
-    }
-  } catch (err) {
-    console.error('获取蜜源数据失败:', err);
-    loading.value = false;
-  }
-};
 
 //详情弹出框
 const showBeeDetail = (item) => {
@@ -190,6 +167,12 @@ const showBeeDetail = (item) => {
   };
   popup.value.open();
 };
+//跳转去商场
+const goToshopping=()=>{
+  // uni.switchTab({
+  //    url: 'pages/shoppingMall/shoppingMall'
+  // })
+}
 
 // 关闭弹窗
 const closePopup = () => {
@@ -206,7 +189,7 @@ const goToPayBeeFarm = (id) => {
 onShow(() => {
   loading.value = true;
   getUserLocation();
-  getNectarList()
+ 
 });
 </script>
 
@@ -227,6 +210,8 @@ onShow(() => {
 	
 
 	.popup-title {
+    display: flex;
+    justify-content: space-between;
 		font-weight: bold;
 		font-size: 40rpx;
 		color: #ff7f00;
@@ -346,15 +331,13 @@ onShow(() => {
       flex-direction: column;
       justify-content: space-between;
       width: 100%;
-      text {
-        font-weight: 600;
+      .bee-item-name{
+        display: flex;
+        justify-content: space-between
       }
       .bee-item-address {
-       
-      display: flex;
-		  justify-content: space-between;
-      font-size: 24rpx;
-
+       color: #999999;
+        font-size: 18rpx;
       }
     }
   }

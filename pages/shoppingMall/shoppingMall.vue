@@ -7,8 +7,17 @@
             <image src="/static/images/cart.png" mode="aspectFit" class="cart-icon"></image>
             <view class="btn-text">购物车</view>
         </view>
-   
+
         <scroll-view scroll-y="true" class="scroll-view" enable-flex>
+            <view class="swiper-content">
+				<swiper class="swiper" circular indicator-active-color="#ffffff" indicator-dots="true" autoplay="true" interval="2000" duration="500">
+					<swiper-item class="swiper-item" v-for="(item,index) in activities" :key="index">
+						<image :src=item.url class="swiper-image" mode="" @click="activeBtn(item)"></image>
+					</swiper-item>
+				
+				</swiper>
+			</view>
+
 
             <view v-if="shoppingList.length === 0" class="empty-container"> 
                 <text class="empty-text">暂无商品</text> 
@@ -52,6 +61,7 @@ import { useTokenStorage } from '../../utils/storage'
 
 const { getAccessToken } = useTokenStorage()
 const shoppingList=ref([])
+const activities=ref([])
 
 // 跳转购物车
 const gotoCart = ()=>{
@@ -77,6 +87,16 @@ const shopDetails = (item)=>{
     uni.navigateTo({
         url:`/pages/shoppingMall/shopDetails?id=${item.id}`
     })
+}
+//跳转到活动页面
+const activeBtn = (item) => {
+  if (item.activityId !==null) {
+  	uni.navigateTo({ url: '/pages/couponPage/couponPage' })
+  }	else{
+	uni.navigateTo({
+        url:`/pages/shoppingMall/shopDetails?id=${item.productId}`
+    })
+  }
 }
 
 //单独购买
@@ -137,8 +157,27 @@ const getShoppingList = async () => {
    
   }
 }
+//获取活动数据
+const getActiveList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/WeiXinMini/index/get/activity',
+      showLoading: true, 
+    })
+    if (res.code === 0 ) {
+      activities.value = res.data || []
+    } else {
+      throw new Error(res.msg || '数据异常')
+    }
+  } catch (err) {
+    console.error('轮播图加载失败:', err)
+   
+  }
+}
+
 onShow(() => {
   getShoppingList()
+  getActiveList()
 })
 
 </script>
@@ -146,12 +185,26 @@ onShow(() => {
 <style lang="scss" scoped>
 .container {
     background-color: #f7f7f7;
-	
-	
 	z-index: 1;
 	display: flex;
 	flex-direction: column;
 	height: 100vh;  // 新增：设置容器高度为视窗高度
+
+    .swiper-content {
+			height: 340rpx;
+			border-radius: 24rpx;
+			overflow: hidden;
+			margin-top: 5rpx;
+            margin-bottom: 20rpx;
+			.swiper {
+				width: 100%;
+				height: 100%;
+				.swiper-image {
+					height: 100%;
+					width: 100%;
+				}
+			}
+		}
 
     .cart-btn {
         bottom: 384rpx;
@@ -197,7 +250,7 @@ onShow(() => {
         flex: 1;
         height: 720rpx;
         box-sizing: border-box;
-        padding: 32rpx 24rpx 0;
+        padding: 0rpx 24rpx;
 
     }
     

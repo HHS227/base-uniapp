@@ -3,24 +3,37 @@
   <view>
     <TransNavVue title="认养一箱蜂"/>
     <view class="container">
- 
-      <view class="collect-box" v-for="item in beehiveList" :key="item.id">
+    
+      <view class="collect-box" >
+        <view >
+        <video style="width: 100%; height: 300rpx;" :src="beehiveInfo.video"></video>
+      </view>
           <view class="collect-img">
-            <image style="width: 100%; height: 100%; border-radius: 10rpx;"  :src="item.images" mode="aspectFill"></image>
+            <image style="width: 100%; height: 100%; border-radius: 10rpx;"  :src="beehiveInfo.images" mode="aspectFill"></image>
           </view>
           <view class="collect-info">
             <view class="info-title">
-              {{ item.name }}
-              <view class="info-format">蜂箱类型：<text class="info-weight">{{ getBeehiveTypeName(item.beehiveType) }}</text>
+              {{ beehiveInfo.name }}
+              <view class="info-format">蜂箱类型：<text class="info-weight">{{ getBeehiveTypeName(beehiveInfo.beehiveType) }}</text>
               </view>
             </view>
-            <view class="pddBtn" v-if="item.adoptionType == 2" @click="handleBuy(item)">￥{{ item.sharePrice }}拼团</view>
-            <view class="pddBtn" v-else @click="handleBuy(item)">￥{{ item.price }}购买</view>
+         
+            <view class="pddBtn" @click="handleBuy(beehiveInfo)">￥599购买</view>
+          </view>
+          <view class="collect-img">
+            <image style="width: 100%; height: 100%; border-radius: 10rpx;"  :src="beehiveInfo.images" mode="aspectFill"></image>
+          </view>
+          <view class="collect-info">
+            <view class="info-title">
+              {{ beehiveInfo.name }}
+              <view class="info-format">蜂箱类型：<text class="info-weight">{{ getBeehiveTypeName(beehiveInfo.beehiveType) }}</text>
+              </view>
+            </view>
+            <view class="pddBtn"  @click="handleBuy(beehiveInfo)">￥299拼团</view>
+        
           </view>
       </view>
-      <view class="empty-box" v-if="beehiveList.length === 0">
-        <text class="empty-text">暂无蜂箱</text>
-      </view>
+      
     </view>
   </view>
 </template>
@@ -31,7 +44,7 @@ import { ref} from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request,processPayment } from '@/utils/request'
 import { onShow } from '@dcloudio/uni-app'
-const beehiveList = ref([])
+const beehiveInfo = ref({})
 
 
 
@@ -51,12 +64,12 @@ onShow(() => {
 const getBeehiveList = async (id) => {
   try {
     const res = await request({
-      url: `/app-api/front/beehive/list?beeFarmId=${id}`,
+      url: `/app-api/front/bee-farm/get/info?id=${id}`,
     
     })
 
     if (res.code === 0) {
-      beehiveList.value = res.data || []
+      beehiveInfo.value = res.data || {}
     } else {
       throw new Error(res.msg || '获取蜂箱列表失败')
     }

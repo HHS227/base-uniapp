@@ -500,11 +500,11 @@ const toLogo=()=>{
 					padding: 20rpx;
 					font-weight: 500;
 					font-size: 24rpx;
-					color: #CCC5AC;
+					color: #fff;
 				.amount{
 					font-weight: 800;
 					font-size: 42rpx;
-					color: #fff;
+					
 				}
 				}
 				.card-todaySEarnings{
