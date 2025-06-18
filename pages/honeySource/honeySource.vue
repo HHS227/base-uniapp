@@ -8,7 +8,7 @@
           <view class="popup-body">
            <view> <image style="width: 100%; height: 350rpx;"  :src='currentBeeDetail.imgUrl'  mode="aspectFill"></image></view>
             <view>
-              <view>面积:{{ currentBeeDetail.area }}</view> 
+              <view>面积:{{ currentBeeDetail.area }}m²</view> 
               <view>产区:{{ currentBeeDetail.productionArea }}</view> 
               <view>描述:{{ currentBeeDetail.describle }}</view> 
             </view>
@@ -44,7 +44,11 @@
             </view>
             <view class="bee-item-title">
               <text>{{item.name}}</text>
-              <view class="bee-item-address">{{item.address}}</view>
+
+              <view class="bee-item-address">
+                <text>面积：{{item.area}}m²</text>   
+               <text>产区：{{item.productionArea}}</text>   
+              </view>
             </view>
           </view>
         </view>
@@ -83,13 +87,15 @@ const getUserLocation = () => {
         latitude: res.latitude,
         longitude: res.longitude
       };
-      getBeeFarmList();
+      // getBeeFarmList();
     },
     fail: (err) => {
+      
       userLocation.value = {
         latitude: 30.5728, 
-  longitude: 104.0668 
+        longitude: 104.0668 
       };
+      getBeeFarmList();
       uni.showToast({
         title: '获取位置失败，将无法显示附近蜜源',
         icon: 'none'
@@ -112,6 +118,7 @@ const getBeeFarmList = async () => {
       data: {
         latitude: userLocation.value.latitude,
         longitude: userLocation.value.longitude,
+   
       },
       showLoading: false, 
     });
@@ -136,15 +143,15 @@ const addBeeFarmMarkers = (data) => {
         id: index + 1, 
         latitude: farm.latitude,
         longitude: farm.longitude,
-        width: 30,
-        height: 30,
+        iconPath: '/static/images/homePage/marker.png',
+		    width: 50,
+		    height: 30,
         label: {
-          content: farm.name || '蜂场',
-          color: '#333333',
-          bgColor: '#FFD700',
-          padding: 5,
-          borderRadius: 3,
-          anchorY: -35
+          content:farm.name||'未知蜂场',
+          color: '#FFF',
+          fontSize:'24rpx',
+          anchorY: -28,
+          anchorX: -25
         },
        
       });
@@ -246,6 +253,7 @@ onShow(() => {
     max-height: 600rpx;
     overflow: auto;
    
+   
 	}
   .popup-bottom{
     display: flex;
@@ -319,16 +327,17 @@ onShow(() => {
 
     overflow: auto;
     .bee-list-box {
-    margin: 5rpx 30rpx;
+    margin: 10rpx 30rpx;
     height: 150rpx;
     background-color:#fff;
-    border-radius: 5rpx;
+    border-radius: 15rpx;
     padding: 20rpx;
     display: flex;
+ 
 
     .bee-item-img {
-      width: 100rpx;
-      height: 100rpx;
+      width: 120rpx;
+      height: 120rpx;
       background-color: #ddd;
       margin-right: 10rpx;
     }
@@ -336,16 +345,16 @@ onShow(() => {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      width: 100%;
       text {
         font-weight: 600;
       }
-      view {
-		  width: 500rpx;
-		 overflow: hidden;
-		 text-overflow: ellipsis;
-		 white-space: nowrap;
-        font-size: 16rpx;
-        color:#ddd;
+      .bee-item-address {
+       
+      display: flex;
+		  justify-content: space-between;
+      font-size: 24rpx;
+
       }
     }
   }

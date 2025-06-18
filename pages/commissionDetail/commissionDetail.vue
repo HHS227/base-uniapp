@@ -33,7 +33,10 @@
 			
 			</view>
 		</view>
-        <view class="withdraw-btn" @click="goToWithdraw">提现</view>
+      <view style="display: flex; justify-content: space-between;">  
+		<view class="withdraw-btn" @click="goToWithdraw">提现</view>
+		<button class="withdraw-btn" open-type="share" >邀请</button>
+	</view>
 		<view class="withdraw-box">
             <view class="withdraw-header">
                 <image style="width:100rpx;height:20rpx" src="/static/images/myPage/left-icon.png" class="withdraw-icon"></image>
@@ -208,6 +211,7 @@ onShow(() => {
 		}
 	}
     .withdraw-btn {
+		width: 50%;
         height: 90rpx;
         line-height: 90rpx;
         background-color: #FF7D00;

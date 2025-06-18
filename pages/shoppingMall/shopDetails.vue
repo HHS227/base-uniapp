@@ -55,8 +55,8 @@
 	
 	// 处理图片自适应
 	let content = commodityDetails.value.describle
-	  .replace(/<img/gi, '<img class="rich-image" style="max-width:100%;height:auto" ')
-	  .replace(/<video/gi, '<video class="rich-video" style="max-width:100%;height:auto" ')
+	  .replace(/<img/gi, '<img class="rich-image"  ')
+	  .replace(/<video/gi, '<video class="rich-video"  ')
 	
 	return content
   })

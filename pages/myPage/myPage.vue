@@ -14,16 +14,15 @@
 							<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						</view>
 						<view class="name-content">
-							<text class="name-text" @click="toLogo" :class="{ 'unlogin-text': !getAccessToken() }">{{
-								userInfo.nickname || "请先登陆" }}
-							</text>
+							<text v-if="getAccessToken()" class="name-text"  >{{userInfo.nickname  }}</text>
+							<text v-else class="name-text unlogin-text" @click="toLogo" >请先登录</text>
 							<view class="vip-content">
 								<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || "" }}</text>
 								<view class="share-box">
 								<button class="share-btn" open-type="share" @click="handleClickShare">
-									<image src="/static/images/myPage/shareIcon.png" class="btn" mode=""></image>
+									<image src="/static/images/myPage/shareIcon.png" class="btn" mode=""> </image>
 								</button>
-								<txet>分享</txet>
+							
 								</view>
 							</view>
 							
@@ -354,6 +353,10 @@ const logout = () => {
 		},
 	});
 };
+
+const toLogo=()=>{
+	uni.navigateTo({ url: "/pages/login/login" });
+}
 </script>
 
 <style lang="scss" scoped>
