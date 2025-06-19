@@ -52,7 +52,7 @@
     "mp-weixin" : {
         "appid" : "wxed3e5106f6adce94",
  
-     "requiredPrivateInfos": ["backgroundFetch"] ,
+ 
 
         "setting" : {
             "urlCheck" : false
