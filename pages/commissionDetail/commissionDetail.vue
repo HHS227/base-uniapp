@@ -66,10 +66,33 @@
 import { ref } from 'vue'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
-import { onShow } from '@dcloudio/uni-app';
+import { onShow ,onShareAppMessage} from '@dcloudio/uni-app';
 
 const records = ref([])
 const commissionData = ref({})
+const shareUserId=ref('')
+
+// 注册全局分享钩子
+onShareAppMessage(() => {
+	return {
+		title: "智慧养蜂，快来领养吧",
+		imageUrl: "/static/images/myPage/Invitation.png",
+		path: `/pages/login/login?shareUserId=${shareUserId.value}`,
+		success: () => {
+			uni.showToast({
+				title: "分享成功",
+				icon: "success",
+			});
+		},
+		fail: (err) => {
+			uni.showToast({
+				title: "分享失败",
+				icon: "none",
+			});
+		},
+	};
+});
+
 
 // 跳转提现
 const goToWithdraw = ()=>{
@@ -119,8 +142,18 @@ const getCommissionDetailList = async () => {
   }
 }
 onShow(() => {
-	getCommissionDetail()
-	getCommissionDetailList()
+	const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	const options = currentPage.$page.options || currentPage.options
+	if (options.shareUserId) {
+		shareUserId.value=options.shareUserId
+		getCommissionDetail()
+		getCommissionDetailList()
+	} else {
+	  console.error('用户Id缺失')
+	}
+
+
 })
 </script>
 

@@ -34,7 +34,7 @@
             :latitude="userLocation.latitude"
             :longitude="userLocation.longitude"
             :markers="markers"
-            :scale="13"
+            :scale="12"
         
           ></map>
         </view>

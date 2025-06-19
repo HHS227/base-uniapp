@@ -135,7 +135,6 @@ const getAllBeehiveList = async () => {
 };
 
 
-
 // 选择蜜源
 const onFarmChange = (e) => {
   selectedFarmIndex.value = e.detail.value;
@@ -146,7 +145,7 @@ const onFarmChange = (e) => {
 //跳转到认养界面
 const goToPayBeeFarm = (item) => {
   uni.navigateTo({
-        url:`/pages/collectBee/payBeeFarm?id=${item.id}`
+        url:`/pages/collectBee/payBeeFarm?id=${item.id}&videoUrl=${item.videoUrl}`,
     })
 
 };

@@ -15,7 +15,7 @@
 						</view>
 						<view class="name-content">
 							<text v-if="getAccessToken()" class="name-text"  >{{userInfo.nickname  }}</text>
-							<text v-else class="name-text unlogin-text" @click="toLogo" >请先登录</text>
+							<text v-else class="name-text unlogin-text" @click="toLogin" >请先登录</text>
 							<view class="vip-content">
 								<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || "" }}</text>
 								<view class="share-box">
@@ -92,6 +92,13 @@
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
+					<view @click="gotoMessagePage"  class="list-item">
+					<view class="item-left">
+						<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
+						<text class="text"> 我的消息 </text>
+					</view>
+					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
+					</view>
 					<view @click="gotoSurveyList"  class="list-item">
 					<view class="item-left">
 						<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
@@ -106,7 +113,7 @@
 					</view>
 					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 				</view>
-				<view @click="logout" class="list-item">
+				<view @click="loginOut" class="list-item">
 				  <view class="item-left">
 				    <image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
 				    <text class="text">注销登录</text>
@@ -192,6 +199,7 @@ onShareAppMessage(() => {
 	};
 });
 
+//去登录
 const toLogin = () => {
 	uni.navigateTo({ url: "/pages/login/login" });
 };
@@ -218,7 +226,19 @@ onShow(() => {
 
 // 跳转佣金详情
 const gotoCommission = () => {
-	navigateIfLoggedIn("/pages/commissionDetail/commissionDetail");
+	if (!getAccessToken()) {
+		uni.showModal({
+			title: "提示",
+			content: "请先登录",
+			success: (res) => {
+				if (res.confirm) {
+					uni.navigateTo({ url: "/pages/login/login" });
+				}
+			},
+		});
+	} else {
+		uni.navigateTo({ url:`/pages/commissionDetail/commissionDetail?shareUserId=${userInfo.value.id}`});
+	}
 };
 
 // 跳转提现
@@ -336,7 +356,7 @@ const getIsBeeFarm = async () => {
 };
 
 // 退出登录
-const logout = () => {
+const loginOut = () => {
 	uni.showModal({
 		title: "提示",
 		content: "确定要注销登录吗？",
@@ -354,9 +374,6 @@ const logout = () => {
 	});
 };
 
-const toLogo=()=>{
-	uni.navigateTo({ url: "/pages/login/login" });
-}
 </script>
 
 <style lang="scss" scoped>
@@ -482,9 +499,9 @@ const toLogo=()=>{
 
 		.my-info-center {
 			margin-top: 20rpx;
-			height: 380rpx;
+			height: 360rpx;
 			background-color: #fff;
-			padding: 10rpx 30rpx;
+			padding: 10rpx 30rpx 0rpx 30rpx;
 			border-radius: 16rpx;
 
 			.commission-card {
@@ -530,10 +547,10 @@ const toLogo=()=>{
 
 		.my-info-bottom {
 			margin-top: 20rpx;
-			height: 400rpx;
+			height: 430rpx;
 			background-color: #fff;
 			border-radius: 16rpx;
-			padding:10rpx 20rpx;
+			padding:0rpx 20rpx;
 			.list-item {
 				display: flex;
 				align-items: center;
