@@ -69,8 +69,8 @@ const switchTab = (url) => {
 				margin-bottom: 10rpx;
 			}
 			.icon-large {
-				width: 104rpx;
-				height: 104rpx;
+				width: 115rpx;
+				height: 115rpx;
 			}
 			.tab-text {  // 修改前可能是直接用的 text 选择器
 				font-size: 22rpx;
