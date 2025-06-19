@@ -180,6 +180,7 @@
 	  await request({
 		url: '/app-api/trade/cart/update-selected',
 		method: 'put',
+		showLoading: true, 
 		data: {
 		  ids: [item.sku.id],
 		  selected: item.selected
@@ -200,6 +201,7 @@
 	  await request({
 		url: '/app-api/trade/cart/update-count',
 		method: 'put',
+		showLoading: true, 
 		data: {
 		  id: item.sku.id,
 		  count: newCount

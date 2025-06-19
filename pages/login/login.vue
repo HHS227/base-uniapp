@@ -72,6 +72,7 @@ const handleWechatLogin = async (e) => {
     const res = await request({
       url: '/app-api/auth/front/wechat/login',
       method: 'POST',
+      showLoading: true, 
       data: {
         loginCode: loginCode.value,
         phoneCode: e.detail.code,

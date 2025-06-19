@@ -355,12 +355,12 @@ const scanCode = () => {
 	z-index: 1;
 	display: flex;
 	flex-direction: column;
-	height: 100vh;  // 新增：设置容器高度为视窗高度
+	height: 100vh;  
 
 	.bg-image {
 		width: 100%;
 		height: 374rpx;
-		position: fixed;  // 修改：改为fixed定位
+		position: absolute;  
 		z-index: -1;
 	}
 	.title-bar {
@@ -377,7 +377,6 @@ const scanCode = () => {
 	.scroll-view {
 		flex: 1;
 		overflow-y: auto;  // 确保可滚动
-		
 		height: 300rpx;
 		.swiper-content {
 			height: 340rpx;

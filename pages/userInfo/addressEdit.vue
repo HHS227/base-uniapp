@@ -322,7 +322,7 @@ const save = async () => {
         : '/app-api/weixin/shipping-address/create',
       method: isEditMode.value ? 'PUT' : 'POST',
       data: submitData,
-      showLoading: false
+      showLoading: true
     })
     
     uni.hideLoading()

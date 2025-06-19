@@ -6,28 +6,27 @@
 			<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
 				<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
 			</view>
-
-			<scroll-view scroll-y="true" class="scroll-content">
+			<scroll-view scroll-y="true" class="scroll-view">
 				<view class="my-info-top">
 					<view class="top-content">
 						<view class="avatar-view">
 							<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						</view>
 						<view class="name-content">
-							<text v-if="getAccessToken()" class="name-text"  >{{userInfo.nickname  }}</text>
-							<text v-else class="name-text unlogin-text" @click="toLogin" >请先登录</text>
+							<text v-if="getAccessToken()" class="name-text">{{ userInfo.nickname }}</text>
+							<text v-else class="name-text unlogin-text" @click="toLogin">请先登录</text>
 							<view class="vip-content">
 								<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || "" }}</text>
 								<view class="share-box">
-								<button class="share-btn" open-type="share" @click="handleClickShare">
-									<image src="/static/images/myPage/shareIcon.png" class="btn" mode=""> </image>
-								</button>
-							
+									<button class="share-btn" open-type="share" @click="handleClickShare">
+										<image src="/static/images/myPage/shareIcon.png" class="btn" mode=""> </image>
+									</button>
+
 								</view>
 							</view>
-							
+
 						</view>
-						
+
 					</view>
 					<view class="bottom-content">
 						<view>我的服务</view>
@@ -60,17 +59,17 @@
 							<text class="commission-text">今日佣金</text>
 						</view>
 						<view class="card-cumulativeEarnings card-item" @click="gotoCommission">
-						
+
 							<view class="amount">{{ commissionData.cumulativeEarnings || 0 }}</view>
 							<text class="commission-text">累计佣金</text>
 						</view>
 						<view class="card-currentEarnings card-item" @click="gotoWithdraw">
-					
-							<view class="amount">{{  commissionData.currentEarnings||0  }}</view>
+
+							<view class="amount">{{ commissionData.currentEarnings || 0 }}</view>
 							<text class="commission-text">可提现金额</text>
 						</view>
 						<view class="card-coin card-item" @click="gotoWithdraw">
-			
+
 							<view class="amount">{{ commissionData.coin || 0 }}</view>
 							<text class="commission-text">M币</text>
 						</view>
@@ -78,48 +77,48 @@
 
 				</view>
 				<view class="my-info-bottom">
-					<view @click="gotoCustomerService"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
-						<text class="text"> 联系客服 </text>
+					<view @click="gotoCustomerService" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
+							<text class="text"> 联系客服 </text>
+						</view>
+						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
+					<view @click="gotoSmartBee" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/intelligenceIcon.png" mode=""></image>
+							<text class="text"> 智能养蜂 </text>
+						</view>
+						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
-					<view @click="gotoSmartBee"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/intelligenceIcon.png" mode=""></image>
-						<text class="text"> 智能养蜂 </text>
+					<view @click="gotoMessagePage" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
+							<text class="text"> 我的消息 </text>
+						</view>
+						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
+					<view @click="gotoSurveyList" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
+							<text class="text">问卷调查</text>
+						</view>
+						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
-					<view @click="gotoMessagePage"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
-						<text class="text"> 我的消息 </text>
+					<view @click="gotoUserInfo" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
+							<text class="text">设置</text>
+						</view>
+						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
 					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
+					<view @click="loginOut" class="list-item">
+						<view class="item-left">
+							<image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
+							<text class="text">注销登录</text>
+						</view>
+
 					</view>
-					<view @click="gotoSurveyList"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
-						<text class="text">问卷调查</text>
-					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-				</view>
-				<view @click="gotoUserInfo"  class="list-item">
-					<view class="item-left">
-						<image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
-						<text class="text" >设置</text>
-					</view>
-					<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-				</view>
-				<view @click="loginOut" class="list-item">
-				  <view class="item-left">
-				    <image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
-				    <text class="text">注销登录</text>
-				  </view>
-				
-				</view>
 
 				</view>
 
@@ -237,7 +236,7 @@ const gotoCommission = () => {
 			},
 		});
 	} else {
-		uni.navigateTo({ url:`/pages/commissionDetail/commissionDetail?shareUserId=${userInfo.value.id}`});
+		uni.navigateTo({ url: `/pages/commissionDetail/commissionDetail?shareUserId=${userInfo.value.id}` });
 	}
 };
 
@@ -379,10 +378,12 @@ const loginOut = () => {
 <style lang="scss" scoped>
 .container {
 	background: linear-gradient(180deg, #f9ddc9 0%, #f6ebe8 58%, #f6f6f6 83%);
-	height: 100vh;
+	padding: 0rpx 20rpx 35rpx ;
 	position: relative;
-	padding: 0rpx 20rpx;
-
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
 	.title-bar {
 		.logo-image {
 			width: 205rpx;
@@ -391,9 +392,10 @@ const loginOut = () => {
 		}
 	}
 
-	.scroll-content {
-		margin: 20rpx 0rpx;
-
+	.scroll-view {
+		flex: 1;
+		overflow-y: auto;
+		margin-top: 20rpx;
 		.my-info-top {
 			background-image: url('/static/images/myPage/myPageTopbg.png');
 			height: 445rpx;
@@ -445,12 +447,13 @@ const loginOut = () => {
 
 				.vip-content {
 					display: flex;
+
 					.share-box {
 						display: flex;
 						align-items: center;
 						color: #FF6F0E;
 						margin-top: 10rpx;
-					
+
 						.share-btn {
 							background: transparent;
 							padding: 0;
@@ -510,7 +513,8 @@ const loginOut = () => {
 				justify-content: space-between;
 				align-items: center;
 				flex-wrap: wrap;
-				.card-item{
+
+				.card-item {
 					height: 120rpx;
 					width: 48%;
 					margin-bottom: 20rpx;
@@ -518,26 +522,31 @@ const loginOut = () => {
 					font-weight: 500;
 					font-size: 24rpx;
 					color: #fff;
-				.amount{
-					font-weight: 800;
-					font-size: 42rpx;
-					
+
+					.amount {
+						font-weight: 800;
+						font-size: 42rpx;
+
+					}
 				}
-				}
-				.card-todaySEarnings{
+
+				.card-todaySEarnings {
 					background-image: url('/static/images/myPage/todaySEarningsBg.png');
 					background-size: 100% 100%;
-					
+
 				}
-				.card-cumulativeEarnings{
+
+				.card-cumulativeEarnings {
 					background-image: url('/static/images/myPage/cumulativeEarningsBg.png');
 					background-size: 100% 100%;
 				}
-				.card-currentEarnings{
+
+				.card-currentEarnings {
 					background-image: url('/static/images/myPage/currentEarningsBg.png');
 					background-size: 100% 100%;
 				}
-				.card-coin{
+
+				.card-coin {
 					background-image: url('/static/images/myPage/coinBg.png');
 					background-size: 100% 100%;
 				}
@@ -550,7 +559,8 @@ const loginOut = () => {
 			height: 430rpx;
 			background-color: #fff;
 			border-radius: 16rpx;
-			padding:0rpx 20rpx;
+			padding: 0rpx 20rpx;
+
 			.list-item {
 				display: flex;
 				align-items: center;
@@ -560,10 +570,12 @@ const loginOut = () => {
 				.item-left {
 					padding: 15rpx 0rpx;
 					display: flex;
+
 					.item-icon {
 						width: 40rpx;
 						height: 40rpx;
 					}
+
 					.text {
 						margin-left: 22rpx;
 						font-size: 28rpx;
@@ -577,7 +589,10 @@ const loginOut = () => {
 				}
 			}
 		}
+
 	}
+
+
 
 
 }

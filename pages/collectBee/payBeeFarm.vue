@@ -4,7 +4,7 @@
     <TransNavVue title="认养一箱蜂"/>
     <view class="container">
       <view >
-        <video style="width: 100%; height: 300rpx;" src=""></video>
+        <video style="width: 100%; height: 300rpx;" :src="videoUrl"></video>
       </view>
       <view class="collect-box" v-for="item in beehiveList" :key="item.id">
           <view class="collect-img">
@@ -12,7 +12,7 @@
           </view>
           <view class="collect-info">
             <view class="info-title">
-              {{ item.name }}
+              {{ item.name }} ({{ item.hiveNumber }})
               <view class="info-format">蜂箱类型：<text class="info-weight">{{ getBeehiveTypeName(item.beehiveType) }}</text>
               </view>
             </view>
@@ -43,7 +43,6 @@ onShow(() => {
 	  const currentPage = pages[pages.length - 1]
 	  const options = currentPage.$page.options || currentPage.options
 	  if (options.id) {
-      console.log(options,'1213')
       videoUrl.value=options.videoUrl
 	    getBeehiveList(options.id)
 	  } else {
@@ -56,6 +55,7 @@ const getBeehiveList = async (id) => {
   try {
     const res = await request({
       url: `/app-api/front/beehive/list?beeFarmId=${id}`,
+      showLoading: true, 
     
     })
 

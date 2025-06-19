@@ -107,6 +107,7 @@ const getAllNectarList = async () => {
   try {
     const res = await request({
       url: '/app-api/weixin/nectar/get/list',
+      showLoading: true,   
     });
     if (res.code === 0) {
       nectarList.value = res.data || [];
@@ -123,6 +124,7 @@ const getAllBeehiveList = async () => {
   try {
     const res = await request({
       url:`/app-api/front/bee-farm/get/list?region=${fromData.value.region}&honeySeeds=${fromData.value.honeySeeds}`,
+      showLoading: true, 
     });
     if (res.code === 0) {
       beehiveList.value = res.data || [];

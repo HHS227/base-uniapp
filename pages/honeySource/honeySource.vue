@@ -25,8 +25,13 @@
       </uni-popup>
       <view class="container">
         <image src="/static/images/homePage/homePageBg.png" mode="aspectFill" class="bg-image"></image>
-        <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
-        <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
+      <view :style="{ height: getStatusBarHeight() + 'px' }"></view>
+      <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
+        <image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
+      </view>
+
+      <scroll-view scroll-y="true" class="scroll-view" enable-flex>
+        
         <view class="map-container">
           <map 
             id="map" 
@@ -57,8 +62,9 @@
             </view>
           </view>
         </view>
-      </view>
+      </scroll-view>
       <view class="tabbar-bottom"></view>
+      </view>
     </view>
   </template>
 
@@ -67,17 +73,17 @@ import { getStatusBarHeight, getTitleBarHeight } from '../../utils/system';
 import BeeTabbarVue from '../../components/BeeTabbar.vue';
 import { ref } from 'vue'
 import { request } from '@/utils/request'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow,onHide  } from '@dcloudio/uni-app'
 
 const popup = ref(null);
 const loading = ref(true);
 const currentBeeDetail = ref({});
 const honeySourceList = ref([]);
 
-// 用户位置 - 不设置默认值
+// 假设用户位置
 const userLocation = ref({
-  latitude: null, 
-  longitude: null 
+  latitude: 30.5728, 
+  longitude: 104.0668 
 });
 
 // 地图标记点
@@ -95,10 +101,6 @@ const getUserLocation = () => {
       getBeeFarmList();
     },
     fail: (err) => {
-      userLocation.value = {
-        latitude: 30.5728, 
-        longitude: 104.0668 
-      };
       uni.showToast({
         title: '获取位置失败，将无法显示附近蜜源',
         icon: 'none'
@@ -120,7 +122,7 @@ const getBeeFarmList = async () => {
         longitude: userLocation.value.longitude,
    
       },
-      showLoading: false, 
+      showLoading: true, 
     });
     
     if (res.code === 0) {
@@ -137,6 +139,7 @@ const getBeeFarmList = async () => {
 
 // 添加蜂场标记点
 const addBeeFarmMarkers = (data) => {
+  markers.value=[]
   data.forEach((farm, index) => {
     if (farm.latitude && farm.longitude) {
       markers.value.push({
@@ -169,9 +172,9 @@ const showBeeDetail = (item) => {
 };
 //跳转去商场
 const goToshopping=()=>{
-  // uni.switchTab({
-  //    url: 'pages/shoppingMall/shoppingMall'
-  // })
+  uni.switchTab({
+     url: '/pages/shoppingMall/shoppingMall'
+  })
 }
 
 // 关闭弹窗
@@ -191,10 +194,12 @@ onShow(() => {
   getUserLocation();
  
 });
+
+// 监听页面隐藏事件
+onHide(() => {
+  closePopup(); 
+});
 </script>
-
-
-
 
 <style lang="scss" scoped>
 .popup-content {
@@ -273,20 +278,30 @@ onShow(() => {
     z-index: -1;
   }
   .title-bar {
-    text-align: center;
-    font-weight: 600;
-  }
+		position: sticky;  // 新增：标题栏固定
+		top: 0;
+		z-index: 10;
+		background-color: transparent;
+		.logo-image {
+			width: 205rpx;
+			height: 70rpx;
+			margin-left: 40rpx;
+		}
+	}
+
   
-  .map-box {
-    margin: 0rpx 30rpx;
-    background-color: #fff;
-    height: 500rpx;
-    border-radius: 5rpx;
-    overflow: hidden;
+  .scroll-view {
+    flex: 1;
+    overflow-y: auto; 
+    height: 300rpx;
+    .map-container {
+  margin: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
   
-  }
-  
-  .my-bee-title {
+    .my-bee-title {
     position: relative;
     display: flex;
     margin-bottom: 20rpx;
@@ -343,12 +358,11 @@ onShow(() => {
   }
   }
   
+  }
+  
+ 
+  
 }
 
-.map-container {
-  margin: 20rpx;
-  border: 2rpx solid #e0e0e0;
-  border-radius: 10rpx;
-  overflow: hidden;
-}
+
 </style>

@@ -55,8 +55,8 @@
 	
 	// 处理图片自适应
 	let content = commodityDetails.value.describle
-	  .replace(/<img/gi, '<img class="rich-image"  ')
-	  .replace(/<video/gi, '<video class="rich-video"  ')
+	  .replace(/<img/gi, '<img class="rich-image"  ' )
+	  .replace(/<video/gi, '<video style="min-width: 100% " ')
 	
 	return content
   })
@@ -119,7 +119,8 @@
   const getCommodityDetail = async (id) => {
 	try {
 	  const res = await request({
-		url: `/app-api/WeiXinMini/product/get/info?id=${id}`
+		url: `/app-api/WeiXinMini/product/get/info?id=${id}`,
+		showLoading: true, 
 	  })
 	  commodityDetails.value = res.data
 	} catch (error) {
@@ -201,20 +202,14 @@
 	  .rich-text-container {
 		padding: 20rpx;
 		
-		/* 确保富文本内容样式正确 */
 		 .rich-image{
-        width: 100% !important;
-        height: auto !important;
+        width: 100% ;
+        height: auto ;
         display: block;
         margin: 10rpx 0;
       }
 		
-		 .rich-video {
-		  width: 100% !important;
-		  height: auto !important;
-		  display: block;
-		  margin: 20rpx 0;
-		}
+		
 	  }
 	}
   

@@ -45,94 +45,105 @@ const refreshTokenRequest = async () => {
     isRefreshing = false
   }
 }
-//网络请求
+// 网络请求
 export const request = (options) => {
-  let loadingShown = false
-  if (options.showLoading !== false) {
-    uni.showLoading({
-      title: options.loadingText || '加载中...',
-      mask: true
-    })
-    loadingShown = true
-  }
+  let loadingShown = false;
+  let isRetry = false; // 标记是否为重试请求
+  
+  // 显示loading的函数封装
+  const showLoading = () => {
+    if (options.showLoading !== false && !loadingShown && !isRetry) {
+      uni.showLoading({
+        title: options.loadingText || '加载中...',
+        mask: true
+      });
+      loadingShown = true;
+    }
+  };
+  
+  // 隐藏loading的函数封装
+  const hideLoading = () => {
+    if (loadingShown) {
+      loadingShown = false;
+      uni.hideLoading();
+    }
+  };
+
   return new Promise((resolve, reject) => {
     const makeRequest = async (retry = true) => {
-     
+      isRetry = retry;
+      showLoading(); 
+      
       uni.request({
         url: BASE_URL + options.url,
         method: options.method || 'GET',
         data: options.data || {},
         header: {
           ...(getAccessToken() ? { 'Authorization': `Bearer ${getAccessToken()}` } : {}),
-          ...options.header // 保留自定义header
+          ...options.header 
         },
         success: async (res) => {
-          if (loadingShown) uni.hideLoading()
-          
-          if (res.statusCode === 200) {
-            if (res.data.code === 0) {
-              resolve(res.data)
-            } else if (res.data.code === 401 && retry) {
-              if (isRefreshing) {
-                // 等待刷新完成并获取新token
-                const newToken = await new Promise(resolve => {
-                  refreshSubscribers.push(resolve)
-                })
-                // 使用新token重新构造header
-                const newHeaders = {
-                  ...(newToken ? { 'Authorization': `Bearer ${newToken}` } : {}),
-                  ...options.header
-                }
-                // 重新发送请求
-                uni.request({
-                  ...options,
-                  url: BASE_URL + options.url,
-                  header: newHeaders,
-                  success: (res) => {
-                    if (res.statusCode === 200 && res.data.code === 0) {
-                      resolve(res.data)
-                    } else {
-                      reject(res.data)
-                    }
-                  },
-                  fail: reject
-                })
-              } else {
-                const refreshed = await refreshTokenRequest()
-                if (refreshed) {
-                  makeRequest(false)
+          try {
+            if (res.statusCode === 200) {
+              if (res.data.code === 0) {
+                resolve(res.data);
+              } else if (res.data.code === 401 && retry) {
+                hideLoading(); 
+                
+                if (isRefreshing) {
+                  
+                  const newToken = await new Promise(resolveToken => {
+                    refreshSubscribers.push(resolveToken);
+                  });
+                  
+                  request({
+                    ...options,
+                    header: {
+                      ...(newToken ? { 'Authorization': `Bearer ${newToken}` } : {}),
+                      ...options.header
+                    },
+                    showLoading: false 
+                  }).then(resolve).catch(reject);
                 } else {
-                  reject(res.data)
+                  const refreshed = await refreshTokenRequest();
+                  if (refreshed) {
+                    makeRequest(false); 
+                  } else {
+                    reject(res.data);
+                  }
                 }
+              } else {
+                uni.showToast({
+                  title: res.data.msg || '请求失败',
+                  icon: 'none'
+                });
+                reject(res.data);
               }
             } else {
-              uni.showToast({
-                title: res.data.msg || '请求失败',
-                icon: 'none'
-              })
-              reject(res.data)
+              reject(res);
             }
-          } else {
-            reject(res)
+          } finally {
+            hideLoading(); 
           }
         },
         fail: (err) => {
-          if (loadingShown) uni.hideLoading()
-          uni.showToast({
-            title: '网络连接失败',
-            icon: 'none'
-          })
-          reject(err)
+          try {
+            uni.showToast({
+              title: '网络连接失败',
+              icon: 'none'
+            });
+            reject(err);
+          } finally {
+            hideLoading(); 
+          }
         },
-        complete: () => {
-          // 保险措施：确保无论如何都会隐藏loading
-          if (loadingShown) uni.hideLoading()
-        }
-      })
-    }
-    makeRequest()
-  })
-}
+      
+      });
+    };
+    
+    makeRequest();
+  });
+};
 
 // 支付统一流程
 export const processPayment = async (options) => {

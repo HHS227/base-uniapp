@@ -39,7 +39,16 @@
 			</view>
 		</view>
 		<view class="map-content">
-			<map :latitude="30.6667" :longitude="104.0667" class="map-view" :markers="mapMarkers"></map>
+			
+			<map 
+			class="map-view"
+            id="map" 
+            :latitude="userLocation.latitude"
+            :longitude="userLocation.longitude"
+            :markers="markers"
+            :scale="12"
+        
+          ></map>
 		</view>
 		<view class="safe-view"></view>
 	</view>
@@ -52,23 +61,12 @@ import { onShow } from '@dcloudio/uni-app'
 import TransNavVue from '../../components/TransNav.vue';
 import { request } from '@/utils/request'
 
+// 假设用户位置 
+const userLocation = ref({
+	latitude: 30.5728, 
+    longitude: 104.0668 
 
-const mapMarkers = ref([
-	{
-		id: 1,
-		latitude: 30.6667,
-		longitude: 104.0667,
-		iconPath: '/static/images/homePage/marker.png',
-		width: 34,
-		height: 38,
-		label: {
-			content: '1',
-			color: '#ffffff',
-			anchorY: -36,
-			anchorX: -12
-		}
-	}
-]);
+});
 const dataMap = ref({
 	countryNumber: {
 		text: '国家',
@@ -101,14 +99,78 @@ const dataMap = ref({
 		unit: '/人'
 	}
 });
-const dataList = ref({
-	countryNumber: 192,
-	adoptionAmount: 1.89,
-	outputAmount: 236.8,
-	beeNumber: 265.1,
-	attendanceRate: 86.6,
-	userAmount: 232.3
-});
+const dataList = ref({});
+
+// 地图标记点
+const markers = ref([]);
+// 获取用户当前位置
+const getUserLocation = () => {
+  uni.getLocation({
+    type: 'gcj02',
+    success: (res) => {
+      userLocation.value = {
+        latitude: res.latitude,
+        longitude: res.longitude
+      };
+      getBeeFarmList();
+    },
+    fail: (err) => {
+      uni.showToast({
+        title: '获取位置失败，将无法显示附近蜜源',
+        icon: 'none'
+      });
+
+    }
+  });
+};
+// 获取用户附近的蜂场列表
+const getBeeFarmList = async () => {
+  try {
+    const res = await request({
+      url: '/app-api/weixin/location/get/beeFarm/range',
+      method: 'post',
+      data: {
+        latitude: userLocation.value.latitude,
+        longitude: userLocation.value.longitude,
+   
+      },
+      showLoading: true, 
+    });
+    
+    if (res.code === 0) {
+      addBeeFarmMarkers(res.data);
+    } else {
+      throw new Error(res.msg || '数据异常');
+    }
+  } catch (err) {
+    console.error('获取蜂场数据失败:', err);
+  
+  }
+};
+// 添加蜂场标记点
+const addBeeFarmMarkers = (data) => {
+  data.forEach((farm, index) => {
+    if (farm.latitude && farm.longitude) {
+      markers.value.push({
+        id: index + 1, 
+        latitude: farm.latitude,
+        longitude: farm.longitude,
+        iconPath: '/static/images/homePage/marker.png',
+		    width: 50,
+		    height: 30,
+        label: {
+          content:farm.name||'未知蜂场',
+          color: '#FFF',
+          fontSize:'24rpx',
+          anchorY: -28,
+          anchorX: -25
+        },
+       
+      });
+    }
+  });
+};
+
 
 //获取蜂场更多数据
 const getInfoData = async () => {
@@ -117,7 +179,6 @@ const getInfoData = async () => {
       url: '/app-api/WeiXinMini/index/get/info',
       showLoading: true, 
     })
-
     if (res.code === 0 ) {
     dataList.value=res.data
     } else {
@@ -130,6 +191,7 @@ const getInfoData = async () => {
 }
 onShow(() => {
   getInfoData()
+  getUserLocation();
 })
 </script>
 

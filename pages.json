@@ -11,8 +11,8 @@
 		{
 			"path": "pages/shoppingMall/shoppingMall",
 			"style": {
-				"navigationBarTitleText": "极蜜部落商场",
-				"navigationBarBackgroundColor": "#FFFFFF"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{

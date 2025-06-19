@@ -69,16 +69,17 @@
 import { ref } from 'vue'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-import { onMounted } from 'vue'
 import TransNavVue from '../../components/TransNav.vue'
 import { onShow } from '@dcloudio/uni-app'
+
+
 const { getAccessToken} = useTokenStorage()
 const BASE_URL="https://www.cdsrh.top"
-
 const userInfo = ref({})
 const nicknamePopup = ref(null)
 const tempNickname = ref('')
 
+// 跳转地址管理
 const handleAddress = () => {
   uni.navigateTo({ url: '/pages/userInfo/addressList' })
 }
@@ -100,6 +101,51 @@ const onChooseAvatar = (e) => {
 
 };
 
+
+
+
+//修改名称和头像
+const updateUserInfo = async (type, value) => {
+    try {
+        const data = {};
+        if (type === 'avatar') {
+            data.avatar = value;
+        } else if (type === 'nickname') {
+            data.nickname = value;
+        }
+        const res = await request({
+            url: '/app-api/weixin/user/modify/info',
+            method: 'POST',
+            showLoading:true,
+            data: data,
+        });
+        if (res.code === 0 ) {
+            getUserInfo()
+            uni.showToast({
+                title: '更新成功',
+                icon: 'success'
+            });
+        } else {
+            throw new Error(res.msg || '更新失败');
+        }
+    } catch (err) {
+        uni.showToast({
+            title: '更新失败',
+            icon: 'none'
+        });
+    }
+};
+
+// 修改名称的弹窗
+const showNicknameDialog = () => {
+    tempNickname.value = userInfo.value.nickname
+    nicknamePopup.value.open()
+}
+// 关闭弹窗
+const close =()=>{
+    nicknamePopup.value.close();
+}
+// 用户名修改确认
 const confirmNickname = () => {
     if(tempNickname.value.trim()) {
         updateUserInfo('nickname', tempNickname.value);
@@ -111,75 +157,26 @@ const confirmNickname = () => {
         });
     }
 };
-const close =()=>{
-    nicknamePopup.value.close();
-}
-const updateUserInfo = async (type, value) => {
-    try {
-        const data = {};
-        if (type === 'avatar') {
-            data.avatar = value;
-        } else if (type === 'nickname') {
-            data.nickname = value;
-        }
-        
-        const res = await request({
-            url: '/app-api/weixin/user/modify/info',
-            method: 'POST',
-            data: data,
-           
-        });
-        
-        if (res.code === 0 || res.code === 200) {
-            if (type === 'avatar') {
-                userInfo.value.avatar = value;
-            } else if (type === 'nickname') {
-                userInfo.value.username = value;
-            }
-            uni.showToast({
-                title: '更新成功',
-                icon: 'success'
-            });
-        } else {
-            throw new Error(res.msg || '更新失败');
-        }
-    } catch (err) {
-        console.error('更新失败:', err);
-        uni.showToast({
-            title: '更新失败',
-            icon: 'none'
-        });
-    }
-};
 
-
-const showNicknameDialog = () => {
-    tempNickname.value = userInfo.value.username
-    nicknamePopup.value.open()
-}
-
+//获取用户基本信息
 const getUserInfo = async () => {
     try {
         const res = await request({
             url: '/app-api/weixin/user/get/myInfo',
-            method: 'GET',
-           
+            showLoading:true,
         });
         
-        if (res.code === 0 || res.code === 200) {
+        if (res.code === 0 ) {
             userInfo.value = {
                 ...userInfo.value,
                 ...res.data
             };
         } else {
-            throw new Error(res.msg || '获取用户信息失败');
+         throw new Error(res.msg || '获取用户信息失败');
         }
     } catch (err) {
         console.error('获取用户信息失败:', err);
-        uni.showToast({
-            title: '获取用户信息失败',
-            icon: 'none'
-        });
+        
     }
 };
 

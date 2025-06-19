@@ -72,7 +72,8 @@ const closePopup = async () => {
     // 调用已读接口
     await request({
       url: `/app-api/WeiXinMini/index/read?ids=${ids}`,
-      method: 'POST'
+      method: 'POST',
+	  showLoading: true, 
     })
     
     // 更新本地数据状态
