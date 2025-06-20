@@ -33,7 +33,7 @@
                                     <text class="itme-right">{{traceabilityData.registeredAddress}}</text>
                                 </view>
                             </view>
-                            <view class="angin-buy"><view class="buy" @click="anginBuy(traceabilityData.productId)">再次购买</view></view>
+                            <!-- <view class="angin-buy"><view class="buy" @click="anginBuy(traceabilityData.productId)">再次购买</view></view> -->
                     </view>
                 </view>
 
@@ -233,9 +233,8 @@ const anginBuy =(id)=>{
         .commodity-info {
             padding:  20rpx;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        
+          
             .first-title{
                 margin-bottom: 20rpx;
                 font-weight: bold;

@@ -324,14 +324,14 @@ const scanCode = () => {
           url: `/pages/traceabilityDetails/traceabilityDetails?id=${traceabilityCode}`,
           success: () => {
             uni.showToast({
-              title: '识别到商品信息',
+              title: '识别到溯源商品',
               icon: 'success'
             })
           }
         })
       } else {
         uni.showToast({
-          title: '未识别到商品ID',
+          title: '未识别到溯源商品',
           icon: 'none'
         })
       }
