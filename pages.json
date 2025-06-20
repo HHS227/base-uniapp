@@ -271,6 +271,13 @@
 			}
 		},
 		{
+			"path": "pages/orderList/orderDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/userInfo/addressList", 
 			"style": {
 				"navigationBarTitleText": "",

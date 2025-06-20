@@ -21,15 +21,15 @@
                             <view class="first-title"> 购物信息 </view>
                             <view>
                                 <view class="info-item">
-                                    <text class="itme-left">防伪编号</text>
+                                    <text class="item-left">防伪编号</text>
                                     <text class="itme-right">{{traceabilityData.traceabilityCode}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">首次登记时间</text>
+                                    <text class="item-left">首次登记时间</text>
                                     <text class="itme-right">{{formatDateTime (traceabilityData.registeredTime)}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">首次登记地点</text>
+                                    <text class="item-left">首次登记地点</text>
                                     <text class="itme-right">{{traceabilityData.registeredAddress}}</text>
                                 </view>
                             </view>
@@ -41,27 +41,27 @@
                         <view class="first-title"> 商品批次信息 </view>
                          <view>
                                 <view class="info-item">
-                                    <text class="itme-left">品牌</text>
+                                    <text class="item-left">品牌</text>
                                     <text class="itme-right">{{traceabilityData.brand}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">品名</text>
+                                    <text class="item-left">品名</text>
                                     <text class="itme-right">{{traceabilityData.productName}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">源蜜场地</text>
+                                    <text class="item-left">源蜜场地</text>
                                     <text class="itme-right">{{traceabilityData.honeyOrigin}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">产品规格</text>
+                                    <text class="item-left">产品规格</text>
                                     <text class="itme-right">{{traceabilityData.specification}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">加工批号</text>
+                                    <text class="item-left">加工批号</text>
                                     <text class="itme-right">{{traceabilityData.no}}</text>
                                 </view>
                                 <view class="info-item">
-                                    <text class="itme-left">出品企业</text>
+                                    <text class="item-left">出品企业</text>
                                     <text class="itme-right">{{traceabilityData.producedCompany}}</text>
                                 </view>
                         </view>      

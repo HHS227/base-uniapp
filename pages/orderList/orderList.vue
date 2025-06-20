@@ -14,6 +14,7 @@
         v-for="item in filteredList" 
         :key="item.id" 
         class="record-item"
+        @click="orderDetail(item.id)"
       >
         <image class="pet-image" :src="'/static/images/apiculture.png'" mode="aspectFill"></image>
         <view class="info-content">
@@ -111,6 +112,15 @@ const getRecordsList= async () => {
    
   }
 }
+
+// 跳转到订单详情
+const orderDetail=(id)=>{
+  uni.navigateTo({
+    url: `/pages/orderList/orderDetail?id=${id}`
+  })
+}
+
+
 </script>
 
 <style lang="scss" scoped>
