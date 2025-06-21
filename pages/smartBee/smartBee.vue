@@ -3,7 +3,6 @@
     <TransNavVue title="智能养蜂" />
   <view class="container">
     <scroll-view scroll-y class="content">
-      <!-- 使用v-for遍历后端数据 -->
       <view 
         v-for="(item, index) in smartBeeList" 
         :key="index" 
@@ -12,8 +11,10 @@
       >
         <text class="question-title">{{ index + 1 }}. {{ item.title }}</text>
         <text class="question-content">
-          {{ item.content }}
+          {{ item.title  }}
         </text>
+       
+
         <view class="divider"></view>
       </view>
       
@@ -22,7 +23,15 @@
         <view class="popup-content">
           <view class="popup-title">详情</view>
           <scroll-view scroll-y class="detail-scroll">
-            <text class="detail-text">{{ currentContent }}</text>
+    
+            <mp-html 
+			  :content="processedContent" 
+			  :lazy-load="true"
+			  @imgtap="previewImage"
+			  @linktap="handleLinkTap"
+			/>
+
+
           </scroll-view>
           <button class="close-btn" @click="closeDetail">关闭</button>
         </view>
@@ -39,10 +48,11 @@
 </template>
 
 <script setup>
-import { ref} from 'vue';
+import { ref ,computed} from 'vue';
 import { request } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue'
 import { onShow } from '@dcloudio/uni-app'
+  import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html'
 const smartBeeList=ref([])
 const popup=ref(null)
 
@@ -51,6 +61,19 @@ onShow(() => {
  
 
 })
+ // 处理富文本内容
+ const processedContent = computed(() => {
+	if (!currentContent.value) return ''
+	
+	// 处理图片自适应
+	let content = currentContent.value
+	  .replace(/<img/gi, '<img class="rich-image"  ' )
+	  .replace(/<video/gi, '<video style="min-width: 100% " ')
+	
+	return content
+  })
+
+
 //获取智能养蜂内容
 const getSmartBeeList= async () => {
   try {
@@ -146,13 +169,18 @@ const closeDetail = () => {
 
 .popup-content {
 	width: 600rpx;
+  height: 700rpx;
+  overflow: auto;
 	background: #fff;
 	border-radius: 24rpx;
   padding: 20rpx;
+  position: relative;
+
 	
   .detail-scroll {
-    max-height: 60vh;
-    
+    height:450rpx;
+    overflow: auto;
+   
     .detail-text {
       font-size: 28rpx;
       line-height: 1.6;
@@ -171,7 +199,12 @@ const closeDetail = () => {
 
 
 	.close-btn {
-		
+    margin-top: 20rpx;
+    position: absolute;
+    bottom: 20rpx;
+    left: 0rpx;
+    right: 0rpx;
+    
 		height: 80rpx;
 		background: #ff6f0e;
 		color: #fff;

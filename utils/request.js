@@ -293,6 +293,81 @@ export const uploadImage=(count)=> {
     });
   });
 }
+export const uploadVideo=()=> {
+
+  return new Promise((resolve, reject) => {
+    uni.chooseVideo({
+      sourceType: ['album', 'camera'],
+      maxDuration: 60,
+      camera: 'back',
+      success: async (res) => {
+        if (!res || !res.tempFilePath ) {
+          uni.showToast({
+            title: '未选择视频',
+            icon: 'none'
+          });
+          reject(new Error('未选择视频'));
+          return;
+        }
+        const tempFilePath = res.tempFilePath;
+        
+        uni.showLoading({
+          title: '上传中...'
+        });
+
+        try {
+          // 上传文件
+          const uploadRes = await new Promise((resolveUpload, rejectUpload) => {
+            uni.uploadFile({
+              url: BASE_URL + '/app-api/infra/file/upload',
+              filePath: tempFilePath,
+              name : 'file',
+           
+              success: (response) => {
+                try {
+                  const data = JSON.parse(response.data);
+                  resolveUpload(data);
+                } catch (err) {
+                  rejectUpload(new Error('解析响应失败'));
+                }
+              },
+              fail: (err) => {
+                rejectUpload(err);
+              }
+            });
+          });
+
+          if (uploadRes.code === 0) {
+            const result = { tempFilePath, data: uploadRes.data } 
+            uni.showToast({
+              title: '上传成功',
+              icon: 'success'
+            });
+            resolve(result);
+          } else {
+            throw new Error(uploadRes.msg || '视频上传失败');
+          }
+        } catch (err) {
+          uni.showToast({
+            title: '上传失败',
+            icon: 'none'
+          });
+          console.error('视频上传失败:', err);
+          reject(err);
+        } 
+      },
+      fail: (err) => {
+        console.error('选择视频失败:', err);
+        uni.showToast({
+          title: '选择视频失败',
+          icon: 'none'
+        });
+        reject(err);
+      }
+    });
+  });
+}
+
 
 
  

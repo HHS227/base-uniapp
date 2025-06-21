@@ -18,14 +18,18 @@
       >
         <image class="pet-image" :src="'/static/images/apiculture.png'" mode="aspectFill"></image>
         <view class="info-content">
-          <text class="pet-name">{{ item.productName }}</text>
+          <view class="pet-name">{{ item.productName }}</view>
           <text class="pet-date">{{ formatDateTime(item.createTime) ||'2025-05-25'}}</text>
           <text class="pet-amount">¥{{ item.amount||0 }}</text>
         </view>
         <text class="status" :style="{
           color: getStatusColor(item.status),
-          borderColor: getStatusColor(item.status)
-        }">
+          borderColor: getStatusColor(item.status)}"
+           @click.stop="payBtn(item)"
+          
+          
+          >
+        
           {{ getStatusText(item.status) }}
         </text>
       </view>
@@ -42,7 +46,7 @@
 
 <script setup>
 import { ref, computed , } from 'vue';
-import { request } from '@/utils/request'
+import { request,processPayment } from '@/utils/request'
 import TransNavVue from '../../components/TransNav.vue';
 import { getNarBarHeight,formatDateTime } from '../../utils/system';
 import { onShow } from '@dcloudio/uni-app'
@@ -77,7 +81,7 @@ const getStatusColor = (status) => {
 };
 const getStatusText = (status) => {
   const texts = {
-    0:'未支付',
+    0:'继续支付',
     1: '待发货',
     2: '已发货', 
     3: '已取消',
@@ -87,6 +91,16 @@ const getStatusText = (status) => {
   };
   return texts[status] || '未知状态';
 };
+
+// 待支付的状态可以继续支付
+const payBtn = async (item) => {
+  if (item.status === 0) {
+    const options = { orderId: item.payOrderId, }
+    processPayment(options)
+  }
+}
+
+
 
 onShow(() => {
   getRecordsList()
@@ -189,11 +203,16 @@ const orderDetail=(id)=>{
         flex: 1;
         display: flex;
         flex-direction: column;
+       
         
         .pet-name {
-          font-size: 32rpx;
+          width: 400rpx;
+          font-size: 25rpx;
           font-weight: bold;
           margin-bottom: 10rpx;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         
         .pet-date {

@@ -69,7 +69,7 @@ const getStatusText = (status) => {
 // 待支付的状态可以继续支付
 const payBtn = async (item) => {
   if (item.status === 3) {
-    const options = { orderId: item.payOrderI, }
+    const options = { orderId: item.payOrderId, }
     processPayment(options)
   }
 }

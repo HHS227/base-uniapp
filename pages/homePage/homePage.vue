@@ -84,10 +84,10 @@
 								<image src="/static/images/homePage/BeehiveLogo.png" mode="" class="my-bee-icon"></image>
 							</view>
 							<view class="top-info">
-								<view class="card-title">{{item.beehiveName}}</view>
+								<view class="card-title">{{ item.adoptType === 1 ? `认养一箱蜂-${item.beehiveName}`  : `拼团认养一箱蜂-${item.beehiveName}` }}</view>
 								<view  v-if="item.adoptType == 1" class="exclusive">
-									<view >{{ item.region }}</view>
-									<view >{{ item.honeySeeds }}</view>
+									<view class="card-title ">{{ item.region }}</view>
+									<view  class="card-title " style="margin-top: 20rpx;">{{ item.honeySeeds }}</view>
 								</view>
 								
 								<view class="group-purchase" v-if="item.adoptType == 2">
@@ -189,7 +189,7 @@ const activeBtn = (item) => {
   	uni.navigateTo({ url: '/pages/couponPage/couponPage' })
   }	else{
 	uni.navigateTo({
-        url:`/pages/shoppingMall/shopDetails?id=${item.productId}`
+        url:`/pages/shopDetails/shopDetails?id=${item.productId}`
     })
   }
 }
@@ -558,6 +558,7 @@ const scanCode = () => {
 							text-overflow: ellipsis;
 							
 						}
+					
 						.exclusive{
 							margin-top: 20rpx;
 							font-size: 26rpx;

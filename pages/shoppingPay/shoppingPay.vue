@@ -106,7 +106,7 @@
         </uni-popup>
         
         <!-- 优惠券选择弹窗 -->
-        <uni-popup ref="couponPopup" type="bottom">
+        <uni-popup ref="couponPopup" type="center">
             <view class="coupon-popup">
                 <view class="popup-header">
                     <text class="popup-title">选择优惠券</text>
@@ -121,12 +121,12 @@
                     >
                         <view class="coupon-content">
                             <view class="coupon-value">
-                                <text>￥{{item.amount}}</text>
+                                <text v-if="item.couponType==0">￥{{item.amount}}</text>
+                                <text v-else>{{(item.amount*10)}}  折</text>
                             </view>
                             <view class="coupon-info">
-                                
                                 <text class="coupon-condition">满{{item.fullAmount}}可用</text>
-            
+                               
                             </view>
                             <view class="coupon-select">
                                 <radio :checked="selectedCoupon?.id === item.id" color="#ff6f0e"></radio>
@@ -270,16 +270,37 @@ const calculateTotalPrice = () => {
             icon: 'none'
         });
         selectedCoupon.value = null;
+        totalPrice.value = goodsTotalPrice.value;
         return;
     }
     
     // 计算总价
-    let total = goodsTotalPrice.value 
+    let total = goodsTotalPrice.value;
+    
+    // 根据优惠券类型应用不同的计算逻辑
     if (selectedCoupon.value) {
-        total -= selectedCoupon.value.amount*100;
+        if (selectedCoupon.value.couponType === 0) {
+            // 固定金额优惠券：直接减去优惠金额
+            total -= selectedCoupon.value.amount * 100;
+        } else if (selectedCoupon.value.couponType === 1) {
+            // 折扣优惠券：原价乘以折扣率（注意：item.amount应为0.8表示8折）
+            if (selectedCoupon.value.amount > 0 && selectedCoupon.value.amount <= 1) {
+                total = total * selectedCoupon.value.amount;
+            } else {
+                uni.showToast({
+                    title: '折扣券格式异常，请重试',
+                    icon: 'none'
+                });
+                selectedCoupon.value = null;
+                total = goodsTotalPrice.value;
+            }
+        }
     }
-    totalPrice.value = Math.max(total, 0); // 确保总价不小于0
+    
+    // 确保总价不小于0
+    totalPrice.value = Math.max(total, 0);
 };
+
 
 // 监听商品数量或优惠券变化，重新计算总价
 watch([selectedItems, selectedCoupon], () => {

@@ -182,11 +182,11 @@ const getScanList = async (id) => {
     }
 };
 
-const anginBuy =(id)=>{
-    uni.navigateTo({
-        url:`/pages/shoppingMall/shopDetails?id=${item.id}`
-    })
-}
+// const anginBuy =(id)=>{
+//     uni.navigateTo({
+//         url:`/pages/shopDetails/shopDetails?id=${item.id}`
+//     })
+// }
 
 
 </script>

@@ -22,6 +22,8 @@
           class="form-item form-input" />
         <input :inputBorder="false" placeholder-class="place" v-model="formData.beeType" placeholder="蜜蜂种类"
           class="form-item form-input" />
+        <input :inputBorder="false" placeholder-class="place" v-model="formData.hiveNumber" placeholder="蜂箱数量"
+          class="form-item form-input" />
         <input :inputBorder="false" placeholder-class="place" v-model="formData.ownerName" placeholder="养蜂人"
           class="form-item form-input" />
         <view class="form-item image-upload">
@@ -41,6 +43,26 @@
           </view>
           <text class="upload-tips">蜂场图片,仅支持上传1张</text>
         </view>
+        
+
+        <view class="form-item image-upload">
+          <view class="upload-container">
+            <view v-if="videoInfo.tempFilePath" class="image-preview">
+              <view class="image-item">
+                <video :src="videoInfo.tempFilePath" mode="aspectFill" controls @click="previewVideo"></video>
+                <view class="delete-btn" @click.stop="deleteVideo">
+                  <text>×</text>
+                </view>
+              </view>
+            </view>
+            <view class="upload-btn" @click="chooseVideo" :style="{ display: videoInfo.tempFilePath ? 'none' : 'flex' }">
+              <text>+</text>
+              <text>上传视频</text>
+            </view>
+          </view>
+          <text class="upload-tips">蜂场视频,仅支持上传1个</text>
+        </view>
+        
         <button class="submit-btn" @click="enterBtn">新增</button>
       </view>
     </view>
@@ -50,7 +72,7 @@
 <script setup>
 import { ref } from 'vue';
 import TransNavVue from '../../components/TransNav.vue';
-import { request, uploadImage } from '@/utils/request';
+import { request, uploadImage, uploadVideo} from '@/utils/request';  
 
 const formData = ref({
   honeySeeds: '',
@@ -59,13 +81,21 @@ const formData = ref({
   beeType: '',
   ownerName: '',
   imgUrl: '',
+  videoUrl: '', 
   address:'',
+  hiveNumber:'',
   latitude:'',
   longitude:''
 });
 
-// 优化：图片信息
+// 图片信息
 const imageInfo = ref({
+  tempFilePath: '',
+  data: ''
+});
+
+// 新增：视频信息
+const videoInfo = ref({
   tempFilePath: '',
   data: ''
 });
@@ -91,7 +121,6 @@ const chooseLocation = () => {
   });
 };
 
-
 // 选择图片
 const chooseImage = () => {
   if (imageInfo.value.tempFilePath) {
@@ -109,9 +138,7 @@ const chooseImage = () => {
     .catch((err) => {
       console.error('上传失败:', err);
     });
-
 };
-
 
 // 预览图片
 const previewImage = () => {
@@ -133,14 +160,64 @@ const deleteImage = () => {
           tempFilePath: '',
           data: ''
         };
-        formData.value.image = '';
+        formData.value.imgUrl = '';
       }
     }
   });
 };
 
+// 新增：选择视频
+const chooseVideo = () => {
+  if (videoInfo.value.tempFilePath) {
+    uni.showToast({
+      title: '已上传一个视频',
+      icon: 'none'
+    });
+    return;
+  }
+  uploadVideo()
+    .then((result) => {
+      console.log(result,'12121')
+      videoInfo.value = result
+       formData.value.videoUrl = result.data;
+    })
+    .catch((err) => {
+  
+      console.error('上传失败:', err);
+    });
+};
+
+// 新增：预览视频
+const previewVideo = () => {
+  if (videoInfo.value.tempFilePath) {
+    uni.previewMedia({
+      sources: [{
+        type: 'video',
+        url: videoInfo.value.tempFilePath
+      }]
+    });
+  }
+};
+
+// 新增：删除视频
+const deleteVideo = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定要删除这个视频吗？',
+    success: (res) => {
+      if (res.confirm) {
+        videoInfo.value = {
+          tempFilePath: '',
+          data: ''
+        };
+        formData.value.videoUrl = '';
+      }
+    }
+  });
+};
 
 const enterBtn = async () => {
+  // 验证表单数据
   if (!formData.value.address || 
       !formData.value.honeySeeds || 
       !formData.value.name || 
@@ -154,9 +231,10 @@ const enterBtn = async () => {
     });
     return;
   }
+  
+  // 视频为可选字段，可根据需求调整为必填
+  
   try {
-   
-
     const res = await request({
       url: '/app-api/weixin/beeFarmApply/create',
       showLoading: true,
@@ -180,9 +258,9 @@ const enterBtn = async () => {
     });
   }
 };
-
-
 </script>
+
+
 
 <style lang="scss" scoped>
 .container {
@@ -254,14 +332,9 @@ const enterBtn = async () => {
       line-height: 96rpx;
     }
 
-    // 优化：图片上传样式
     .image-upload {
       padding: 32rpx;
-      .upload-title {
-        font-size: 32rpx;
-        color: #333;
-        margin-bottom: 24rpx;
-      }
+     
       .upload-container {
         display: flex;
         flex-wrap: wrap;
@@ -325,6 +398,8 @@ const enterBtn = async () => {
         color: #999;
       }
     }
+   
   }
+ 
 }
 </style>

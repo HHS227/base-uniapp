@@ -340,7 +340,7 @@
 		  width: 80rpx;
 		  height: 40rpx;
 		  background: transparent;
-		  color: #999;
+		  color: red;
 		  border-radius: 20rpx;
 		  display: flex;
 		  align-items: center;

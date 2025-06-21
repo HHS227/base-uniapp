@@ -48,6 +48,8 @@
                 <button class="buy-btn">购买</button>
               </view>
             </view>
+
+            <view class="tag-box" v-if="item.isNew">新品</view>
           </view>
         </view>
 
@@ -94,7 +96,7 @@ const gotoCart = () => {
 // 跳转详情
 const shopDetails = (item) => {
   uni.navigateTo({
-    url: `/pages/shoppingMall/shopDetails?id=${item.id}`
+    url: `/pages/shopDetails/shopDetails?id=${item.id}`
   })
 }
 //跳转到活动页面
@@ -103,7 +105,7 @@ const activeBtn = (item) => {
     uni.navigateTo({ url: '/pages/couponPage/couponPage' })
   } else {
     uni.navigateTo({
-      url: `/pages/shoppingMall/shopDetails?id=${item.productId}`
+      url: `/pages/shopDetails/shopDetails?id=${item.productId}`
     })
   }
 }
@@ -281,6 +283,7 @@ onShow(() => {
     width: 343rpx;
     background: #ffffff;
     margin-bottom: 16rpx;
+    position: relative;
 
     .goods-image {
       width: 100%;
@@ -354,6 +357,17 @@ onShow(() => {
         font-size: 24rpx;
         color: #FFFFFF;
       }
+    }
+    .tag-box{
+      position: absolute;
+      left: 0;
+      top: 0;
+      height:40rpx;
+      width: 80rpx;
+      background-color: #ff6f0e;
+      text-align: center;
+      font-size: 24rpx;
+      color: #fff;
     }
   }
   }
