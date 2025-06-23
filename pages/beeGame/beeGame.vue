@@ -5,7 +5,7 @@
 		<image  src="/static/images/game/beeGame.png"  mode="aspectFill"  class="bg-image"></image>
 	
 		<view class="content">
-			<view class="beeFarm"><image  src="/static/images/game/beeFarm.png"  mode="aspectFill"  style="width: 100%; height: 100%;" ></image></view>
+			
 		</view>
 	  </view>
 	</view>

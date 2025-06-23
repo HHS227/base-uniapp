@@ -151,7 +151,6 @@ export const processPayment = async (options) => {
   if (!orderId) {
     throw new Error('订单ID不能为空')
   }
-  console.log(getOpenId(),'12131')
   try {
     // 提交支付请求
     const paylist = await request({

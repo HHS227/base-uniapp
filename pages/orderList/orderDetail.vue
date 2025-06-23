@@ -29,7 +29,7 @@
                 
                     <view class="info-item">
                         <text class="item-left">优惠金额</text>
-                        <text class="product-price">￥{{ orderDetail.lessAmount }}</text>
+                        <text class="product-price">￥{{ orderDetail.lessAmount ||0}}</text>
                     </view>
                     <view class="info-item">
                         <text class="item-left">支付金额</text>

@@ -47,7 +47,7 @@
                 <text class="method-title">支付方式</text>
                 <view class="payment-option" @click="selectPayment('wechatPay')">
                     <view class="option-icon">
-                        <image src="/static/images/wechat-pay.png" mode="scaleToFill"></image>
+                        <image src="/static/images/homePage/wxPay.png" mode="scaleToFill"></image>
                     </view>
                     <view class="option-content">
                         <text class="option-name">微信支付</text>
@@ -534,8 +534,6 @@ const processPayment = async () => {
             },
             
             fail: async (err) => {
-                console.error('支付失败:', err);
-                
                 if (err.errMsg.includes('cancel')) {
                     uni.showToast({
                         title: '支付已取消',
