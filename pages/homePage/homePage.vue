@@ -160,7 +160,7 @@ import { ref, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { request } from '@/utils/request'
 import { useTokenStorage } from '../../utils/storage'
-import {formatDateTime}  from '../../utils/system'
+import { formatDateTime }  from '../../utils/system'
 
 
 const {  getAccessToken } = useTokenStorage()
@@ -177,9 +177,8 @@ onMounted(() => {
 onShow(() => {
   getSwiperList()
   getInfoData()
-  if (getAccessToken()) {
-    getInfoDataList()
-  }
+  getInfoDataList()
+
 })
 
 

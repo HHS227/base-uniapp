@@ -76,7 +76,7 @@
         </view>
         
         <!-- 地址选择弹窗 -->
-        <uni-popup ref="addressPopup" type="bottom">
+        <uni-popup ref="addressPopup" type="center">
             <view class="address-popup">
                 <view class="popup-header">
                     <text class="popup-title">选择收货地址</text>
@@ -274,16 +274,15 @@ const calculateTotalPrice = () => {
         return;
     }
     
-    // 计算总价
+    
     let total = goodsTotalPrice.value;
     
     // 根据优惠券类型应用不同的计算逻辑
     if (selectedCoupon.value) {
         if (selectedCoupon.value.couponType === 0) {
-            // 固定金额优惠券：直接减去优惠金额
+
             total -= selectedCoupon.value.amount * 100;
         } else if (selectedCoupon.value.couponType === 1) {
-            // 折扣优惠券：原价乘以折扣率（注意：item.amount应为0.8表示8折）
             if (selectedCoupon.value.amount > 0 && selectedCoupon.value.amount <= 1) {
                 total = total * selectedCoupon.value.amount;
             } else {
@@ -795,9 +794,10 @@ const processPayment = async () => {
 
 .address-popup {
     background-color: #fff;
-    border-radius: 20rpx 20rpx 0 0;
+    border-radius: 20rpx ;
     padding: 30rpx;
     max-height: 70vh;
+    width: 80vw;
     
     .popup-header {
         display: flex;
@@ -852,13 +852,14 @@ const processPayment = async () => {
         padding: 20rpx 0;
         color: #ff6f0e;
         font-size: 32rpx;
-        border-top: 1rpx solid #eee;
+       
     }
 }
 
 .coupon-popup {
     background-color: #fff;
-    border-radius: 20rpx 20rpx 0 0;
+    border-radius: 20rpx ;
+    width: 80vw;
     padding: 30rpx;
     max-height: 70vh;
     
