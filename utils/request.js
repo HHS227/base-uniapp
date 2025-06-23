@@ -1,8 +1,8 @@
 import { useTokenStorage } from './storage'
 const { getRefreshToken, setToken, getAccessToken ,getOpenId} = useTokenStorage()
-// const BASE_URL = 'http://192.168.1.132:48080' 
+const BASE_URL = 'http://192.168.1.132:48080' 
 // const BASE_URL="https://www.cdsrh.top"
-const BASE_URL="https://www.gemitribe.com"
+// const BASE_URL="https://www.gemitribe.com"
 let isRefreshing = false
 let refreshSubscribers = []
 // 刷新token
@@ -29,7 +29,6 @@ const refreshTokenRequest = async () => {
       setToken({
         accessToken: res.data.accessToken,
         refreshToken: res.data.refreshToken,
-        openId: res.data.openid
       })
       // 通知所有等待的请求，并传递新token
       const newToken = getAccessToken()

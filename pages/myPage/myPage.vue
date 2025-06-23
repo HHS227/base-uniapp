@@ -136,7 +136,7 @@ import { onShareAppMessage, onShow } from "@dcloudio/uni-app";
 import { useTokenStorage } from "../../utils/storage";
 import { request } from "@/utils/request";
 
-const { getAccessToken, clearToken } = useTokenStorage();
+const { getAccessToken, clearToken ,clearUser} = useTokenStorage();
 const userInfo = ref({});
 const commissionData = ref({});
 const isBeeFarm = ref({});
@@ -362,6 +362,7 @@ const loginOut = () => {
 		success: (res) => {
 			if (res.confirm) {
 				clearToken();
+				clearUser();
 				userInfo.value = {};
 				commissionData.value = {};
 				uni.showToast({

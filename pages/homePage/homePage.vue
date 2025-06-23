@@ -163,7 +163,7 @@ import { useTokenStorage } from '../../utils/storage'
 import { formatDateTime }  from '../../utils/system'
 
 
-const {  getAccessToken } = useTokenStorage()
+const {  getAccessToken ,getUserId} = useTokenStorage()
 const swiperList=ref([])
 const infoData=ref({})
 const dataList=ref([])
@@ -177,7 +177,10 @@ onMounted(() => {
 onShow(() => {
   getSwiperList()
   getInfoData()
-  getInfoDataList()
+  
+  if(getUserId()){
+	getInfoDataList()
+  }
 
 })
 
@@ -253,7 +256,7 @@ const getInfoData = async () => {
 const getInfoDataList = async () => {
   try {
     const res = await request({
-      url: '/app-api/WeiXinMini/index/get/MyBeehiveInfo',
+      url: `/app-api/WeiXinMini/index/get/MyBeehiveInfo?id=${getUserId()}`,
       showLoading: true, 
 	
     })

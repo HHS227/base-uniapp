@@ -29,7 +29,7 @@ import { useTokenStorage } from '../../utils/storage'
 import { request } from '@/utils/request'
 import { initShareUserId, } from '../../utils/system' 
 
-const { setToken } = useTokenStorage()
+const { setToken ,setUserData} = useTokenStorage()
 const isLoading = ref(false)
 const loginCode = ref('')
 const agreed = ref(false)
@@ -86,7 +86,10 @@ const handleWechatLogin = async (e) => {
       setToken({
         accessToken: res.data.accessToken,
         refreshToken: res.data.refreshToken,
-        openId: res.data.openid
+      })
+      setUserData({
+        openId: res.data.openid,
+        userId: res.data.userId
       })
       
       uni.switchTab({ url: '/pages/myPage/myPage' })
