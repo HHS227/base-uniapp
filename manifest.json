@@ -51,8 +51,6 @@
    
     "mp-weixin" : {
         "appid" : "wxed3e5106f6adce94",
- 
- 
 
         "setting" : {
             "urlCheck" : false
@@ -61,7 +59,7 @@
         "usingComponents" : true,
         "permission": {
       "scope.userLocation": {
-        "desc": "你的位置信息将用于展示附近的蜜源"  
+        "desc": "你的位置信息将用于小程序位置定位"  
       }
     }
     },

@@ -1,6 +1,5 @@
 {
-	"pages": [ 
-		
+	"pages": [
 		{
 			"path": "pages/homePage/homePage",
 			"style": {
@@ -16,7 +15,7 @@
 			}
 		},
 		{
-			"path": "pages/honeySource/honeySource",
+			"path": "pages/mapPage/mapPage",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
@@ -36,267 +35,11 @@
 				"navigationBarTitleText": "登陆"
 			}
 		},
-		
-		
-		{
-			"path": "pages/messagePage/messagePage",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-	
-		{
-			"path": "pages/shoppingCart/shoppingCart",
-			"style": {
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		
-		{
-			"path": "pages/beeHiveData/beeHiveData",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/traceabilityManagement/traceabilityManagement",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/traceabilityManagement/addProduct",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/couponPage/couponPage",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/beeFarmerJion/beeFarmInfo",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/beeFarmerJion/addFarm",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/deviceManagement/addDeviceManagement",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/myBeeHive/myBeeHive",
-			"style": {
-				"navigationBarTitleText": "我的蜂箱",
-				"navigationStyle": "custom"
-				
-			}
-		},
-		{
-			"path": "pages/shopDetails/shopDetails",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-				
-			}
-		},
-		{
-			"path": "pages/shoppingPay/shoppingPay",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-				
-			}
-		},
-		
-		{
-			"path": "pages/collectBee/collectBee",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/collectBee/payBeeFarm",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		
-		{
-			"path": "pages/beeGame/beeGame",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/traceabilityDetails/traceabilityDetails",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		
-		{
-			"path": "pages/smartBee/smartBee",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/surveyList/surveyList",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/surveyList/surveyDetail",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/customerService/customerService",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		
-		{
-			"path": "pages/commissionDetail/commissionDetail",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/deviceManagement/deviceManagement",
-			"style" : 
-			{
-				"navigationBarTitleText" : "设备管理",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/cashWithdrow/cashWithdrow",
-			"style" : 
-			{
-				"navigationBarTitleText" : "提现",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/trafficRecharge/trafficRecharge",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/userAgreement/userAgreement",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-	
-	
-		
-		{
-			"path" : "pages/beeFarmerJion/beeFarmerJion",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
 		{
 			"path": "pages/userInfo/userInfo",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/withdraw/withdraw",
-			"style": {
-				"navigationBarTitleText" : "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/adoptionRecords/adoptionRecords",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/orderList/orderList",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/orderList/orderDetail",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/userInfo/addressList", 
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/userInfo/addressEdit",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		},
-	
-		{
-			"path" : "pages/beeFarmerJion/jionFeedback",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
 			}
 		}
 
@@ -314,8 +57,8 @@
 			"text": "我的",
 			"pagePath": "pages/myPage/myPage"
 		}, {
-			"text": "蜜源",
-			"pagePath": "pages/honeySource/honeySource"
+			"text": "地图",
+			"pagePath": "pages/mapPage/mapPage"
 		}]
 	},
 	"globalStyle": {

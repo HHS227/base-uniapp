@@ -4,7 +4,7 @@
 			<!-- 状态栏占位 -->
 			<view class="statusBar" :style="{ height: getStatusBarHeight() + 'px' }"></view>
 			<view class="titleBar" :style="{ height: getTitleBarHeight() + 'px' }">
-				<image :src="isWhite ? '/static/images/back(w).png' : '/static/images/back(b).png'" mode="aspectFit" class="back-btn" @click="goback"></image>
+				<text @click="goback">返回</text>
 				<view class="title" :class="{ white: isWhite }">{{ title }}</view>
 				<view class="holder"></view>
 			</view>
@@ -23,7 +23,7 @@ const goback = () => {
 		const prevPage = pages[pages.length - 2];
 		// 判断上一页是否是tabbar页面
 		console.log(prevPage.route);
-		if (prevPage.route.includes('homePage') || prevPage.route.includes('mine') || prevPage.route.includes('shoppingMall') || prevPage.route.includes('honeySource')) {
+		if (prevPage.route.includes('homePage') || prevPage.route.includes('mine') || prevPage.route.includes('shoppingMall') || prevPage.route.includes('mapPage')) {
 			uni.switchTab({
 				url: '/' + prevPage.route
 			});

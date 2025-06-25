@@ -1,2 +1,0 @@
-使用vue3组合式API（Composition API）编写
-css使用scss

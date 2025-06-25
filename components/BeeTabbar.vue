@@ -9,12 +9,12 @@
 				<image :src="activeTab == 'shoppingMall' ? '../static/images/shoppingActive.png' : '../static/images/shopping.png'" class="icon" />
 				<text>商城</text>
 			</view>
-			<view class="tab-item center-button" @click="scanCodeClick">
+			<view class="tab-item center-button" >
 				<image src="/static/images/gameLogo.png" class="icon-large" />
 			</view>
-			<view class="tab-item" :class="{ active: activeTab === 'monitorPage' }" @click="switchTab('/pages/honeySource/honeySource')">
+			<view class="tab-item" :class="{ active: activeTab === 'monitorPage' }" @click="switchTab('/pages/mapPage/mapPage')">
 				<image :src="activeTab == 'monitorPage' ? '../static/images/honeySourceActive.png' : '../static/images/honeySource.png'" class="icon" />
-				<text>蜜源</text>
+				<text>地图</text>
 			</view>
 			<view class="tab-item" :class="{ active: activeTab === 'myPage' }" @click="switchTab('/pages/myPage/myPage')">
 				<image :src="activeTab == 'myPage' ? '../static/images/mineActive.png' : '../static/images/mine.png'" class="icon" />
@@ -34,11 +34,7 @@ defineProps({
 	}
 });
 // const activeTab = ref('/pages/index/index');
-const scanCodeClick = () => {
-	uni.navigateTo({
-		url: '/pages/beeGame/beeGame'
-	});
-};
+
 const switchTab = (url) => {
   uni.switchTab({ url })
 }

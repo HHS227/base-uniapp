@@ -1,11 +1,10 @@
 <template>
-	<view>
-		<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
 		<view class="container">
+			  <view>
 			<view :style="{ height: getStatusBarHeight() + 'px' }"></view>
 			<view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-				<image src="/static/images/logo.png" class="logo-image" mode="aspectFill"></image>
 			</view>
+		</view>
 			<scroll-view scroll-y="true" class="scroll-view">
 				<view class="my-info-top">
 					<view class="top-content">
@@ -13,7 +12,7 @@
 							<image :src="userInfo.avatar" mode="" class="avatar-image"></image>
 						</view>
 						<view class="name-content">
-							<text v-if="getAccessToken()" class="name-text">{{ userInfo.nickname }}</text>
+							<text v-if="true" class="name-text">{{ userInfo.nickname }}</text>
 							<text v-else class="name-text unlogin-text" @click="toLogin">请先登录</text>
 							<view class="vip-content">
 								<text class="id-text" v-if="userInfo.id">ID:{{ userInfo.id || "" }}</text>
@@ -28,84 +27,7 @@
 						</view>
 
 					</view>
-					<view class="bottom-content">
-						<view>我的服务</view>
-						<view class="menu-content">
-							<view @click="gotAdoptionRecords" class="menu-item">
-								<image src="/static/images/myPage/adoptIcon.png" class="menu-icon" mode=""></image>
-								<text class="menu-text">认养记录</text>
-							</view>
-							<view @click="gotoOrderList" class="menu-item">
-								<image src="/static/images/myPage/orderIcon.png" class="menu-icon" mode=""></image>
-								<text class="menu-text">订单列表</text>
-							</view>
-							<view @click="gotoCommission" class="menu-item">
-								<image src="/static/images/myPage/invitationIcon.png" class="menu-icon" mode=""></image>
-								<text class="menu-text">邀请有礼</text>
-							</view>
-							<view @click="gotoBeeFarmerJion" class="menu-item">
-								<image src="/static/images/myPage/beeEnterIcon.png" class="menu-icon" mode=""></image>
-								<text class="menu-text">蜂农入住</text>
-							</view>
-						</view>
-					</view>
-				</view>
-
-				<view class="my-info-center">
-					<view>我的收益</view>
-					<view class="commission-card">
-						<view class="card-todaySEarnings card-item" @click="gotoCommission">
-							<view class="amount">{{ commissionData.todaySEarnings || 0 }}</view>
-							<text class="commission-text">今日佣金</text>
-						</view>
-						<view class="card-cumulativeEarnings card-item" @click="gotoCommission">
-
-							<view class="amount">{{ commissionData.cumulativeEarnings || 0 }}</view>
-							<text class="commission-text">累计佣金</text>
-						</view>
-						<view class="card-currentEarnings card-item" @click="gotoWithdraw">
-
-							<view class="amount">{{ commissionData.currentEarnings || 0 }}</view>
-							<text class="commission-text">可提现金额</text>
-						</view>
-						<view class="card-coin card-item" @click="gotoWithdraw">
-
-							<view class="amount">{{ commissionData.coin || 0 }}</view>
-							<text class="commission-text">M币</text>
-						</view>
-					</view>
-
-				</view>
-				<view class="my-info-bottom">
-					<view @click="gotoCustomerService" class="list-item">
-						<view class="item-left">
-							<image class="item-icon" src="/static/images/myPage/serviceIcon.png" mode=""></image>
-							<text class="text"> 联系客服 </text>
-						</view>
-						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-					</view>
-					<view @click="gotoSmartBee" class="list-item">
-						<view class="item-left">
-							<image class="item-icon" src="/static/images/myPage/intelligenceIcon.png" mode=""></image>
-							<text class="text"> 智能养蜂 </text>
-						</view>
-						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-					</view>
-					<view @click="gotoMessagePage" class="list-item">
-						<view class="item-left">
-							<image class="item-icon" src="/static/images/myPage/messageIcon.png" mode=""></image>
-							<text class="text"> 我的消息 </text>
-						</view>
-						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-					</view>
-					<view @click="gotoSurveyList" class="list-item">
-						<view class="item-left">
-							<image class="item-icon" src="/static/images/myPage/surveyIcon.png" mode=""></image>
-							<text class="text">问卷调查</text>
-						</view>
-						<image class="btn" src="/static/images/rightBtn.png" mode=""></image>
-					</view>
-					<view @click="gotoUserInfo" class="list-item">
+						<view @click="gotoUserInfo" class="list-item">
 						<view class="item-left">
 							<image class="item-icon" src="/static/images/myPage/settingIcon.png" mode=""></image>
 							<text class="text">设置</text>
@@ -119,13 +41,16 @@
 						</view>
 
 					</view>
-
+					
 				</view>
 
+				
+				
+
 			</scroll-view>
-			<view class="tabbar-bottom"></view>
+		
+			<BeeTabbarVue active-tab="myPage"></BeeTabbarVue>
 		</view>
-	</view>
 </template>
 
 <script setup>
@@ -137,9 +62,12 @@ import { useTokenStorage } from "../../utils/storage";
 import { request } from "@/utils/request";
 
 const { getAccessToken, clearToken ,clearUser} = useTokenStorage();
-const userInfo = ref({});
-const commissionData = ref({});
-const isBeeFarm = ref({});
+const userInfo = ref({
+	nickname: "111",
+	avatar: "/static/images/gameLogo.png",
+	id: "123456",
+});
+
 
 // 处理登录检查和导航的公共函数
 const navigateIfLoggedIn = (url) => {
@@ -180,7 +108,7 @@ onShareAppMessage(() => {
 	}
 
 	return {
-		title: "智慧养蜂，快来领养吧",
+		title: "分享的名字",
 		imageUrl: "/static/images/myPage/Invitation.png",
 		path: `/pages/login/login?shareUserId=${userInfo.value.id}`,
 		success: () => {
@@ -217,142 +145,22 @@ onShow(() => {
 			},
 		});
 	} else {
-		getMyInfo();
-		getCommissionDetail();
-		getIsBeeFarm();
+		
+		
 	}
 });
 
-// 跳转佣金详情
-const gotoCommission = () => {
-	if (!getAccessToken()) {
-		uni.showModal({
-			title: "提示",
-			content: "请先登录",
-			success: (res) => {
-				if (res.confirm) {
-					uni.navigateTo({ url: "/pages/login/login" });
-				}
-			},
-		});
-	} else {
-		uni.navigateTo({ url: `/pages/commissionDetail/commissionDetail?shareUserId=${userInfo.value.id}` });
-	}
-};
 
-// 跳转提现
-const gotoWithdraw = () => {
-	navigateIfLoggedIn("/pages/withdraw/withdraw");
-};
 
-// 跳转认养记录
-const gotAdoptionRecords = () => {
-	navigateIfLoggedIn("/pages/adoptionRecords/adoptionRecords");
-};
-
-// 跳转订单列表
-const gotoOrderList = () => {
-	navigateIfLoggedIn("/pages/orderList/orderList");
-};
-
-// 跳转蜂农入住
-const gotoBeeFarmerJion = () => {
-	if (!getAccessToken()) {
-		uni.showModal({
-			title: "提示",
-			content: "请先登录",
-			success: (res) => {
-				if (res.confirm) {
-					uni.navigateTo({ url: "/pages/login/login" });
-				}
-			},
-		});
-	} else {
-		if (isBeeFarm.value.auditStatus == 1) {
-			uni.navigateTo({
-				url: "/pages/beeFarmerJion/beeFarmInfo",
-			});
-		} else if (isBeeFarm.value.auditStatus == 0) {
-			uni.navigateTo({
-				url: "/pages/beeFarmerJion/jionFeedback",
-			});
-		} else {
-			uni.navigateTo({
-				url: "/pages/beeFarmerJion/beeFarmerJion",
-			});
-		}
-	}
-};
-
-// 跳转智能养蜂
-const gotoSmartBee = () => {
-	navigateIfLoggedIn("/pages/smartBee/smartBee");
-};
-
-// 跳转消息
-const gotoMessagePage = () => {
-	navigateIfLoggedIn("/pages/messagePage/messagePage");
-};
-
-// 跳转问卷调查
-const gotoSurveyList = () => {
-	navigateIfLoggedIn("/pages/surveyList/surveyList");
-};
 
 // 跳转用户信息
 const gotoUserInfo = () => {
 	navigateIfLoggedIn("/pages/userInfo/userInfo");
 };
 
-// 跳转客服服务
-const gotoCustomerService = () => {
-	navigateIfLoggedIn("/pages/customerService/customerService");
-};
 
-// 获取佣金详情
-const getCommissionDetail = async () => {
-	try {
-		const res = await request({
-			url: "/app-api/weixin/distribution/get/commission/info",
-			showLoading: true,
-		});
-		if (res.code === 0 || res.code === 200) {
-			commissionData.value = res.data || {};
-		}
-	} catch (err) {
-		console.error("获取佣金信息失败:", err);
-	}
-};
 
-// 获取用户信息
-const getMyInfo = async () => {
-	try {
-		const res = await request({
-			url: "/app-api/weixin/user/get/myInfo",
-			showLoading: true,
-		});
-		if (res.code === 0 || res.code === 200) {
-			userInfo.value = res.data || {};
-		}
-	} catch (err) {
-		console.error("获取用户信息失败:", err);
-	}
-};
 
-// 获取是否是蜂农入驻
-const getIsBeeFarm = async () => {
-	try {
-		const res = await request({
-			url: "/app-api/weixin/beeFarmApply/get",
-			showLoading: true,
-		});
-		if (res.code === 0 || res.code === 200) {
-			isBeeFarm.value = res.data;
-		}
-	} catch (err) {
-		console.error("获取蜂农入驻信息失败:", err);
-	}
-};
 
 // 退出登录
 const loginOut = () => {
@@ -364,7 +172,6 @@ const loginOut = () => {
 				clearToken();
 				clearUser();
 				userInfo.value = {};
-				commissionData.value = {};
 				uni.showToast({
 					title: "已退出登录",
 					icon: "success",
@@ -379,7 +186,7 @@ const loginOut = () => {
 <style lang="scss" scoped>
 .container {
 	background: linear-gradient(180deg, #f9ddc9 0%, #f6ebe8 58%, #f6f6f6 83%);
-	padding: 0rpx 20rpx 35rpx ;
+	/* padding: 0rpx 20rpx 35rpx ; */
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -398,7 +205,7 @@ const loginOut = () => {
 		overflow-y: auto;
 		margin-top: 20rpx;
 		.my-info-top {
-			background-image: url('/static/images/myPage/myPageTopbg.png');
+			background-color: #fff;
 			height: 445rpx;
 			background-size: 100% 100%;
 			padding: 30rpx;
@@ -499,69 +306,6 @@ const loginOut = () => {
 					}
 				}
 			}
-		}
-
-		.my-info-center {
-			margin-top: 20rpx;
-			height: 360rpx;
-			background-color: #fff;
-			padding: 10rpx 30rpx 0rpx 30rpx;
-			border-radius: 16rpx;
-
-			.commission-card {
-				margin-top: 24rpx;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				flex-wrap: wrap;
-
-				.card-item {
-					height: 120rpx;
-					width: 48%;
-					margin-bottom: 20rpx;
-					padding: 20rpx;
-					font-weight: 500;
-					font-size: 24rpx;
-					color: #fff;
-
-					.amount {
-						font-weight: 800;
-						font-size: 42rpx;
-
-					}
-				}
-
-				.card-todaySEarnings {
-					background-image: url('/static/images/myPage/todaySEarningsBg.png');
-					background-size: 100% 100%;
-
-				}
-
-				.card-cumulativeEarnings {
-					background-image: url('/static/images/myPage/cumulativeEarningsBg.png');
-					background-size: 100% 100%;
-				}
-
-				.card-currentEarnings {
-					background-image: url('/static/images/myPage/currentEarningsBg.png');
-					background-size: 100% 100%;
-				}
-
-				.card-coin {
-					background-image: url('/static/images/myPage/coinBg.png');
-					background-size: 100% 100%;
-				}
-			}
-
-		}
-
-		.my-info-bottom {
-			margin-top: 20rpx;
-			height: 430rpx;
-			background-color: #fff;
-			border-radius: 16rpx;
-			padding: 0rpx 20rpx;
-
 			.list-item {
 				display: flex;
 				align-items: center;
@@ -590,6 +334,10 @@ const loginOut = () => {
 				}
 			}
 		}
+
+		
+
+		
 
 	}
 

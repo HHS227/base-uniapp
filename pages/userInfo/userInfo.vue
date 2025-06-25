@@ -21,7 +21,7 @@
         </view>
       </view>
       
-      <uni-popup ref="nicknamePopup" type="dialog">
+      <!-- <uni-popup ref="nicknamePopup" type="dialog">
           <view class="nickname-dialog">
               <text class="dialog-title">修改用户名</text>
               <input 
@@ -36,7 +36,7 @@
                   <button @click="confirmNickname">确定</button>
               </view>
           </view>
-      </uni-popup>
+      </uni-popup> -->
       
       <view class="item" >
         <text class="label">电话</text>
@@ -54,12 +54,7 @@
         </view>
       </view>
       
-      <view class="item" @click="handleAddress">
-        <text class="label">地址管理</text>
-        <view class="right">
-          <image src="/static/images/rightBtn.png" class="arrow"></image>
-        </view>
-      </view>
+    
     </view>
   </view>
  </view>
@@ -79,10 +74,7 @@ const userInfo = ref({})
 const nicknamePopup = ref(null)
 const tempNickname = ref('')
 
-// 跳转地址管理
-const handleAddress = () => {
-  uni.navigateTo({ url: '/pages/userInfo/addressList' })
-}
+
 const onChooseAvatar = (e) => {
     uni.uploadFile({
             url: BASE_URL + '/app-api/infra/file/upload', 
@@ -181,19 +173,9 @@ const getUserInfo = async () => {
 };
 
 onShow(() => {
-    if (getAccessToken()) {
-        getUserInfo();
-    } else {
-        uni.showModal({
-            title: '提示',
-            content: '请先登录',
-            success: (res) => {
-                if (res.confirm) {
-                    uni.navigateTo({ url: '/pages/login/login' });
-                }
-            }
-        });
-    }
+    
+        // getUserInfo();
+  
 });
 </script>
 

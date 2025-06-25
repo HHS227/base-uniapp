@@ -1,6 +1,6 @@
 <template>
   <view class="login-container">
-    <image style='width: 200rpx; height: 80rpx;' src="/static/images/logo.png" class="logo"></image>
+    
     
     <button 
       class="login-btn" 
@@ -87,10 +87,7 @@ const handleWechatLogin = async (e) => {
         accessToken: res.data.accessToken,
         refreshToken: res.data.refreshToken,
       })
-      setUserData({
-        openId: res.data.openid,
-        userId: res.data.userId
-      })
+    
       
       uni.switchTab({ url: '/pages/myPage/myPage' })
     } else {
